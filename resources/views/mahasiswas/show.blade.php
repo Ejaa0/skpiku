@@ -14,10 +14,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-bordered">
-                <tr>
-                    <th>ID MHS</th>
-                    <td>{{ $mahasiswa->id_mhs }}</td>
-                </tr>
+                
                 <tr>
                     <th>NIM</th>
                     <td>{{ $mahasiswa->nim }}</td>
