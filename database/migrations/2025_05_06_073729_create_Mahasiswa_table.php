@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->id();
             $table->string('nim');
+            $table->string('nama');
             $table->string('temp_lahir');
             $table->date('tgl_lahir');
             $table->enum('sex', ['L', 'P']);

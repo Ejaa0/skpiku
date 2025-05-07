@@ -9,6 +9,8 @@ return new class extends Migration {
     {
         Schema::create('kegiatans', function (Blueprint $table) {
             $table->id();
+            $table->string('nim');
+            $table->string('nama');
             $table->date('tanggal_kegiatan');
             $table->string('nama_kegiatan');
             $table->text('deskripsi')->nullable();

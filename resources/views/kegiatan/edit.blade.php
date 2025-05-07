@@ -1,36 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-xl mx-auto mt-10">
-    <h1 class="text-2xl font-bold mb-6">➕ Tambah Kegiatan</h1>
+<div class="max-w-lg mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold mb-4 text-yellow-600">Edit Kegiatan</h2>
 
-    @if ($errors->any())
-        <div class="bg-red-100 text-red-700 p-4 mb-4 rounded shadow">
-            <ul class="list-disc pl-5">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('kegiatan.store') }}" method="POST" class="space-y-4 bg-white p-6 rounded shadow">
+    <form method="POST" action="{{ route('kegiatan.update', $kegiatan->id) }}">
         @csrf
-        <div>
-            <label class="block mb-1 font-medium">Nama Kegiatan</label>
-            <input type="text" name="nama_kegiatan" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-blue-500" required>
+        @method('PUT')
+
+        <div class="mb-4">
+            <label class="block font-semibold">Nama Kegiatan</label>
+            <input type="text" name="nama_kegiatan" value="{{ $kegiatan->nama_kegiatan }}" class="w-full border p-2 rounded" required>
         </div>
-        <div>
-            <label class="block mb-1 font-medium">Tanggal Kegiatan</label>
-            <input type="date" name="tanggal_kegiatan" class="w-full border border-gray-300 rounded px-4 py-2" required>
+
+        <div class="mb-4">
+            <label class="block font-semibold">Tanggal Kegiatan</label>
+            <input type="date" name="tanggal_kegiatan" value="{{ $kegiatan->tanggal_kegiatan }}" class="w-full border p-2 rounded" required>
         </div>
-        <div>
-            <label class="block mb-1 font-medium">Deskripsi</label>
-            <textarea name="deskripsi" rows="4" class="w-full border border-gray-300 rounded px-4 py-2"></textarea>
+
+        <div class="flex justify-between">
+            <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Update</button>
+            <a href="{{ route('kegiatan.index') }}" class="text-blue-500 hover:underline">← Batal</a>
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Simpan
-        </button>
     </form>
 </div>
 @endsection
