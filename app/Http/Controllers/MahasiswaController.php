@@ -10,13 +10,13 @@ class MahasiswaController extends Controller
 {
     public function index(): View
     {
-        $mahasiswas = Mahasiswa::latest()->paginate(10);
-        return view('mahasiswas.index', compact('mahasiswas'));
+        $mahasiswa = Mahasiswa::all();
+        return view('mahasiswa.index', compact('mahasiswa'));
     }
 
     public function create(): View
     {
-        return view('mahasiswas.create');
+        return view('mahasiswa.create');
     }
 
     public function store(Request $request)
@@ -29,36 +29,38 @@ class MahasiswaController extends Controller
             'agama' => 'required',
             'hobi' => 'required',
             'angkatan' => 'required',
-            'email' => 'required|email'
+            'email' => 'required|email',
         ]);
 
         Mahasiswa::create($request->all());
-        return redirect()->route('mahasiswas.index')->with('success', 'Data berhasil ditambahkan.');
+        return redirect()->route('mahasiswa.index')->with('success', 'Data berhasil ditambahkan.');
     }
 
     public function show($id): View
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
-        return view('mahasiswas.show', compact('mahasiswa'));
+        return view('mahasiswa.show', compact('mahasiswa'));
     }
 
     public function edit($id): View
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
-        return view('mahasiswas.edit', compact('mahasiswa'));
+        return view('mahasiswa.edit', compact('mahasiswa'));
     }
 
     public function update(Request $request, $id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
         $mahasiswa->update($request->all());
-        return redirect()->route('mahasiswas.index')->with('success', 'Data berhasil diperbarui.');
+
+        return redirect()->route('mahasiswa.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
         $mahasiswa->delete();
-        return redirect()->route('mahasiswas.index')->with('success', 'Data berhasil dihapus.');
+
+        return redirect()->route('mahasiswa.index')->with('success', 'Data berhasil dihapus.');
     }
 }
