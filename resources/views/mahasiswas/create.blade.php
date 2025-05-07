@@ -3,7 +3,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h3>Tambah Mahasiswa</h3>
+<h3>Tambah Mahasiswa UNAI</h3>
 
 <form action="{{ route('mahasiswas.store') }}" method="POST">
     @csrf
