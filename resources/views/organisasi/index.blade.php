@@ -10,6 +10,13 @@
         </div>
     @endif
 
+    {{-- Tombol Tambah Organisasi --}}
+    <div class="mb-4">
+        <a href="{{ route('organisasi.create') }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+            + Tambah Organisasi
+        </a>
+    </div>
+
     <table class="min-w-full table-auto">
         <thead>
             <tr class="bg-gray-200">
@@ -17,6 +24,7 @@
                 <th class="px-4 py-2 border">Nama</th>
                 <th class="px-4 py-2 border">Nama Organisasi</th>
                 <th class="px-4 py-2 border">Absensi</th>
+                <th class="px-4 py-2 border">Kegiatan</th>
                 <th class="px-4 py-2 border">Aksi</th>
             </tr>
         </thead>
@@ -27,9 +35,10 @@
                     <td class="px-4 py-2 border">{{ $organisasi->nama }}</td>
                     <td class="px-4 py-2 border">{{ $organisasi->nama_organisasi }}</td>
                     <td class="px-4 py-2 border">{{ $organisasi->absensi }}</td>
+                    <td class="px-4 py-2 border">{{ $organisasi->kegiatan->nama_kegiatan }}</td>
                     <td class="px-4 py-2 border">
                         <a href="{{ route('organisasi.edit', $organisasi->id) }}" class="text-yellow-500 hover:underline">Edit</a>
-                        <form action="{{ route('organisasi.destroy', $organisasi->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');">
+                        <form action="{{ route('organisasi.destroy', $organisasi->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-red-600 hover:underline">Hapus</button>

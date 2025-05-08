@@ -1,43 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4 text-blue-600">Daftar Kegiatan</h1>
+<div class="max-w-4xl mx-auto mt-8">
+    <h2 class="text-2xl font-bold mb-4 text-yellow-600">Daftar Kegiatan</h2>
 
-    <a href="{{ route('kegiatan.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block hover:bg-blue-600">+ Tambah Kegiatan</a>
-
-    @if (session('success'))
-        <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
+    @if(session('success'))
+        <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
             {{ session('success') }}
         </div>
     @endif
 
-    <table class="w-full border-collapse">
+    <a href="{{ route('kegiatan.create') }}" class="mb-4 inline-block bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">+ Tambah Kegiatan</a>
+
+    <table class="w-full table-auto border border-gray-300">
         <thead>
-            <tr class="bg-gray-200 text-left">
-                <th class="border px-4 py-2">Nama Kegiatan</th>
-                <th class="border px-4 py-2">Tanggal Kegiatan</th>
-                <th class="border px-4 py-2">Aksi</th>
+            <tr class="bg-gray-100">
+                <th class="border p-2">#</th>
+                <th class="border p-2">Nama Kegiatan</th>
+                <th class="border p-2">Tanggal</th>
+                <th class="border p-2">Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($kegiatans as $kegiatan)
+            @foreach($kegiatan as $item)
                 <tr>
-                    <td class="border px-4 py-2">{{ $kegiatan->nama_kegiatan }}</td>
-                    <td class="border px-4 py-2">{{ $kegiatan->tanggal_kegiatan }}</td>
-                    <td class="border px-4 py-2 flex gap-2">
-                        <a href="{{ route('kegiatan.show', $kegiatan->id) }}" class="text-blue-600 hover:underline">Lihat</a>
-                        <a href="{{ route('kegiatan.edit', $kegiatan->id) }}" class="text-yellow-500 hover:underline">Edit</a>
-                        <form action="{{ route('kegiatan.destroy', $kegiatan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');">
+                    <td class="border p-2">{{ $loop->iteration }}</td>
+                    <td class="border p-2">{{ $item->nama_kegiatan }}</td>
+                    <td class="border p-2">{{ $item->tanggal_kegiatan }}</td>
+                    <td class="border p-2 space-x-2">
+                        <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-500 hover:underline">Show</a>
+                        <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-500 hover:underline">Edit</a>
+                        <form action="{{ route('kegiatan.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?')">
                             @csrf
                             @method('DELETE')
-                            <button class="text-red-600 hover:underline">Hapus</button>
+                            <button type="submit" class="text-red-500 hover:underline">Hapus</button>
                         </form>
                     </td>
                 </tr>
-            @empty
-                <tr><td colspan="3" class="text-center p-4">Belum ada data kegiatan.</td></tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 </div>

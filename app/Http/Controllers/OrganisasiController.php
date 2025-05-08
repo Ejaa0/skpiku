@@ -3,43 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organisasi;
+use App\Models\Kegiatan;
 use Illuminate\Http\Request;
 
 class OrganisasiController extends Controller
 {
-    // Metode untuk menampilkan daftar organisasi
+    // Menampilkan daftar organisasi
     public function index()
     {
-        // Mengambil semua data organisasi
         $organisasis = Organisasi::all();
-
-        // Mengembalikan view dengan data organisasi
         return view('organisasi.index', compact('organisasis'));
     }
 
-    // Metode store untuk menyimpan data
+    // Menampilkan form tambah organisasi
+    public function create()
+    {
+        // Ambil semua kegiatan untuk dipilih pada dropdown
+        $kegiatans = Kegiatan::all();
+        return view('organisasi.create', compact('kegiatans'));
+    }
+
+    // Menyimpan data organisasi baru
     public function store(Request $request)
     {
-        // Validasi dan penyimpanan data
+        // Validasi input
         $validated = $request->validate([
-            'nim' => 'required|numeric',
+            'nim' => 'required|string',
             'nama' => 'required|string',
-            'id_kegiatan' => 'required|numeric',
             'nama_organisasi' => 'required|string',
-            'absensi' => 'required|in:HADIR,TIDAK',
+            'absensi' => 'required|string',
+            'id_kegiatan' => 'required|exists:kegiatans,id', // Pastikan id_kegiatan ada di tabel kegiatans
         ]);
 
-        $organisasi = new Organisasi();
-        $organisasi->nim = $validated['nim'];
-        $organisasi->nama = $validated['nama'];
-        $organisasi->id_kegiatan = $validated['id_kegiatan'];
-        $organisasi->nama_organisasi = $validated['nama_organisasi'];
-        $organisasi->absensi = $validated['absensi'];
-        $organisasi->save();
+        // Simpan data organisasi
+        Organisasi::create($validated);
 
         return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil ditambahkan!');
     }
 
-    // Metode lainnya...
-}
+    // Menampilkan form edit organisasi
+    public function edit(Organisasi $organisasi)
+    {
+        $kegiatans = Kegiatan::all();
+        return view('organisasi.edit', compact('organisasi', 'kegiatans'));
+    }
 
+    // Mengupdate data organisasi
+    public function update(Request $request, Organisasi $organisasi)
+    {
+        $validated = $request->validate([
+            'nim' => 'required|string',
+            'nama' => 'required|string',
+            'nama_organisasi' => 'required|string',
+            'absensi' => 'required|string',
+            'id_kegiatan' => 'required|exists:kegiatans,id',
+        ]);
+
+        $organisasi->update($validated);
+
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil diperbarui!');
+    }
+
+    // Menghapus data organisasi
+    public function destroy(Organisasi $organisasi)
+    {
+        $organisasi->delete();
+
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil dihapus!');
+    }
+}
