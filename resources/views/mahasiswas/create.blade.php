@@ -47,4 +47,20 @@
 
         <div class="mb-4">
             <label class="block font-semibold">Angkatan</label>
-            <input type
+            <input type="text" name="angkatan" class="w-full border p-2 rounded" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold">Email</label>
+            <input type="email" name="email" class="w-full border p-2 rounded" required>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Simpan
+            </button>
+            <a href="{{ route('mahasiswa.index') }}" class="text-blue-500 hover:underline">← Kembali</a>
+        </div>
+    </form>
+</div>
+@endsection

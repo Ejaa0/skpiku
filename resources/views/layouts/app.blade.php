@@ -17,7 +17,7 @@
             class="fixed inset-y-0 left-0 w-64 bg-white shadow-md transition-transform duration-300 transform z-50 lg:translate-x-0 lg:static lg:inset-0">
 
             <div class="p-6 border-b">
-                <h2 class="text-xl font-bold text-blue-600">SI Mahasiswa</h2>
+                <h2 class="text-xl font-bold text-blue-600">Menu SKPI</h2>
             </div>
 
             <nav class="mt-4 px-4 space-y-2">
