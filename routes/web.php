@@ -12,3 +12,11 @@ Route::get('/', function () {
 Route::resource('mahasiswa', MahasiswaController::class);
 Route::resource('kegiatan', KegiatanController::class);
 Route::resource('organisasi', OrganisasiController::class);
+
+
+Route::get('/organisasi', [OrganisasiController::class, 'index'])->name('organisasi.index');
+Route::post('/organisasi', [OrganisasiController::class, 'store'])->name('organisasi.store');
+Route::get('/organisasi/create', [OrganisasiController::class, 'create'])->name('organisasi.create');
+// Tambahkan route lainnya sesuai kebutuhan
+
+

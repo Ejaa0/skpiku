@@ -1,41 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-xl mx-auto bg-white p-6 rounded shadow mt-8">
-    <h2 class="text-2xl font-bold mb-4">Tambah Organisasi</h2>
+<div class="max-w-5xl mx-auto bg-white p-6 rounded shadow mt-8">
+    <h2 class="text-2xl font-bold mb-4">Daftar Organisasi</h2>
 
-    <form action="{{ route('organisasi.store') }}" method="POST">
-        @csrf
-
-        <div class="mb-4">
-            <label class="block text-sm font-bold mb-1">NIM</label>
-            <input type="text" name="nim" class="w-full border rounded px-3 py-2" required>
+    @if (session('success'))
+        <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
+            {{ session('success') }}
         </div>
+    @endif
 
-        <div class="mb-4">
-            <label class="block text-sm font-bold mb-1">Nama</label>
-            <input type="text" name="nama" class="w-full border rounded px-3 py-2" required>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-bold mb-1">ID Kegiatan</label>
-            <input type="number" name="id_kegiatan" class="w-full border rounded px-3 py-2" required>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-bold mb-1">Nama Organisasi</label>
-            <input type="text" name="nama_organisasi" class="w-full border rounded px-3 py-2" required>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-bold mb-1">Absensi</label>
-            <select name="absensi" class="w-full border rounded px-3 py-2" required>
-                <option value="HADIR">Hadir</option>
-                <option value="TIDAK">Tidak Hadir</option>
-            </select>
-        </div>
-
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan</button>
-    </form>
+    <table class="min-w-full table-auto">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="px-4 py-2 border">NIM</th>
+                <th class="px-4 py-2 border">Nama</th>
+                <th class="px-4 py-2 border">Nama Organisasi</th>
+                <th class="px-4 py-2 border">Absensi</th>
+                <th class="px-4 py-2 border">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($organisasis as $organisasi)
+                <tr>
+                    <td class="px-4 py-2 border">{{ $organisasi->nim }}</td>
+                    <td class="px-4 py-2 border">{{ $organisasi->nama }}</td>
+                    <td class="px-4 py-2 border">{{ $organisasi->nama_organisasi }}</td>
+                    <td class="px-4 py-2 border">{{ $organisasi->absensi }}</td>
+                    <td class="px-4 py-2 border">
+                        <a href="{{ route('organisasi.edit', $organisasi->id) }}" class="text-yellow-500 hover:underline">Edit</a>
+                        <form action="{{ route('organisasi.destroy', $organisasi->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 @endsection

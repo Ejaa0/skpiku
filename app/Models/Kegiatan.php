@@ -6,12 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kegiatan extends Model
 {
-    protected $table = 'kegiatans'; // default-nya Laravel
-    protected $fillable = [
-        'nim',
-        'nama',
-        'tanggal_kegiatan',
-        'nama_kegiatan',
-        'deskripsi',
-    ];
+    // Relasi dari Kegiatan ke Organisasi
+    public function organisasi()
+    {
+        return $this->hasMany(Organisasi::class, 'id_kegiatan');
+    }
 }

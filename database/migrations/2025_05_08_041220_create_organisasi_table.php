@@ -14,9 +14,10 @@ class CreateOrganisasiTable extends Migration
             $table->string('nama');
             $table->unsignedBigInteger('id_kegiatan');
             $table->string('nama_organisasi');
-            $table->string('absensi');
+            $table->integer('absensi');
             $table->timestamps();
 
+            // Definisikan foreign key jika perlu
             $table->foreign('id_kegiatan')->references('id')->on('kegiatans')->onDelete('cascade');
         });
     }
