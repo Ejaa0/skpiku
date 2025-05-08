@@ -1,45 +1,54 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-5xl mx-auto bg-white p-6 rounded shadow mt-8">
-    <h2 class="text-2xl font-bold mb-4">Tambah Organisasi</h2>
+<div class="max-w-3xl mx-auto bg-white p-6 mt-10 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-6 text-yellow-600 border-b pb-2">📝 Tambah Organisasi</h2>
 
-    <form method="POST" action="{{ route('organisasi.store') }}">
+    @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul class="list-disc pl-5">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('organisasi.store') }}" method="POST" class="space-y-4">
         @csrf
 
-        <div class="mb-4">
-            <label class="block font-semibold">NIM</label>
-            <input type="text" name="nim" class="w-full border p-2 rounded" required>
+        <div>
+            <label class="block font-semibold mb-1">NIM</label>
+            <input type="text" name="nim" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
         </div>
 
-        <div class="mb-4">
-            <label class="block font-semibold">Nama</label>
-            <input type="text" name="nama" class="w-full border p-2 rounded" required>
+        <div>
+            <label class="block font-semibold mb-1">Nama</label>
+            <input type="text" name="nama" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
         </div>
 
-        <div class="mb-4">
-            <label class="block font-semibold">Nama Organisasi</label>
-            <input type="text" name="nama_organisasi" class="w-full border p-2 rounded" required>
+        <div>
+            <label class="block font-semibold mb-1">Kegiatan</label>
+            <input type="text" name="kegiatan" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
         </div>
 
-        <div class="mb-4">
-            <label class="block font-semibold">Absensi</label>
-            <input type="text" name="absensi" class="w-full border p-2 rounded" required>
+        <div>
+            <label class="block font-semibold mb-1">Nama Organisasi</label>
+            <input type="text" name="nama_organisasi" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
         </div>
 
-        <!-- Dropdown untuk memilih id_kegiatan -->
-        <div class="mb-4">
-            <label class="block font-semibold">Kegiatan</label>
-            <select name="id_kegiatan" class="w-full border p-2 rounded" required>
-                @foreach ($kegiatans as $kegiatan)
-                    <option value="{{ $kegiatan->id }}">{{ $kegiatan->nama_kegiatan }}</option>
-                @endforeach
+        <div>
+            <label class="block font-semibold mb-1">Absensi</label>
+            <select name="absensi" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
+                <option value="HADIR">Hadir</option>
+                <option value="TIDAK">Tidak Hadir</option>
             </select>
         </div>
 
-        <div class="flex justify-between">
-            <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Simpan</button>
-            <a href="{{ route('organisasi.index') }}" class="text-blue-500 hover:underline">← Kembali</a>
+        <div class="pt-4">
+            <button type="submit" class="bg-yellow-500 text-white font-semibold px-5 py-2 rounded hover:bg-yellow-600 transition">
+                Simpan
+            </button>
         </div>
     </form>
 </div>
