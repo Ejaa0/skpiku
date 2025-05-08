@@ -7,19 +7,20 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('kegiatans', function (Blueprint $table) {
+        Schema::create('organisasi', function (Blueprint $table) {
             $table->id();
             $table->string('nim');
-            $table->string('nama');
-            $table->date('tanggal_kegiatan');
-            $table->string('nama_kegiatan');
-            $table->text('deskripsi')->nullable();
+            $table->unsignedBigInteger('id_kegiatan');
+            $table->string('nama_organisasi');
+            $table->string('absensi');
             $table->timestamps();
+
+            $table->foreign('id_kegiatan')->references('id')->on('kegiatans')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('kegiatans');
+        Schema::dropIfExists('organisasi');
     }
 };

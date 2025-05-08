@@ -12,6 +12,3 @@ Route::get('/', function () {
 Route::resource('mahasiswa', MahasiswaController::class);
 Route::resource('kegiatan', KegiatanController::class);
 Route::resource('organisasi', OrganisasiController::class);
-
-
-

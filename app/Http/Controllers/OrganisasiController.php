@@ -7,57 +7,38 @@ use Illuminate\Http\Request;
 
 class OrganisasiController extends Controller
 {
+    // Menampilkan daftar organisasi
     public function index()
     {
+        // Mengambil semua data organisasi dari database
         $organisasi = Organisasi::all();
+
+        // Mengembalikan ke view 'organisasi.index' dengan data organisasi
         return view('organisasi.index', compact('organisasi'));
     }
 
-    public function create()
-    {
-        return view('organisasi.create');
-    }
-
+    // Menangani form input dan menyimpan data ke database
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nim' => 'required|string',
-            'id_kegiatan' => 'required|integer',
-            'nama_kegiatan' => 'required|string',
-            'absensi' => 'required|string',
+        // Validasi input
+        $request->validate([
+            'nim' => 'required|string|max:20',
+            'nama' => 'required|string|max:255',
+            'id_kegiatan' => 'required|exists:kegiatans,id', // Pastikan id_kegiatan ada di tabel kegiatans
+            'nama_organisasi' => 'required|string|max:255',
+            'absensi' => 'required|in:HADIR,TIDAK', // Absensi hanya bisa Hadir atau Tidak Hadir
         ]);
 
-        Organisasi::create($validated);
-
-        return redirect()->route('organisasi.index');
-    }
-
-    public function edit($id)
-    {
-        $organisasi = Organisasi::findOrFail($id);
-        return view('organisasi.edit', compact('organisasi'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'nim' => 'required|string',
-            'id_kegiatan' => 'required|integer',
-            'nama_kegiatan' => 'required|string',
-            'absensi' => 'required|string',
+        // Menyimpan data ke dalam tabel organisasi
+        Organisasi::create([
+            'nim' => $request->nim,
+            'nama' => $request->nama,
+            'id_kegiatan' => $request->id_kegiatan,
+            'nama_organisasi' => $request->nama_organisasi,
+            'absensi' => $request->absensi,
         ]);
 
-        $organisasi = Organisasi::findOrFail($id);
-        $organisasi->update($validated);
-
-        return redirect()->route('organisasi.index');
-    }
-
-    public function destroy($id)
-    {
-        $organisasi = Organisasi::findOrFail($id);
-        $organisasi->delete();
-
-        return redirect()->route('organisasi.index');
+        // Redirect ke halaman index organisasi atau halaman lain setelah berhasil
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil ditambahkan!');
     }
 }
