@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organisasi;
-use App\Models\Kegiatan;
 use Illuminate\Http\Request;
 
 class OrganisasiController extends Controller
@@ -18,9 +17,7 @@ class OrganisasiController extends Controller
     // Menampilkan form tambah organisasi
     public function create()
     {
-        // Ambil semua kegiatan untuk dipilih pada dropdown
-        $kegiatans = Kegiatan::all();
-        return view('organisasi.create', compact('kegiatans'));
+        return view('organisasi.create');
     }
 
     // Menyimpan data organisasi baru
@@ -30,9 +27,9 @@ class OrganisasiController extends Controller
         $validated = $request->validate([
             'nim' => 'required|string',
             'nama' => 'required|string',
+            'kegiatan' => 'required|string|max:255',
             'nama_organisasi' => 'required|string',
             'absensi' => 'required|string',
-            'id_kegiatan' => 'required|exists:kegiatans,id', // Pastikan id_kegiatan ada di tabel kegiatans
         ]);
 
         // Simpan data organisasi
@@ -44,8 +41,7 @@ class OrganisasiController extends Controller
     // Menampilkan form edit organisasi
     public function edit(Organisasi $organisasi)
     {
-        $kegiatans = Kegiatan::all();
-        return view('organisasi.edit', compact('organisasi', 'kegiatans'));
+        return view('organisasi.edit', compact('organisasi'));
     }
 
     // Mengupdate data organisasi
@@ -54,9 +50,9 @@ class OrganisasiController extends Controller
         $validated = $request->validate([
             'nim' => 'required|string',
             'nama' => 'required|string',
+            'kegiatan' => 'required|string|max:255',
             'nama_organisasi' => 'required|string',
             'absensi' => 'required|string',
-            'id_kegiatan' => 'required|exists:kegiatans,id',
         ]);
 
         $organisasi->update($validated);
