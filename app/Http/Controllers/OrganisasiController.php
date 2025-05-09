@@ -17,7 +17,7 @@ class OrganisasiController extends Controller
     // Menampilkan form tambah organisasi
     public function create()
     {
-        return view('organisasi.create');
+        return view('organisasi.create'); // tidak kirim $kegiatans
     }
 
     // Menyimpan data organisasi baru
@@ -41,7 +41,7 @@ class OrganisasiController extends Controller
     // Menampilkan form edit organisasi
     public function edit(Organisasi $organisasi)
     {
-        return view('organisasi.edit', compact('organisasi'));
+        return view('organisasi.edit', compact('organisasi')); // tidak kirim $kegiatans
     }
 
     // Mengupdate data organisasi

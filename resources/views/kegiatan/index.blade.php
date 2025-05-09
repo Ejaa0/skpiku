@@ -2,52 +2,57 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto mt-10 px-6">
-    <div class="bg-white p-6 rounded-lg shadow-lg transition-all duration-300">
-        <h2 class="text-3xl font-extrabold text-yellow-600 mb-6 border-b pb-2">📅 Daftar Kegiatan</h2>
+    <div class="bg-white p-6 rounded-lg shadow-2xl transition-all duration-500">
+        <h2 class="text-4xl font-extrabold text-yellow-600 mb-6 border-b pb-2 flex items-center gap-3 animate__animated animate__fadeIn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Daftar Kegiatan
+        </h2>
 
         @if(session('success'))
-            <div class="bg-green-100 text-green-800 border border-green-300 px-4 py-3 rounded mb-4 animate-fade-in">
+            <div class="bg-green-100 text-green-800 border border-green-300 px-4 py-3 rounded mb-4 animate__animated animate__fadeIn">
                 {{ session('success') }}
             </div>
         @endif
 
         <div class="flex justify-end mb-4">
-            <a href="{{ route('kegiatan.create') }}" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-5 py-2 rounded shadow transition-transform transform hover:scale-105">
+            <a href="{{ route('kegiatan.create') }}" class="inline-block bg-gradient-to-r from-yellow-500 to-yellow-400 text-white font-semibold px-5 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
                 + Tambah Kegiatan
             </a>
         </div>
 
-        <div class="overflow-x-auto rounded">
-            <table class="min-w-full table-auto border border-gray-300 bg-white">
-                <thead class="bg-gray-100 text-gray-700 text-sm uppercase tracking-wider">
-                    <tr>
-                        <th class="px-4 py-3 border">No</th>
-                        <th class="px-4 py-3 border">Nama Kegiatan</th>
-                        <th class="px-4 py-3 border">Tanggal</th>
-                        <th class="px-4 py-3 border text-center">Aksi</th>
+        <div class="overflow-x-auto rounded-lg shadow-lg">
+            <table class="min-w-full table-auto border-separate border-spacing-0">
+                <thead class="bg-yellow-50 text-yellow-700 text-sm uppercase tracking-wider">
+                    <tr class="text-left">
+                        <th class="px-4 py-3 border-b font-semibold">No</th>
+                        <th class="px-4 py-3 border-b font-semibold">Nama Kegiatan</th>
+                        <th class="px-4 py-3 border-b font-semibold">Tanggal</th>
+                        <th class="px-4 py-3 border-b text-center font-semibold">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="text-sm text-gray-800">
+                <tbody class="text-sm text-gray-700">
                     @foreach($kegiatan as $item)
-                        <tr class="hover:bg-yellow-50 transition-all duration-200">
-                            <td class="border px-4 py-3 text-center">{{ $loop->iteration }}</td>
-                            <td class="border px-4 py-3">{{ $item->nama_kegiatan }}</td>
-                            <td class="border px-4 py-3">{{ \Carbon\Carbon::parse($item->tanggal_kegiatan)->translatedFormat('d F Y') }}</td>
-                            <td class="border px-4 py-3 text-center space-x-3">
-                                <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:underline font-medium">Lihat</a>
-                                <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-600 hover:underline font-medium">Edit</a>
+                        <tr class="hover:bg-yellow-50 transition-all duration-300">
+                            <td class="border-b px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                            <td class="border-b px-4 py-3">{{ $item->nama_kegiatan }}</td>
+                            <td class="border-b px-4 py-3">{{ \Carbon\Carbon::parse($item->tanggal_kegiatan)->translatedFormat('d F Y') }}</td>
+                            <td class="border-b px-4 py-3 text-center space-x-3">
+                                <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:text-green-700 transition duration-200">Lihat</a>
+                                <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-600 hover:text-blue-700 transition duration-200">Edit</a>
                                 <form action="{{ route('kegiatan.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:underline font-medium">Hapus</button>
+                                    <button type="submit" class="text-red-600 hover:text-red-700 transition duration-200">Hapus</button>
                                 </form>
                             </td>
                         </tr>
                     @endforeach
 
                     @if($kegiatan->isEmpty())
-                        <tr>
-                            <td colspan="4" class="text-center text-gray-500 py-6">Belum ada kegiatan yang tercatat.</td>
+                        <tr class="text-center">
+                            <td colspan="4" class="text-gray-500 py-6">Belum ada kegiatan yang tercatat.</td>
                         </tr>
                     @endif
                 </tbody>
