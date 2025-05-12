@@ -1,72 +1,65 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto mt-10 px-4">
-    <div class="bg-white shadow-xl rounded-xl p-8">
-        <h2 class="text-4xl font-bold text-primary mb-8 border-b pb-4">📋 Daftar Organisasi</h2>
+<div class="max-w-6xl mx-auto mt-10 px-6">
+    <div class="bg-white p-6 rounded-lg shadow-xl">
+        <h2 class="text-4xl font-extrabold text-blue-600 mb-6 border-b pb-2">Daftar Organisasi</h2>
 
-        @if (session('success'))
-            <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg mb-6 shadow">
+        @if(session('success'))
+            <div class="bg-green-100 text-green-800 border border-green-300 px-4 py-3 rounded mb-4">
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Tombol Tambah Organisasi (di kiri) -->
-        <div class="mb-6">
-            <a href="{{ route('organisasi.create') }}"
-                class="inline-block bg-blue-600 hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow">
-                ➕ Tambah Organisasi
-            </a>
-        </div>
+        <a href="{{ route('organisasi.create') }}" class="inline-block bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg mb-4">
+            + Tambah Organisasi
+        </a>
 
-        <!-- Tabel -->
-        <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
-            <table class="min-w-full bg-white text-sm text-gray-700">
-                {{-- Header tabel disesuaikan dengan warna sidebar --}}
-                <thead class="bg-blue-600 text-white uppercase text-xs tracking-wider">
+        <div class="overflow-x-auto rounded-lg shadow-lg mt-6">
+            <table class="min-w-full table-auto border-separate border-spacing-0">
+                <thead class="bg-blue-600 text-white text-sm uppercase">
                     <tr>
-                        <th class="px-6 py-3 text-left">NIM</th>
-                        <th class="px-6 py-3 text-left">Nama</th>
-                        <th class="px-6 py-3 text-left">Organisasi</th>
-                        <th class="px-6 py-3 text-left">Absensi</th>
-                        <th class="px-6 py-3 text-left">Kegiatan</th>
-                        <th class="px-6 py-3 text-center">Aksi</th>
+                        <th class="px-4 py-3 border-b">No</th>
+                        <th class="px-4 py-3 border-b">NIM</th>
+                        <th class="px-4 py-3 border-b">Nama</th>
+                        <th class="px-4 py-3 border-b">ID Organisasi</th>
+                        <th class="px-4 py-3 border-b">Nama Organisasi</th>
+                        <th class="px-4 py-3 border-b">Absensi</th>
+                        <th class="px-4 py-3 border-b text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($organisasis as $organisasi)
-                        <tr class="hover:bg-gray-50 border-b">
-                            <td class="px-6 py-4">{{ $organisasi->nim }}</td>
-                            <td class="px-6 py-4">{{ $organisasi->nama }}</td>
-                            <td class="px-6 py-4">{{ $organisasi->nama_organisasi }}</td>
-                            <td class="px-6 py-4">{{ $organisasi->absensi }}</td>
-                            <td class="px-6 py-4">{{ $organisasi->kegiatan->nama_kegiatan }}</td>
-                            <td class="px-6 py-4 text-center space-x-2">
-                                <a href="{{ route('organisasi.edit', $organisasi->id) }}"
-                                    class="text-blue-600 hover:text-blue-800 font-semibold transition duration-200"
-                                    title="Edit">
-                                    ✏️ Edit
-                                </a>
-                                <form action="{{ route('organisasi.destroy', $organisasi->id) }}" method="POST"
-                                    class="inline-block"
-                                    onsubmit="return confirm('Yakin ingin menghapus organisasi ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="text-red-600 hover:text-red-800 font-semibold transition duration-200"
-                                        title="Hapus">
-                                        🗑️ Hapus
-                                    </button>
-                                </form>
+                <tbody class="text-sm text-gray-800 bg-white">
+                    @foreach($organisasi as $item)
+                        <tr>
+                            <td class="border-b px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                            <td class="border-b px-4 py-3">{{ $item->nim }}</td>
+                            <td class="border-b px-4 py-3">{{ $item->nama }}</td>
+                            <td class="border-b px-4 py-3">{{ $item->id_organisasi }}</td>
+                            <td class="border-b px-4 py-3">{{ $item->nama_organisasi }}</td>
+                            <td class="border-b px-4 py-3">{{ $item->absensi }}</td>
+                            <td class="border-b px-4 py-3 text-center">
+                                <div class="space-x-3">
+                                    <a href="{{ route('organisasi.show', $item->id) }}" class="inline-block text-green-600 hover:text-green-800">
+                                        👁️ Show
+                                    </a>
+                                    <a href="{{ route('organisasi.edit', $item->id) }}" class="inline-block text-blue-600 hover:text-blue-800">
+                                        ✏️ Edit
+                                    </a>
+                                    <form action="{{ route('organisasi.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus organisasi ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800">
+                                            🗑️ Delete
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
 
-                    @if ($organisasis->isEmpty())
-                        <tr>
-                            <td colspan="6" class="text-center text-gray-400 py-8">
-                                Belum ada data organisasi yang terdaftar.
-                            </td>
+                    @if($organisasi->isEmpty())
+                        <tr class="text-center">
+                            <td colspan="7" class="text-gray-500 py-6">Belum ada organisasi yang tercatat.</td>
                         </tr>
                     @endif
                 </tbody>

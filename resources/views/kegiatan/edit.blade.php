@@ -9,6 +9,26 @@
         @method('PUT')
 
         <div class="mb-4">
+            <label class="block font-semibold">NIM</label>
+            <input type="text" name="nim" value="{{ $kegiatan->nim }}" class="w-full border p-2 rounded" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold">Nama</label>
+            <input type="text" name="nama" value="{{ $kegiatan->nama }}" class="w-full border p-2 rounded" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold">ID Kegiatan</label>
+            <input type="text" name="id_kegiatan" value="{{ $kegiatan->id_kegiatan }}" class="w-full border p-2 rounded" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold">Jenis Kegiatan</label>
+            <input type="text" name="jenis_kegiatan" value="{{ $kegiatan->jenis_kegiatan }}" class="w-full border p-2 rounded" required>
+        </div>
+
+        <div class="mb-4">
             <label class="block font-semibold">Nama Kegiatan</label>
             <input type="text" name="nama_kegiatan" value="{{ $kegiatan->nama_kegiatan }}" class="w-full border p-2 rounded" required>
         </div>
@@ -16,6 +36,11 @@
         <div class="mb-4">
             <label class="block font-semibold">Tanggal Kegiatan</label>
             <input type="date" name="tanggal_kegiatan" value="{{ $kegiatan->tanggal_kegiatan }}" class="w-full border p-2 rounded" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block font-semibold">Absensi</label>
+            <input type="text" name="absensi" value="{{ $kegiatan->absensi }}" class="w-full border p-2 rounded" required>
         </div>
 
         <div class="flex justify-between">

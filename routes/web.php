@@ -24,6 +24,12 @@ Route::post('/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.s
 Route::get('/kegiatan/{id}', [KegiatanController::class, 'show'])->name('kegiatan.show');
 Route::get('/kegiatan/{id}/edit', [KegiatanController::class, 'edit'])->name('kegiatan.edit');
 Route::put('/kegiatan/{id}', [KegiatanController::class, 'update'])->name('kegiatan.update');
+
+
+Route::resource('kegiatan', KegiatanController::class);
+Route::resource('organisasi', OrganisasiController::class);
+
+
 Route::delete('/kegiatan/{id}', [KegiatanController::class, 'destroy'])->name('kegiatan.destroy');
 
 Route::middleware(['auth', 'role:admin,organisasi'])->group(function () {

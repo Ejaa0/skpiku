@@ -10,61 +10,86 @@ class OrganisasiController extends Controller
     // Menampilkan daftar organisasi
     public function index()
     {
-        $organisasis = Organisasi::all();
-        return view('organisasi.index', compact('organisasis'));
+        // Mengambil semua data organisasi dari database
+        $organisasi = Organisasi::all(); // atau bisa menggunakan pagination seperti Organisasi::paginate(10);
+
+        // Mengirimkan data ke view
+        return view('organisasi.index', compact('organisasi'));
     }
 
-    // Menampilkan form tambah organisasi
+    // Menampilkan form untuk membuat organisasi baru
     public function create()
     {
-        return view('organisasi.create'); // tidak kirim $kegiatans
+        // Hanya menampilkan form tambah organisasi, tidak perlu mengirimkan data
+        return view('organisasi.create');
     }
 
-    // Menyimpan data organisasi baru
+    // Menyimpan organisasi baru ke dalam database
     public function store(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'nim' => 'required|string',
-            'nama' => 'required|string',
-            'kegiatan' => 'required|string|max:255',
-            'nama_organisasi' => 'required|string',
-            'absensi' => 'required|string',
+        // Validasi data yang diterima
+        $validatedData = $request->validate([
+            'nim' => 'required',
+            'nama' => 'required',
+            'id_organisasi' => 'required',
+            'nama_organisasi' => 'required',
+            'absensi' => 'required'
         ]);
 
-        // Simpan data organisasi
-        Organisasi::create($validated);
+        // Menyimpan data ke database
+        Organisasi::create($validatedData);
 
-        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil ditambahkan!');
+        // Redirect ke halaman daftar organisasi dengan pesan sukses
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil ditambahkan.');
     }
 
-    // Menampilkan form edit organisasi
-    public function edit(Organisasi $organisasi)
+    // Menampilkan form untuk mengedit organisasi
+    public function edit($id)
     {
-        return view('organisasi.edit', compact('organisasi')); // tidak kirim $kegiatans
+        // Mencari organisasi berdasarkan ID
+        $organisasi = Organisasi::findOrFail($id);
+
+        return view('organisasi.edit', compact('organisasi'));
     }
 
-    // Mengupdate data organisasi
-    public function update(Request $request, Organisasi $organisasi)
+    // Memperbarui data organisasi di database
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'nim' => 'required|string',
-            'nama' => 'required|string',
-            'kegiatan' => 'required|string|max:255',
-            'nama_organisasi' => 'required|string',
-            'absensi' => 'required|string',
+        // Validasi data yang diterima
+        $validatedData = $request->validate([
+            'nim' => 'required',
+            'nama' => 'required',
+            'id_organisasi' => 'required',
+            'nama_organisasi' => 'required',
+            'absensi' => 'required'
         ]);
 
-        $organisasi->update($validated);
+        // Mencari organisasi berdasarkan ID dan memperbarui data
+        $organisasi = Organisasi::findOrFail($id);
+        $organisasi->update($validatedData);
 
-        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil diperbarui!');
+        // Redirect ke halaman daftar organisasi dengan pesan sukses
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil diperbarui.');
     }
 
-    // Menghapus data organisasi
-    public function destroy(Organisasi $organisasi)
+    // Menghapus organisasi
+    public function destroy($id)
     {
+        // Mencari organisasi berdasarkan ID dan menghapusnya
+        $organisasi = Organisasi::findOrFail($id);
         $organisasi->delete();
 
-        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil dihapus!');
+        // Redirect ke halaman daftar organisasi dengan pesan sukses
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil dihapus.');
+    }
+
+    // Menampilkan detail organisasi (opsional, jika dibutuhkan)
+    public function show($id)
+    {
+        // Mencari organisasi berdasarkan ID
+        $organisasi = Organisasi::findOrFail($id);
+
+        // Menampilkan detail organisasi
+        return view('organisasi.show', compact('organisasi'));
     }
 }

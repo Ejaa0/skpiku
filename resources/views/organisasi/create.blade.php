@@ -1,45 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-2xl mx-auto mt-10">
-    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
-        <h2 class="text-2xl font-bold text-blue-600 mb-6">📝 Tambah Organisasi</h2>
+<div class="max-w-4xl mx-auto mt-10 px-6">
+    <div class="bg-white p-6 rounded-lg shadow-xl">
+        <h2 class="text-2xl font-bold mb-4">Tambah Organisasi</h2>
 
-        <form action="{{ route('organisasi.store') }}" method="POST" class="space-y-5">
+        <form action="{{ route('organisasi.store') }}" method="POST">
             @csrf
-
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">NIM</label>
-                <input type="text" name="nim" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+            <div class="mb-4">
+                <label for="nim" class="block text-sm font-semibold text-gray-700">NIM</label>
+                <input type="text" id="nim" name="nim" class="w-full p-3 border border-gray-300 rounded-md" required>
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Nama</label>
-                <input type="text" name="nama" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+            <div class="mb-4">
+                <label for="nama" class="block text-sm font-semibold text-gray-700">Nama</label>
+                <input type="text" id="nama" name="nama" class="w-full p-3 border border-gray-300 rounded-md" required>
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Kegiatan</label>
-                <input type="text" name="kegiatan" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+            <div class="mb-4">
+                <label for="id_organisasi" class="block text-sm font-semibold text-gray-700">ID Organisasi</label>
+                <input type="text" id="id_organisasi" name="id_organisasi" class="w-full p-3 border border-gray-300 rounded-md" required>
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Nama Organisasi</label>
-                <input type="text" name="nama_organisasi" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+            <div class="mb-4">
+                <label for="nama_organisasi" class="block text-sm font-semibold text-gray-700">Nama Organisasi</label>
+                <input type="text" id="nama_organisasi" name="nama_organisasi" class="w-full p-3 border border-gray-300 rounded-md" required>
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Absensi</label>
-                <select name="absensi" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                    <option value="">-- Pilih Absensi --</option>
-                    <option value="HADIR">HADIR</option>
-                    <option value="TIDAK HADIR">TIDAK HADIR</option>
-                </select>
+            <div class="mb-4">
+                <label for="absensi" class="block text-sm font-semibold text-gray-700">Absensi</label>
+                <input type="text" id="absensi" name="absensi" class="w-full p-3 border border-gray-300 rounded-md" required>
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition duration-200">
-                ✅ Simpan
-            </button>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg">Simpan</button>
+            </div>
         </form>
     </div>
 </div>

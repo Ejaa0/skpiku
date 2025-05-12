@@ -1,46 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-2xl mx-auto mt-10">
-    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
-        <h2 class="text-2xl font-bold text-yellow-500 mb-6">✏️ Edit Organisasi</h2>
+<div class="max-w-6xl mx-auto mt-10 px-6">
+    <div class="bg-white p-6 rounded-lg shadow-xl">
+        <h2 class="text-4xl font-bold mb-6">Edit Organisasi</h2>
 
-        <form action="{{ route('organisasi.update', $organisasi->id) }}" method="POST" class="space-y-5">
+        <form action="{{ route('organisasi.update', $organisasi->id) }}" method="POST">
             @csrf
             @method('PUT')
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">NIM</label>
-                <input type="text" name="nim" value="{{ old('nim', $organisasi->nim) }}" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-yellow-500 focus:border-yellow-500" required>
+            <div class="mb-4">
+                <label for="nim" class="block text-sm font-semibold">NIM</label>
+                <input type="text" name="nim" value="{{ $organisasi->nim }}" class="w-full p-2 border rounded">
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Nama</label>
-                <input type="text" name="nama" value="{{ old('nama', $organisasi->nama) }}" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-yellow-500 focus:border-yellow-500" required>
+            <div class="mb-4">
+                <label for="nama" class="block text-sm font-semibold">Nama</label>
+                <input type="text" name="nama" value="{{ $organisasi->nama }}" class="w-full p-2 border rounded">
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Kegiatan</label>
-                <input type="text" name="kegiatan" value="{{ old('kegiatan', $organisasi->kegiatan) }}" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-yellow-500 focus:border-yellow-500" required>
+            <div class="mb-4">
+                <label for="id_organisasi" class="block text-sm font-semibold">ID Organisasi</label>
+                <input type="text" name="id_organisasi" value="{{ $organisasi->id_organisasi }}" class="w-full p-2 border rounded">
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Nama Organisasi</label>
-                <input type="text" name="nama_organisasi" value="{{ old('nama_organisasi', $organisasi->nama_organisasi) }}" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-yellow-500 focus:border-yellow-500" required>
+            <div class="mb-4">
+                <label for="nama_organisasi" class="block text-sm font-semibold">Nama Organisasi</label>
+                <input type="text" name="nama_organisasi" value="{{ $organisasi->nama_organisasi }}" class="w-full p-2 border rounded">
             </div>
 
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Absensi</label>
-                <select name="absensi" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-yellow-500 focus:border-yellow-500" required>
-                    <option value="">-- Pilih Absensi --</option>
-                    <option value="HADIR" {{ $organisasi->absensi == 'HADIR' ? 'selected' : '' }}>HADIR</option>
-                    <option value="TIDAK HADIR" {{ $organisasi->absensi == 'TIDAK HADIR' ? 'selected' : '' }}>TIDAK HADIR</option>
-                </select>
+            <div class="mb-4">
+                <label for="absensi" class="block text-sm font-semibold">Absensi</label>
+                <input type="text" name="absensi" value="{{ $organisasi->absensi }}" class="w-full p-2 border rounded">
             </div>
 
-            <button type="submit" class="w-full bg-yellow-500 text-white py-2 px-4 rounded-xl hover:bg-yellow-600 transition duration-200">
-                💾 Update
-            </button>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Update</button>
         </form>
     </div>
 </div>
