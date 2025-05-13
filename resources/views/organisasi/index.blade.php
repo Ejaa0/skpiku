@@ -39,18 +39,12 @@
                             <td class="border-b px-4 py-3">{{ $item->absensi }}</td>
                             <td class="border-b px-4 py-3 text-center">
                                 <div class="space-x-3">
-                                    <a href="{{ route('organisasi.show', $item->id) }}" class="inline-block text-green-600 hover:text-green-800">
-                                        👁️ Show
-                                    </a>
-                                    <a href="{{ route('organisasi.edit', $item->id) }}" class="inline-block text-blue-600 hover:text-blue-800">
-                                        ✏️ Edit
-                                    </a>
+                                    <a href="{{ route('organisasi.show', $item->id) }}" class="inline-block text-green-600 hover:text-green-800">👁️ Show</a>
+                                    <a href="{{ route('organisasi.edit', $item->id) }}" class="inline-block text-blue-600 hover:text-blue-800">✏️ Edit</a>
                                     <form action="{{ route('organisasi.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus organisasi ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800">
-                                            🗑️ Delete
-                                        </button>
+                                        <button type="submit" class="text-red-600 hover:text-red-800">🗑️ Delete</button>
                                     </form>
                                 </div>
                             </td>

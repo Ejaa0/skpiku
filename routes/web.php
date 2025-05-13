@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;
+use App\Http\Controllers\PoinMahasiswaController;
 
 Route::get('/', function () {
     return redirect()->route('mahasiswa.index');
@@ -28,10 +29,9 @@ Route::put('/kegiatan/{id}', [KegiatanController::class, 'update'])->name('kegia
 
 Route::resource('kegiatan', KegiatanController::class);
 Route::resource('organisasi', OrganisasiController::class);
+Route::resource('poin', PoinMahasiswaController::class);
 
 
 Route::delete('/kegiatan/{id}', [KegiatanController::class, 'destroy'])->name('kegiatan.destroy');
 
-Route::middleware(['auth', 'role:admin,organisasi'])->group(function () {
-    Route::resource('poin', \App\Http\Controllers\PoinController::class);
-});
+Route::middleware(['auth', 'role:admin,organisasi'])->group(function () {});

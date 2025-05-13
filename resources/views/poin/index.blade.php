@@ -1,51 +1,75 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-5xl mx-auto bg-white p-6 rounded shadow mt-8">
-    <h2 class="text-2xl font-bold mb-4">Daftar Poin Mahasiswa</h2>
+    <div class="max-w-7xl mx-auto mt-8 px-6">
+        <h1 class="text-3xl font-extrabold text-blue-600 mb-6">Daftar Poin Mahasiswa</h1>
 
-    @if (session('success'))
-        <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
-            {{ session('success') }}
+        <!-- Tombol Tambah di sebelah kiri -->
+        <div class="text-left mb-6">
+            <a href="{{ route('poin.create') }}" class="inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700">
+                + Tambah Poin Mahasiswa
+            </a>
         </div>
-    @endif
 
-    {{-- Tombol Tambah Poin Mahasiswa --}}
-    <div class="mb-4">
-        <a href="{{ route('poin.create') }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-            + Tambah Poin Mahasiswa
-        </a>
+        @if(session('success'))
+            <div class="mb-6 p-4 bg-green-100 text-green-800 rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+            <table class="min-w-full bg-white table-auto border-collapse">
+                <thead class="bg-blue-600 text-white text-sm uppercase">
+                    <tr>
+                        <th class="py-3 px-4 border-b">NIM</th>
+                        <th class="py-3 px-4 border-b">Nama</th>
+                        <th class="py-3 px-4 border-b">Nama Kegiatan</th>
+                        <th class="py-3 px-4 border-b">Jenis Kegiatan</th>
+                        <th class="py-3 px-4 border-b">Tanggal Kegiatan</th>
+                        <th class="py-3 px-4 border-b">Poin</th>
+                        <th class="py-3 px-4 border-b text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-gray-800">
+                    @foreach($poin as $item)
+                        <tr class="hover:bg-gray-100">
+                            <td class="py-3 px-4 border-b">{{ $item->nim }}</td>
+                            <td class="py-3 px-4 border-b">{{ $item->nama }}</td>
+                            <td class="py-3 px-4 border-b">{{ $item->nama_kegiatan }}</td>
+                            <td class="py-3 px-4 border-b">{{ $item->jenis_kegiatan }}</td>
+                            <td class="py-3 px-4 border-b">{{ $item->tanggal_kegiatan }}</td>
+                            <td class="py-3 px-4 border-b">{{ $item->poin }}</td>
+                            <td class="py-3 px-4 border-b text-center">
+                                <div class="flex justify-center space-x-3">
+                                    <!-- Show -->
+                                    <a href="{{ route('poin.show', $item->id) }}" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-eye"></i> Show
+                                    </a>
+                                    
+                                    <!-- Edit -->
+                                    <a href="{{ route('poin.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    
+                                    <!-- Delete -->
+                                    <form action="{{ route('poin.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus poin mahasiswa ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    @if($poin->isEmpty())
+                        <tr>
+                            <td colspan="7" class="text-center text-gray-500 py-6">Belum ada poin mahasiswa yang tercatat.</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <table class="min-w-full table-auto">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="px-4 py-2 border">NIM</th>
-                <th class="px-4 py-2 border">Nama</th>
-                <th class="px-4 py-2 border">Nama Kegiatan</th>
-                <th class="px-4 py-2 border">Jumlah Poin</th>
-                <th class="px-4 py-2 border">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($poinMahasiswa as $poin)
-                <tr>
-                    <td class="px-4 py-2 border">{{ $poin->nim }}</td>
-                    <td class="px-4 py-2 border">{{ $poin->nama }}</td>
-                    <td class="px-4 py-2 border">{{ $poin->nama_kegiatan }}</td>
-                    <td class="px-4 py-2 border">{{ $poin->jumlah_poin }}</td>
-                    <td class="px-4 py-2 border">
-                        <a href="{{ route('poin.show', $poin->id) }}" class="text-blue-500 hover:underline">Detail</a> |
-                        <a href="{{ route('poin.edit', $poin->id) }}" class="text-yellow-500 hover:underline">Edit</a> |
-                        <form action="{{ route('poin.destroy', $poin->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:underline">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
 @endsection

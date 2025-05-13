@@ -1,37 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto bg-white p-6 mt-10 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold mb-6 text-yellow-600 border-b pb-2">📝 Edit Poin Mahasiswa</h2>
+<div class="max-w-2xl mx-auto py-6">
+    <h2 class="text-xl font-semibold mb-4">Edit Poin Mahasiswa</h2>
 
-    <form action="{{ route('poin.update', $poin->id) }}" method="POST" class="space-y-4">
+    <form action="{{ route('poin.update', $data->id) }}" method="POST" class="space-y-4 bg-white p-6 rounded shadow">
         @csrf
         @method('PUT')
-
-        <div>
-            <label class="block font-semibold mb-1">NIM</label>
-            <input type="text" name="nim" value="{{ old('nim', $poin->nim) }}" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
-        </div>
-
-        <div>
-            <label class="block font-semibold mb-1">Nama</label>
-            <input type="text" name="nama" value="{{ old('nama', $poin->nama) }}" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
-        </div>
-
-        <div>
-            <label class="block font-semibold mb-1">Nama Kegiatan</label>
-            <input type="text" name="nama_kegiatan" value="{{ old('nama_kegiatan', $poin->nama_kegiatan) }}" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
-        </div>
-
-        <div>
-            <label class="block font-semibold mb-1">Jumlah Poin</label>
-            <input type="number" name="jumlah_poin" value="{{ old('jumlah_poin', $poin->jumlah_poin) }}" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
-        </div>
-
-        <div class="pt-4">
-            <button type="submit" class="bg-yellow-500 text-white font-semibold px-5 py-2 rounded hover:bg-yellow-600 transition">
-                Simpan
-            </button>
+        @include('poin.form', ['data' => $data])
+        <div class="flex gap-2">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update</button>
+            <a href="{{ route('poin.index') }}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</a>
         </div>
     </form>
 </div>

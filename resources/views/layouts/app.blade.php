@@ -19,7 +19,6 @@
     </script>
 </head>
 
-
 <body class="bg-gray-100 text-gray-800">
     
     <div x-data="{ open: false }" class="flex flex-col lg:flex-row min-h-screen">
@@ -48,6 +47,11 @@
                         class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.index') ? 'bg-blue-800' : '' }}">
                         <span class="text-xl">🏢</span><span class="text-sm">Organisasi</span>
                     </a>
+                    <!-- Menu Poin yang baru ditambahkan -->
+                    <a href="{{ route('poin.index') }}"
+                        class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('poin.index') ? 'bg-blue-800' : '' }}">
+                        <span class="text-xl">🏅</span><span class="text-sm">Poin</span>
+                    </a>
                 </nav>
 
                 <!-- Sidebar Footer -->
@@ -74,29 +78,29 @@
             </header>
 
             <!-- Main Page Content -->
-<main class="p-6 flex-1 bg-gray-50 rounded-lg shadow-inner">
-    <!-- Search Bar (centered) -->
-    <div class="flex justify-center mb-6">
-        <div class="w-full max-w-md">
-            <div class="relative">
-                <input
-                    type="text"
-                    placeholder="Cari mahasiswa, kegiatan, dll..."
-                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1116.65 2.5a7.5 7.5 0 010 15z" />
-                    </svg>
+            <main class="p-6 flex-1 bg-gray-50 rounded-lg shadow-inner">
+                <!-- Search Bar (centered) -->
+                <div class="flex justify-center mb-6">
+                    <div class="w-full max-w-md">
+                        <div class="relative">
+                            <input
+                                type="text"
+                                placeholder="Cari mahasiswa, kegiatan, dll..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1116.65 2.5a7.5 7.5 0 010 15z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    @yield('content')
-</main>
+                @yield('content')
+            </main>
 
             <!-- Footer -->
             <footer class="bg-primary text-white mt-12">
@@ -121,6 +125,8 @@
                                     class="hover:underline hover:text-white">Kegiatan</a></li>
                             <li><a href="{{ route('organisasi.index') }}"
                                     class="hover:underline hover:text-white">Organisasi</a></li>
+                            <li><a href="{{ route('poin.index') }}"
+                                    class="hover:underline hover:text-white">Poin</a></li>
                         </ul>
                     </div>
 

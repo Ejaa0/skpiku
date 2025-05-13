@@ -11,16 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('poin_mahasiswa', function (Blueprint $table) {
+        Schema::create('poin_mahasiswas', function (Blueprint $table) {
             $table->id();
             $table->string('nim');
             $table->string('nama');
             $table->string('nama_kegiatan');
-            $table->integer('beri_poin');
-            $table->integer('jumlah_poin');
+            $table->string('jenis_kegiatan');
+            $table->string('tanggal_kegiatan');
+            $table->string('deskripsi');
+            $table->integer('poin');
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('poin');
+        Schema::dropIfExists('poin_mahasiswas');
     }
 };

@@ -9,15 +9,15 @@ class PoinMahasiswa extends Model
 {
     use HasFactory;
 
-    // Nama tabel (opsional jika nama model dan tabel mengikuti konvensi)
-    protected $table = 'poin_mahasiswa';
+    protected $table = 'poin_mahasiswas';
 
-    // Kolom yang boleh diisi (mass assignable)
     protected $fillable = [
         'nim',
         'nama',
         'nama_kegiatan',
-        'beri_poin',
-        'jumlah_poin',
+        'jenis_kegiatan',
+        'tanggal_kegiatan',
+        'deskripsi',
+        'poin',
     ];
 }
