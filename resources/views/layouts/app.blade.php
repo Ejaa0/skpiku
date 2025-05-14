@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
+      :class="{ 'dark': darkMode }">
 
 <head>
     <meta charset="UTF-8" />
@@ -8,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -20,14 +22,15 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-white text-black transition-all">
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white transition-all">
 
     <div x-data="{ open: false }" class="flex flex-col lg:flex-row min-h-screen">
-        
-        <!-- Tombol Mode -->
+
+        <!-- Tombol Dark Mode -->
         <header class="fixed top-4 right-4 z-50">
-            <button class="text-xl focus:outline-none p-3 rounded-full bg-indigo-500 hover:bg-indigo-700 text-white shadow-lg">
-                <span class="material-icons">light_mode</span>
+            <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
+                    class="text-xl focus:outline-none p-3 rounded-full bg-indigo-500 hover:bg-indigo-700 text-white shadow-lg">
+                <span class="material-icons" x-text="darkMode ? 'dark_mode' : 'light_mode'"></span>
             </button>
         </header>
 
@@ -75,15 +78,16 @@
         </aside>
         @endif
 
-        <!-- Overlay untuk mobile -->
+        <!-- Overlay -->
         <div class="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden" x-show="open" @click="open = false"
             x-transition.opacity></div>
 
-        <!-- Konten utama -->
+        <!-- Konten Utama -->
         <div class="flex-1 flex flex-col min-h-screen">
+            <!-- Topbar -->
             @if (!Request::is('login/*'))
-            <header class="bg-white shadow p-4 flex justify-between items-center lg:hidden">
-                <button @click="open = !open" class="text-blue-700 focus:outline-none">
+            <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center lg:hidden">
+                <button @click="open = !open" class="text-blue-700 dark:text-white focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
@@ -92,8 +96,8 @@
             </header>
             @endif
 
-            <!-- Isi Halaman -->
-            <main class="p-6 flex-1 bg-white rounded-lg shadow-inner">
+            <!-- Main -->
+            <main class="p-6 flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-inner">
                 @yield('content')
             </main>
 
@@ -139,7 +143,7 @@
         </div>
     </div>
 
-    <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs" defer></script>
 </body>
+
 </html>
