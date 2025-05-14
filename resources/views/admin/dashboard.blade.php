@@ -60,10 +60,60 @@
         </div>
     </div>
 
-    <!-- Notifikasi Informasi (Opsional) -->
-    <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-4 rounded shadow-sm">
+    <!-- Slideshow Event UNAI -->
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold mb-4">🔥 Event Terbaru di UNAI</h2>
+
+        <div class="relative w-full overflow-hidden rounded-xl shadow-lg max-h-[500px]">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="{{ asset('images/capping.jpg') }}" alt="Capping Day" class="w-full object-cover h-[500px]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="{{ asset('images/maxresdefault.jpg') }}" alt="UNAI Event" class="w-full object-cover h-[500px]" />
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="{{ asset('images/UPACARA-WISUDA-KE-79.jpg') }}" alt="Wisuda" class="w-full object-cover h-[500px]" />
+                    </div>
+                </div>
+                <!-- Tombol Navigasi -->
+                <div class="swiper-button-next text-white"></div>
+                <div class="swiper-button-prev text-white"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifikasi Informasi -->
+    <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-4 rounded shadow-sm mt-8">
         <p>📢 Info: Pastikan semua data SKPI mahasiswa telah diverifikasi sebelum akhir semester!</p>
     </div>
 
 </div>
 @endsection
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper(".mySwiper", {
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    });
+</script>
+@endpush

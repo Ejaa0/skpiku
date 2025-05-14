@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -16,13 +17,21 @@
             },
         };
     </script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-white text-black transition-all">
 
     <div x-data="{ open: false }" class="flex flex-col lg:flex-row min-h-screen">
+        
+        <!-- Tombol Mode -->
+        <header class="fixed top-4 right-4 z-50">
+            <button class="text-xl focus:outline-none p-3 rounded-full bg-indigo-500 hover:bg-indigo-700 text-white shadow-lg">
+                <span class="material-icons">light_mode</span>
+            </button>
+        </header>
 
-        {{-- ✅ Sidebar: hanya tampil jika bukan halaman login --}}
+        <!-- Sidebar -->
         @if (!Request::is('login/*'))
         <aside :class="open ? 'translate-x-0' : '-translate-x-full'"
             class="fixed z-40 inset-y-0 left-0 w-64 bg-primary text-white transform lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out shadow-xl">
@@ -30,26 +39,30 @@
                 <!-- Logo -->
                 <div class="text-center">
                     <img src="{{ asset('images/Logo-Unai.png') }}" alt="Logo UNAI"
-                        class="mx-auto w-20 h-auto mb-2 drop-shadow-xl">
+                         class="mx-auto w-20 h-auto mb-2 drop-shadow-xl">
                     <h1 class="text-xl font-bold tracking-wide">🎓 SKPI UNAI</h1>
                 </div>
 
                 <!-- Navigation -->
                 <nav class="space-y-2">
+                    <a href="{{ route('admin.dashboard') }}"
+                       class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('admin.dashboard') ? 'bg-blue-800' : '' }}">
+                        <span class="text-xl">🏠</span><span class="text-sm">Dashboard</span>
+                    </a>
                     <a href="{{ route('mahasiswa.index') }}"
-                        class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('mahasiswa.index') ? 'bg-blue-800' : '' }}">
+                       class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('mahasiswa.index') ? 'bg-blue-800' : '' }}">
                         <span class="text-xl">👨‍🎓</span><span class="text-sm">Mahasiswa</span>
                     </a>
                     <a href="{{ route('kegiatan.index') }}"
-                        class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('kegiatan.index') ? 'bg-blue-800' : '' }}">
+                       class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('kegiatan.index') ? 'bg-blue-800' : '' }}">
                         <span class="text-xl">📅</span><span class="text-sm">Kegiatan</span>
                     </a>
                     <a href="{{ route('organisasi.index') }}"
-                        class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.index') ? 'bg-blue-800' : '' }}">
+                       class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.index') ? 'bg-blue-800' : '' }}">
                         <span class="text-xl">🏢</span><span class="text-sm">Organisasi</span>
                     </a>
                     <a href="{{ route('poin.index') }}"
-                        class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('poin.index') ? 'bg-blue-800' : '' }}">
+                       class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('poin.index') ? 'bg-blue-800' : '' }}">
                         <span class="text-xl">🏅</span><span class="text-sm">Poin</span>
                     </a>
                 </nav>
@@ -62,13 +75,12 @@
         </aside>
         @endif
 
-        {{-- Overlay untuk mobile (jika pakai sidebar) --}}
+        <!-- Overlay untuk mobile -->
         <div class="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden" x-show="open" @click="open = false"
             x-transition.opacity></div>
 
-        {{-- Konten utama --}}
+        <!-- Konten utama -->
         <div class="flex-1 flex flex-col min-h-screen">
-            {{-- Topbar mobile --}}
             @if (!Request::is('login/*'))
             <header class="bg-white shadow p-4 flex justify-between items-center lg:hidden">
                 <button @click="open = !open" class="text-blue-700 focus:outline-none">
@@ -80,12 +92,12 @@
             </header>
             @endif
 
-            {{-- Isi Halaman --}}
-            <main class="p-6 flex-1 bg-gray-50 rounded-lg shadow-inner">
+            <!-- Isi Halaman -->
+            <main class="p-6 flex-1 bg-white rounded-lg shadow-inner">
                 @yield('content')
             </main>
 
-            {{-- Footer: hanya muncul jika bukan halaman login --}}
+            <!-- Footer -->
             @if (!Request::is('login/*'))
             <footer class="bg-primary text-white mt-12">
                 <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -127,6 +139,7 @@
         </div>
     </div>
 
+    <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs" defer></script>
 </body>
 </html>
