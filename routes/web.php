@@ -55,20 +55,78 @@ Route::post('/login/organisasi', function (Request $request) {
     }
 })->name('organisasi.login.submit');
 
-// ⬅️ Pastikan dashboard organisasi diarahkan ke file dashboard_organisasi.blade.php
 Route::get('/organisasi/dashboard', function () {
     if (!session('is_org_logged_in')) {
         return redirect()->route('organisasi.login');
     }
-    return view('organisasi.dashboard_organisasi'); // file blade sesuai permintaan
+    return view('organisasi.dashboard_organisasi');
 })->name('organisasi.dashboard');
+
+// ========== LOGIN WAREK ==========
+Route::get('/login/warek', function () {
+    return view('warek.login');
+})->name('warek.login');
+
+Route::post('/login/warek', function (Request $request) {
+    $warekEmail = 'warek@unai.ac.id';
+    $warekPassword = 'warek123';
+
+    if ($request->email === $warekEmail && $request->password === $warekPassword) {
+        session(['is_warek_logged_in' => true]);
+        return redirect()->route('warek.dashboard');
+    } else {
+        return redirect()->route('warek.login')->with('error', 'Email atau password salah.');
+    }
+})->name('warek.login.submit');
+
+Route::get('/warek/dashboard', function () {
+    if (!session('is_warek_logged_in')) {
+        return redirect()->route('warek.login');
+    }
+    return view('warek.dashboard_warek');
+})->name('warek.dashboard');
 
 // ========== LOGOUT ==========
 Route::post('/logout', function () {
     session()->forget('is_admin_logged_in');
     session()->forget('is_org_logged_in');
-    return redirect()->route('admin.login');
+    session()->forget('is_warek_logged_in'); // tambahan untuk warek
+    return redirect()->route('warek.login');
 })->name('logout');
+
+// ========== LOGIN WAREK ==========
+Route::get('/login/warek', function () {
+    return view('warek.login'); // Lokasi: resources/views/warek/login.blade.php
+})->name('warek.login');
+
+Route::post('/login/warek', function (Illuminate\Http\Request $request) {
+    $warekEmail = 'warek@unai.ac.id';
+    $warekPassword = 'warek123';
+
+    if ($request->email === $warekEmail && $request->password === $warekPassword) {
+        session(['is_warek_logged_in' => true]);
+        return redirect()->route('warek.dashboard');
+    } else {
+        return redirect()->route('warek.login')->with('error', 'Email atau password salah.');
+    }
+})->name('warek.login.submit');
+
+// ========== DASHBOARD WAREK ==========
+Route::get('/warek/dashboard', function () {
+    if (!session('is_warek_logged_in')) {
+        return redirect()->route('warek.login');
+    }
+    return view('warek.dashboard_warek'); // Lokasi: resources/views/warek/dashboard_warek.blade.php
+})->name('warek.dashboard');
+
+Route::post('/logout', function () {
+    session()->forget('is_admin_logged_in');
+    session()->forget('is_org_logged_in');
+    session()->forget('is_warek_logged_in'); // ← tambahan ini penting
+    return redirect('/'); // atau redirect()->route('warek.login');
+})->name('logout');
+
+
 
 // ========== RESOURCE CRUD ==========
 Route::resource('mahasiswa', MahasiswaController::class);
