@@ -1,41 +1,80 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full max-w-md mx-auto bg-white p-8 rounded-xl shadow-md">
-    <div class="text-center mb-6">
-        <div class="text-5xl mb-2">🛠️</div>
-        <h2 class="text-2xl font-bold text-gray-800">Login Admin</h2>
-        <p class="text-sm text-gray-500">Masuk untuk mengelola sistem SKPI</p>
-    </div>
-
-    <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6">
-        @csrf
-
-        <!-- Username -->
-        <div>
-            <label for="username" class="block mb-1 text-sm font-medium text-gray-700">Username</label>
-            <input type="text" name="username" id="username" required
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+<div class="min-h-screen flex items-center justify-center bg-white px-4">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 space-y-6">
+        <div class="text-center">
+            <div class="inline-block text-6xl mb-4">🛠️🔐</div>
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Login Admin</h2>
+            <p class="text-gray-600 font-medium">Masuk untuk mengelola sistem SKPI</p>
         </div>
 
-        <!-- Password -->
-        <div>
-            <label for="password" class="block mb-1 text-sm font-medium text-gray-700">Password</label>
-            <input type="password" name="password" id="password" required
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+        {{-- Notifikasi error --}}
+        @if(session('error'))
+            <div
+                x-data="{ show: true }"
+                x-show="show"
+                x-init="setTimeout(() => show = false, 5000)"
+                class="relative p-4 text-sm text-red-700 bg-red-100 rounded-lg border border-red-400"
+                role="alert"
+            >
+                {{ session('error') }}
 
-        <!-- Tombol Submit -->
-        <div>
-            <button type="submit"
-                    class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition shadow-md">
-                Masuk
-            </button>
-        </div>
-    </form>
+                <button
+                    @click="show = false"
+                    class="absolute top-2 right-2 text-red-700 hover:text-red-900 focus:outline-none"
+                    aria-label="Close"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        @endif
 
-    <div class="text-center mt-6">
-        <a href="/" class="text-sm text-blue-500 hover:underline">← Kembali ke Dashboard Utama</a>
+        <form method="POST" action="{{ route('admin.login.submit') }}" class="space-y-6">
+            @csrf
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block mb-2 text-sm font-semibold text-gray-700">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    required
+                    placeholder="admin@example.com"
+                    class="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-400 transition"
+                >
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label for="password" class="block mb-2 text-sm font-semibold text-gray-700">Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    required
+                    placeholder="••••••••"
+                    class="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-400 transition"
+                >
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button
+                    type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-extrabold py-3 rounded-xl shadow-lg transition duration-300"
+                >
+                    Masuk
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <a href="/" class="text-sm font-medium text-indigo-600 hover:underline">← Kembali ke Dashboard Utama</a>
+        </div>
     </div>
 </div>
 @endsection

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
-      :class="{ 'dark': darkMode }">
+<html lang="id" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', open: false }" :class="{ 'dark': darkMode }">
 
 <head>
     <meta charset="UTF-8" />
@@ -24,15 +23,7 @@
 
 <body class="bg-white text-black dark:bg-gray-900 dark:text-white transition-all">
 
-    <div x-data="{ open: false }" class="flex flex-col lg:flex-row min-h-screen">
-
-        <!-- Tombol Dark Mode -->
-        <header class="fixed top-4 right-4 z-50">
-            <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
-                    class="text-xl focus:outline-none p-3 rounded-full bg-indigo-500 hover:bg-indigo-700 text-white shadow-lg">
-                <span class="material-icons" x-text="darkMode ? 'dark_mode' : 'light_mode'"></span>
-            </button>
-        </header>
+    <div class="flex flex-col lg:flex-row min-h-screen">
 
         <!-- Sidebar -->
         @if (!Request::is('login/*'))
@@ -71,7 +62,7 @@
                 </nav>
 
                 <!-- Footer Sidebar -->
-                <div class="text-xs text-center text-blue-200 mt-auto">
+                <div class="mt-auto text-xs text-center text-blue-200">
                     &copy; {{ now()->year }} Universitas Advent Indonesia
                 </div>
             </div>
@@ -84,15 +75,33 @@
 
         <!-- Konten Utama -->
         <div class="flex-1 flex flex-col min-h-screen">
-            <!-- Topbar -->
+
+            <!-- Topbar dengan Logout -->
             @if (!Request::is('login/*'))
-            <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center lg:hidden">
-                <button @click="open = !open" class="text-blue-700 dark:text-white focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <span class="font-bold text-lg">Dashboard</span>
+            <header class="bg-white dark:bg-gray-800 shadow px-4 py-3 flex justify-between items-center">
+                <!-- Toggle Sidebar Mobile -->
+                <div class="lg:hidden">
+                    <button @click="open = !open" class="text-blue-700 dark:text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Judul -->
+                <h1 class="text-lg font-bold text-primary dark:text-white">Dashboard</h1>
+
+                <!-- Tombol Logout -->
+                <div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-full transition duration-300 transform hover:scale-105 shadow">
+                            <span class="material-icons text-sm">logout</span>
+                            <span class="hidden sm:inline">Logout</span>
+                        </button>
+                    </form>
+                </div>
             </header>
             @endif
 
@@ -143,7 +152,14 @@
         </div>
     </div>
 
+    <!-- ✅ Tombol Dark Mode di pojok kanan bawah -->
+    <div class="fixed bottom-4 right-4 z-50">
+        <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
+            class="text-xl focus:outline-none p-3 rounded-full bg-indigo-500 hover:bg-indigo-700 text-white shadow-lg transition duration-300 transform hover:scale-110">
+            <span class="material-icons" x-text="darkMode ? 'dark_mode' : 'light_mode'"></span>
+        </button>
+    </div>
+
     <script src="https://unpkg.com/alpinejs" defer></script>
 </body>
-
 </html>
