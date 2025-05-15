@@ -1,44 +1,88 @@
-@extends('layouts.dashboard_organisasi')
+<!DOCTYPE html>
+<html lang="id" x-data="{ open: false, darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }">
 
-@section('content')
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-8 mt-6 text-center max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold text-green-600 dark:text-green-300 mb-4">🏛️ Dashboard Organisasi</h1>
-    <p class="text-gray-600 dark:text-gray-300 text-lg">
-        Selamat datang, perwakilan organisasi! Kamu telah berhasil login ke sistem SKPI.
-    </p>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard Organisasi | SKPI UNAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                    },
+                },
+            },
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
 
-    <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Kegiatan -->
-        <div
-            class="bg-green-100 dark:bg-green-900 p-6 rounded-xl shadow hover:shadow-lg transition duration-300 text-left">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="text-2xl">📅</div>
-                <h2 class="text-xl font-semibold text-green-800 dark:text-green-200">Kelola Kegiatan</h2>
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white transition-all min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside :class="open ? 'translate-x-0' : '-translate-x-full'"
+        class="fixed z-40 inset-y-0 left-0 w-64 bg-primary text-white transform lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out shadow-xl">
+        <div class="flex flex-col h-full p-6 space-y-6">
+            <!-- Logo -->
+            <div class="text-center mb-6">
+                <img src="{{ asset('images/Logo-Unai.png') }}" alt="Logo UNAI" class="mx-auto w-20 h-auto mb-2 drop-shadow-xl" />
+                <h1 class="text-xl font-bold tracking-wide">🎓 SKPI UNAI</h1>
             </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                Tambahkan dan pantau kegiatan yang diselenggarakan oleh organisasi kamu.
-            </p>
-            <a href="{{ route('kegiatan.index') }}"
-                class="inline-block mt-4 text-sm font-bold text-green-700 hover:text-green-900 dark:text-green-300 hover:underline">
-                → Lihat Data Kegiatan
-            </a>
-        </div>
 
-        <!-- Poin Mahasiswa -->
-        <div
-            class="bg-blue-100 dark:bg-blue-900 p-6 rounded-xl shadow hover:shadow-lg transition duration-300 text-left">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="text-2xl">🏅</div>
-                <h2 class="text-xl font-semibold text-blue-800 dark:text-blue-200">Kelola Poin Mahasiswa</h2>
+            <!-- Navigation -->
+            <nav class="space-y-2 flex flex-col">
+                <a href="{{ route('organisasi.dashboard') }}"
+                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.dashboard') ? 'bg-blue-800' : '' }}">
+                    <span class="material-icons">dashboard</span>
+                    <span class="text-sm font-semibold">Dashboard</span>
+                </a>
+
+                <a href="{{ url('/organisasi/absensi') }}"
+                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::is('organisasi/absensi') ? 'bg-blue-800' : '' }}">
+                    <span class="material-icons">event_available</span>
+                    <span class="text-sm font-semibold">Absensi</span>
+                </a>
+
+                <a href="{{ url('/organisasi/beri-poin') }}"
+                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::is('organisasi/beri-poin') ? 'bg-blue-800' : '' }}">
+                    <span class="material-icons">emoji_events</span>
+                    <span class="text-sm font-semibold">Beri Poin</span>
+                </a>
+            </nav>
+
+            <!-- Sidebar footer -->
+            <div class="mt-auto text-xs text-blue-200 text-center">
+                &copy; {{ now()->year }} Universitas Advent Indonesia
             </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                Input dan verifikasi poin mahasiswa yang mengikuti kegiatan organisasi.
-            </p>
-            <a href="{{ route('poin.index') }}"
-                class="inline-block mt-4 text-sm font-bold text-blue-700 hover:text-blue-900 dark:text-blue-300 hover:underline">
-                → Lihat Data Poin
-            </a>
         </div>
+    </aside>
+
+    <!-- Overlay for mobile -->
+    <div class="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden" x-show="open" @click="open = false" x-transition.opacity></div>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col min-h-screen ml-0 lg:ml-64">
+        <!-- Mobile top bar -->
+        <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center lg:hidden">
+            <button @click="open = !open" class="text-blue-700 dark:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <span class="font-bold text-lg">Dashboard Organisasi</span>
+        </header>
+
+        <!-- Page content -->
+        <main class="p-6 flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-inner overflow-auto">
+            @yield('content')
+        </main>
     </div>
-</div>
-@endsection
+
+    <script src="https://unpkg.com/alpinejs" defer></script>
+</body>
+
+</html>
