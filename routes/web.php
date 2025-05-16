@@ -3,63 +3,37 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-// Default admin credentials
 $defaultAdminEmail = 'rezaivander12@gmail.com';
 $defaultAdminPasswordHash = password_hash('rahasia123', PASSWORD_DEFAULT);
 
-// Dashboard utama
-Route::get('/', function () {
-    return view('dashboard');
-});
+// Halaman utama
+Route::get('/', fn () => view('dashboard'));
 
-// LOGIN ADMIN
-Route::get('/login/admin', function () {
-    return view('admin.login');
-})->name('admin.login');
+// ======================== LOGIN ADMIN ========================
+Route::get('/login/admin', fn () => view('admin.login'))->name('admin.login');
 
 Route::post('/login/admin', function (Request $request) use ($defaultAdminEmail, $defaultAdminPasswordHash) {
-    // Ambil password hash yang tersimpan di session, atau gunakan default
-    $storedPasswordHash = session('admin_password', $defaultAdminPasswordHash);
-
-    if ($request->email === $defaultAdminEmail && password_verify($request->password, $storedPasswordHash)) {
+    if ($request->email === $defaultAdminEmail && password_verify($request->password, $defaultAdminPasswordHash)) {
         session([
             'is_admin_logged_in' => true,
             'admin_email' => $request->email,
-            'admin_name' => session('admin_name', 'Admin Sistem'),
-            'admin_password' => $storedPasswordHash,
+            'admin_name' => 'Admin Sistem',
         ]);
         return redirect()->route('admin.dashboard');
     }
     return redirect()->route('admin.login')->with('error', 'Email atau password salah.');
 })->name('admin.login.submit');
 
-// DASHBOARD ADMIN
 Route::get('/admin/dashboard', function () {
-    if (!session('is_admin_logged_in')) {
-        return redirect()->route('admin.login');
-    }
+    if (!session('is_admin_logged_in')) return redirect()->route('admin.login');
     return view('admin.dashboard');
 })->name('admin.dashboard');
 
-
-
-// LOGOUT
-Route::post('/logout', function () {
-    session()->flush(); // hapus semua session
-    return redirect('/');
-})->name('logout');
-
-// Tambahkan route login organisasi, warek, dashboard, dan resource sesuai kebutuhan
-// Contoh:
-Route::get('/login/organisasi', function () {
-    return view('organisasi.login');
-})->name('organisasi.login');
+// ======================== LOGIN ORGANISASI ========================
+Route::get('/login/organisasi', fn () => view('organisasi.login'))->name('organisasi.login');
 
 Route::post('/login/organisasi', function (Request $request) {
-    $orgEmail = 'organisasi@unai.ac.id';
-    $orgPassword = 'org123';
-
-    if ($request->email === $orgEmail && $request->password === $orgPassword) {
+    if ($request->email === 'organisasi@unai.ac.id' && $request->password === 'org123') {
         session(['is_org_logged_in' => true]);
         return redirect()->route('organisasi.dashboard');
     }
@@ -67,21 +41,15 @@ Route::post('/login/organisasi', function (Request $request) {
 })->name('organisasi.login.submit');
 
 Route::get('/organisasi/dashboard', function () {
-    if (!session('is_org_logged_in')) {
-        return redirect()->route('organisasi.login');
-    }
+    if (!session('is_org_logged_in')) return redirect()->route('organisasi.login');
     return view('organisasi.dashboard_organisasi');
 })->name('organisasi.dashboard');
 
-Route::get('/login/warek', function () {
-    return view('warek.login');
-})->name('warek.login');
+// ======================== LOGIN WAREK ========================
+Route::get('/login/warek', fn () => view('warek.login'))->name('warek.login');
 
 Route::post('/login/warek', function (Request $request) {
-    $warekEmail = 'warek@unai.ac.id';
-    $warekPassword = 'warek123';
-
-    if ($request->email === $warekEmail && $request->password === $warekPassword) {
+    if ($request->email === 'warek@unai.ac.id' && $request->password === 'warek123') {
         session(['is_warek_logged_in' => true]);
         return redirect()->route('warek.dashboard');
     }
@@ -89,13 +57,17 @@ Route::post('/login/warek', function (Request $request) {
 })->name('warek.login.submit');
 
 Route::get('/warek/dashboard', function () {
-    if (!session('is_warek_logged_in')) {
-        return redirect()->route('warek.login');
-    }
+    if (!session('is_warek_logged_in')) return redirect()->route('warek.login');
     return view('warek.dashboard_warek');
 })->name('warek.dashboard');
 
-// Resource routes
+// ======================== LOGOUT ========================
+Route::post('/logout', function () {
+    session()->flush();
+    return redirect()->route('warek.login');
+})->name('logout');
+
+// ======================== RESOURCE CONTROLLERS ========================
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;

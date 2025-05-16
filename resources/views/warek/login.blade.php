@@ -9,15 +9,10 @@
     </div>
 
     @if(session('error'))
-    <div
-        x-data="{ show: true }"
-        x-show="show"
-        x-init="setTimeout(() => show = false, 4000)"
-        class="mb-6 px-4 py-3 rounded bg-red-100 text-red-700 text-sm relative"
-        role="alert"
-    >
+    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
+        class="mb-6 px-4 py-3 rounded bg-red-100 text-red-700 text-sm relative">
         {{ session('error') }}
-        <button @click="show = false" class="absolute top-1 right-2 text-red-700 hover:text-red-900 focus:outline-none" aria-label="Close">
+        <button @click="show = false" class="absolute top-1 right-2 text-red-700 hover:text-red-900" aria-label="Close">
             &times;
         </button>
     </div>
@@ -25,35 +20,21 @@
 
     <form method="POST" action="{{ route('warek.login.submit') }}" class="space-y-6">
         @csrf
-
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-            <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autofocus
-                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-            />
+            <input id="email" name="email" type="email" required autofocus
+                class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 dark:bg-gray-700 dark:text-white">
         </div>
 
         <div>
             <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-            <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-            />
+            <input id="password" name="password" type="password" required
+                class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 dark:bg-gray-700 dark:text-white">
         </div>
 
         <div>
-            <button
-                type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md shadow-md transition"
-            >
+            <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md shadow-md">
                 Masuk
             </button>
         </div>
