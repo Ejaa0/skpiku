@@ -1,6 +1,8 @@
-@extends('layouts.dashboard_warek_utama') {{-- Ganti dengan layout yang kamu pakai --}}
+@extends('layouts.dashboard_warek_utama')
 
 @section('content')
-<div class="p-6 max-w-4xl mx-auto">
-    
+<div class="bg-white dark:bg-gray-800 p-6 rounded shadow">
+    <h1 class="text-3xl font-bold mb-4">👨‍💼 Dashboard Wakil Rektor III</h1>
+    <p>Selamat datang di halaman dashboard WR III.</p>
+</div>
 @endsection
