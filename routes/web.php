@@ -62,10 +62,10 @@ Route::get('/warek/dashboard', function () {
 })->name('warek.dashboard');
 
 // ======================== LOGOUT ========================
-Route::post('/logout', function () {
-    session()->flush();
+Route::post('/logout/warek', function () {
+    session()->forget('is_warek_logged_in');
     return redirect()->route('warek.login');
-})->name('logout');
+})->name('logout.warek');
 
 // ======================== RESOURCE CONTROLLERS ========================
 use App\Http\Controllers\MahasiswaController;
