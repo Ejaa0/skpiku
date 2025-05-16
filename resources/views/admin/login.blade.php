@@ -3,10 +3,16 @@
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-white px-4">
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 space-y-6">
+
         <div class="text-center">
-            <div class="inline-block text-6xl mb-4">🛠️🔐</div>
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Login Admin</h2>
-            <p class="text-gray-600 font-medium">Masuk untuk mengelola sistem SKPI</p>
+            <div 
+                class="inline-block text-7xl mb-6 select-none animate-bounce" 
+                style="animation-duration: 2s;"
+            >
+                🛠️🔐
+            </div>
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-2 tracking-wide">Login Admin</h2>
+            <p class="text-gray-600 font-medium tracking-wide">Masuk untuk mengelola sistem SKPI</p>
         </div>
 
         {{-- Notifikasi error --}}
@@ -78,4 +84,3 @@
     </div>
 </div>
 @endsection
-    

@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\KegiatanController;
+use App\Http\Controllers\OrganisasiController;
+use App\Http\Controllers\PoinMahasiswaController;
 
 $defaultAdminEmail = 'rezaivander12@gmail.com';
 $defaultAdminPasswordHash = password_hash('rahasia123', PASSWORD_DEFAULT);
@@ -67,13 +71,16 @@ Route::post('/logout/warek', function () {
     return redirect()->route('warek.login');
 })->name('logout.warek');
 
-// ======================== RESOURCE CONTROLLERS ========================
-use App\Http\Controllers\MahasiswaController;
-use App\Http\Controllers\KegiatanController;
-use App\Http\Controllers\OrganisasiController;
-use App\Http\Controllers\PoinMahasiswaController;
+Route::post('/logout', function () {
+    session()->flush();
+    return redirect()->route('admin.login'); 
+})->name('logout');
 
+// ======================== RESOURCE CONTROLLERS ========================
 Route::resource('mahasiswa', MahasiswaController::class);
 Route::resource('kegiatan', KegiatanController::class);
 Route::resource('organisasi', OrganisasiController::class);
 Route::resource('poin', PoinMahasiswaController::class);
+
+// ======================== Login view routes (tidak duplikat) ========================
+Route::get('/login/mahasiswa', fn () => view('mahasiswa.login'))->name('mahasiswa.login');

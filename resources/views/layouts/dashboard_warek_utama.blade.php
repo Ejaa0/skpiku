@@ -1,80 +1,63 @@
+<!-- resources/views/warek/dashboard_warek_utama.blade.php -->
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
     <title>Dashboard WR III</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
-    <div class="flex min-h-screen">
+<body class="flex min-h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md p-4">
+        <h2 class="text-xl font-semibold mb-6">Menu WR III</h2>
+        <ul class="space-y-2">
+            <li>
+                <a href="{{ route('warek.dashboard') }}" class="block py-2 px-4 rounded hover:bg-gray-200">
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('organisasi.index') }}" class="block py-2 px-4 rounded hover:bg-gray-200">
+                    Data Organisasi
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('mahasiswa.index') }}" class="block py-2 px-4 rounded hover:bg-gray-200">
+                    Data Mahasiswa
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('kegiatan.index') }}" class="block py-2 px-4 rounded hover:bg-gray-200">
+                    Data Kegiatan
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('poin.index') }}" class="block py-2 px-4 rounded hover:bg-gray-200">
+                    Poin Mahasiswa
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="event.preventDefault(); confirmLogout();" class="block py-2 px-4 rounded text-red-600 hover:bg-red-100">
+                    Logout
+                </a>
+            </li>
+        </ul>
 
-        <!-- Sidebar -->
-        <aside
-            id="sidebar"
-            class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-lg transform md:translate-x-0 transition-transform duration-300 ease-in-out z-40"
-        >
-            <div class="p-6 text-center border-b border-gray-200 dark:border-gray-700">
-                <img src="{{ asset('images/Logo-Unai.png') }}" alt="Logo UNAI" class="w-20 mx-auto mb-3 rounded" />
-                <h2 class="text-xl font-bold text-gray-800 dark:text-white">WR III SKPI</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Wakil Rektor III</p>
-            </div>
-            <nav class="mt-4">
-                <ul class="space-y-2 px-4">
-                    <li>
-                        <a href="{{ route('warek.dashboard') }}"
-                            class="block py-2 px-4 rounded hover:bg-blue-100 dark:hover:bg-gray-700">
-                            📊 Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('organisasi.index') }}"
-                            class="block py-2 px-4 rounded hover:bg-blue-100 dark:hover:bg-gray-700">
-                            🏢 Data Organisasi
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('mahasiswa.index') }}"
-                            class="block py-2 px-4 rounded hover:bg-blue-100 dark:hover:bg-gray-700">
-                            🎓 Data Mahasiswa
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('kegiatan.index') }}"
-                            class="block py-2 px-4 rounded hover:bg-blue-100 dark:hover:bg-gray-700">
-                            📆 Kegiatan
-                        </a>
-                    </li>
-                    <li>
-                        <!-- Tombol Logout dengan konfirmasi -->
-                        <a href="#" onclick="confirmLogout()" class="block py-2 px-4 rounded text-red-600 hover:bg-red-100 dark:hover:bg-gray-700">
-                            🚪 Logout
-                        </a>
-                        <form id="logout-form" action="{{ route('logout.warek') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+        <!-- Logout Form -->
+        <form id="logout-form" action="{{ route('logout.warek') }}" method="POST" class="hidden">
+            @csrf
+        </form>
+    </aside>
 
-        <!-- Content wrapper -->
-        <div class="flex flex-col flex-1 md:pl-64">
-            <!-- Header -->
-            <header class="bg-white dark:bg-gray-800 shadow-md p-4 flex items-center justify-between md:hidden">
-                <h1 class="text-lg font-semibold text-gray-800 dark:text-white">Dashboard WR III</h1>
-            </header>
-
-            <!-- Main Content -->
-            <main class="p-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
-                @yield('content')
-            </main>
-        </div>
-    </div>
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <h1 class="text-2xl font-bold mb-4">Selamat Datang, Wakil Rektor III</h1>
+        {{-- Konten dashboard lainnya di sini --}}
+    </main>
 
     <script>
         function confirmLogout() {
-            if (confirm('Apakah Anda yakin ingin keluar?')) {
+            if (confirm("Apakah Anda yakin ingin keluar?")) {
                 document.getElementById('logout-form').submit();
             }
         }
