@@ -31,42 +31,43 @@
                     </tr>
                 </thead>
                 <tbody class="text-sm text-gray-800">
-                    @foreach($poin as $item)
-                        <tr class="hover:bg-gray-100">
-                            <td class="py-3 px-4 border-b">{{ $item->nim }}</td>
-                            <td class="py-3 px-4 border-b">{{ $item->nama }}</td>
-                            <td class="py-3 px-4 border-b">{{ $item->nama_kegiatan }}</td>
-                            <td class="py-3 px-4 border-b">{{ $item->jenis_kegiatan }}</td>
-                            <td class="py-3 px-4 border-b">{{ $item->tanggal_kegiatan }}</td>
-                            <td class="py-3 px-4 border-b">{{ $item->poin }}</td>
-                            <td class="py-3 px-4 border-b text-center">
-                                <div class="flex justify-center space-x-3">
-                                    <!-- Show -->
-                                    <a href="{{ route('poin.show', $item->id) }}" class="text-green-600 hover:text-green-800">
-                                        <i class="fas fa-eye"></i> Show
-                                    </a>
-                                    
-                                    <!-- Edit -->
-                                    <a href="{{ route('poin.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    
-                                    <!-- Delete -->
-                                    <form action="{{ route('poin.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus poin mahasiswa ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
                     @if($poin->isEmpty())
                         <tr>
                             <td colspan="7" class="text-center text-gray-500 py-6">Belum ada poin mahasiswa yang tercatat.</td>
                         </tr>
+                    @else
+                        @foreach($poin as $item)
+                            <tr class="hover:bg-gray-100">
+                                <td class="py-3 px-4 border-b">{{ $item->nim }}</td>
+                                <td class="py-3 px-4 border-b">{{ $item->nama }}</td>
+                                <td class="py-3 px-4 border-b">{{ $item->nama_kegiatan }}</td>
+                                <td class="py-3 px-4 border-b">{{ $item->jenis_kegiatan }}</td>
+                                <td class="py-3 px-4 border-b">{{ $item->tanggal_kegiatan }}</td>
+                                <td class="py-3 px-4 border-b">{{ $item->poin }}</td>
+                                <td class="py-3 px-4 border-b text-center">
+                                    <div class="flex justify-center space-x-3">
+                                        <!-- Show -->
+                                        <a href="{{ route('poin.show', $item->id) }}" class="text-green-600 hover:text-green-800">
+                                            👁️ Show
+                                        </a>
+
+                                        <!-- Edit -->
+                                        <a href="{{ route('poin.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800">
+                                            ✏️ Edit
+                                        </a>
+
+                                        <!-- Delete -->
+                                        <form action="{{ route('poin.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus poin mahasiswa ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-800">
+                                                🗑️ Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
                     @endif
                 </tbody>
             </table>
