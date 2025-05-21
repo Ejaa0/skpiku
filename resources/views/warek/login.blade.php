@@ -1,9 +1,25 @@
 @extends('layouts.login_warek')
 
 @section('content')
+<style>
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .animated-emoji {
+        display: inline-block;
+        animation: bounce 1s infinite;
+    }
+</style>
+
 <div class="max-w-md mx-auto mt-16 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
     <div class="text-center mb-8">
-        <div class="text-6xl">👨‍💼</div>
+        <div class="text-6xl animated-emoji">👨‍💼</div>
         <h2 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white">Login Wakil Rektor III</h2>
         <p class="mt-2 text-gray-600 dark:text-gray-400">Masuk untuk mengelola sistem SKPI sebagai WR III</p>
     </div>

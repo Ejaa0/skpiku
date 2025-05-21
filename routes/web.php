@@ -5,13 +5,37 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;
+use App\Http\Controllers\SKPIController;
 use App\Http\Controllers\PoinMahasiswaController;
 
 $defaultAdminEmail = 'rezaivander12@gmail.com';
 $defaultAdminPasswordHash = password_hash('rahasia123', PASSWORD_DEFAULT);
 
-// Halaman utama
-Route::get('/', fn () => view('dashboard'));
+// ======================== HALAMAN UTAMA (DASHBOARD AWAL) ========================
+Route::get('/', function () {
+    return view('dashboard'); // Menampilkan resources/views/dashboard.blade.php
+})->name('beranda');
+
+// ======================== LOGIN MAHASISWA ========================
+Route::get('/login/mahasiswa', fn () => view('mahasiswa.login'))->name('mahasiswa.login');
+
+Route::post('/login/mahasiswa', function (Request $request) {
+    if ($request->email === 'mahasiswa@unai.ac.id' && $request->password === 'mahasiswa123') {
+        session([
+            'is_mahasiswa_logged_in' => true,
+            'mahasiswa_email' => $request->email,
+        ]);
+        return redirect('/mahasiswa/dashboard');
+    }
+    return redirect()->route('mahasiswa.login')->with('error', 'Email atau password salah.');
+})->name('mahasiswa.login.submit');
+
+Route::get('/mahasiswa/dashboard', function () {
+    if (!session('is_mahasiswa_logged_in')) {
+        return redirect()->route('mahasiswa.login');
+    }
+    return view('mahasiswa.dashboard');
+})->name('mahasiswa.dashboard');
 
 // ======================== LOGIN ADMIN ========================
 Route::get('/login/admin', fn () => view('admin.login'))->name('admin.login');
@@ -76,11 +100,17 @@ Route::post('/logout', function () {
     return redirect()->route('admin.login'); 
 })->name('logout');
 
+
+Route::get('/skpi/form', [SKPIController::class, 'form']);
+Route::post('/skpi/generate', [SKPIController::class, 'generate'])->name('skpi.generate');
+Route::get('/skpi/{skpi}/export-pdf', [SKPIController::class, 'exportPdf'])->name('skpi.exportPdf');
+Route::get('/skpi', [SKPIController::class, 'index']);
+Route::post('/skpi/generate', [SKPIController::class, 'generate']);
+Route::resource('skpi', SKPIController::class);
+
+
 // ======================== RESOURCE CONTROLLERS ========================
 Route::resource('mahasiswa', MahasiswaController::class);
 Route::resource('kegiatan', KegiatanController::class);
 Route::resource('organisasi', OrganisasiController::class);
 Route::resource('poin', PoinMahasiswaController::class);
-
-// ======================== Login view routes (tidak duplikat) ========================
-Route::get('/login/mahasiswa', fn () => view('mahasiswa.login'))->name('mahasiswa.login');
