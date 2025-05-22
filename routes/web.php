@@ -107,7 +107,10 @@ Route::get('/skpi/{skpi}/export-pdf', [SKPIController::class, 'exportPdf'])->nam
 Route::get('/skpi', [SKPIController::class, 'index']);
 Route::post('/skpi/generate', [SKPIController::class, 'generate']);
 Route::resource('skpi', SKPIController::class);
-
+Route::get('/skpi', [SKPIController::class, 'index']);
+Route::post('/skpi/generate', [SKPIController::class, 'generate']);
+Route::post('/skpi/generate-diploma', [SKPIController::class, 'generateDiploma']);
+Route::get('/skpi', [SkpiController::class, 'index'])->name('skpi.index');
 
 // ======================== RESOURCE CONTROLLERS ========================
 Route::resource('mahasiswa', MahasiswaController::class);

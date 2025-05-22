@@ -23,8 +23,6 @@
             padding: 12px 20px;
             border: 4px double #002147;
             background-color: #fff;
-
-            /* Watermark background */
             background-image: url('{{ $garudaBase64 }}');
             background-repeat: no-repeat;
             background-position: center;
@@ -48,20 +46,12 @@
             color: #002147;
             margin: 4px 0;
         }
-        .accreditation {
+        .accreditation, .skpi-number {
             text-align: center;
             font-size: 13px;
             font-weight: bold;
             color: #002147;
-            margin-top: 4px;
-        }
-        .skpi-number {
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-            color: #002147;
-            margin-top: 2px;
-            margin-bottom: 10px;
+            margin: 2px 0;
         }
         h2 {
             text-align: center;
@@ -118,7 +108,7 @@
         <div class="skpi-number">Nomor SKPI : 044/06/BK/UNAI/2019</div>
 
         <h2>SURAT KETERANGAN PENDAMPING IJAZAH</h2>
-        <div class="document-title">Scholar Supplement</div>
+        <div class="document-title">Diploma Supplement</div>
 
         <p style="text-align: center;">
             Surat Keterangan Pendamping Ijazah sebagai Pelengkap Ijazah yang menerangkan Pembelajaran dan Prestasi dari Pemegang Ijazah selama Masa Studi<br>
