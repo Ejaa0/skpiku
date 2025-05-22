@@ -122,7 +122,7 @@
 
         <p style="text-align: center;">
             Surat Keterangan Pendamping Ijazah sebagai Pelengkap Ijazah yang menerangkan Pembelajaran dan Prestasi dari Pemegang Ijazah selama Masa Studi<br>
-            <span style="font-style: italic;">The Diploma Supplement as a Complement to Diploma that Describes Learning Outcomes and Achievements of the Holder of the Diploma during the Study Period</span>
+            <span style="font-style: italic;">The Scholar Supplement as a Complement to Scholar that Describes Learning Outcomes and Achievements of the Holder of the Scholar during the Study Period</span>
         </p>
 
         <div class="field-group"><span class="field-label">Nama Lengkap (Full Name)</span>: {{ $skpi->nama }}</div>
@@ -130,7 +130,7 @@
         <div class="field-group"><span class="field-label">Nomor Induk Mahasiswa (Student Registration Number)</span>: {{ $skpi->nim }}</div>
         <div class="field-group"><span class="field-label">Tanggal Masuk (Entrance Date)</span>: {{ $skpi->masuk }}</div>
         <div class="field-group"><span class="field-label">Tanggal Lulus (Date of Judicium)</span>: {{ $skpi->lulus }}</div>
-        <div class="field-group"><span class="field-label">Nomor Ijazah (Diploma Number)</span>: {{ $skpi->no_ijazah }}</div>
+        <div class="field-group"><span class="field-label">Nomor Ijazah (Scholar Number)</span>: {{ $skpi->no_ijazah }}</div>
         <div class="field-group"><span class="field-label">Gelar (Title of Qualification)</span>: {{ $skpi->gelar }}</div>
         <div class="field-group"><span class="field-label">Program Studi (Major)</span>: {{ $skpi->prodi }}</div>
         <div class="field-group"><span class="field-label">Bahasa Pengantar Perkuliahan (Language of Instruction)</span>: {{ $skpi->bahasa }}</div>
