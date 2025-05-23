@@ -1,0 +1,12 @@
+{
+  "name": "bot-skpi",
+  "version": "1.0.0",
+  "description": "Chatbot WhatsApp BOT SKPI",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.17"
+  }
+}
