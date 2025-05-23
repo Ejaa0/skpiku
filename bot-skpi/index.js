@@ -1,97 +1,70 @@
-const { default: makeWASocket, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, makeInMemoryStore } = require("@whiskeysockets/baileys");
-const { Boom } = require("@hapi/boom");
-const { state, saveState } = useSingleFileAuthState('./auth.json');
-const pino = require('pino');
+import fs from 'fs'
+import baileys from '@whiskeysockets/baileys'
+import qrcode from 'qrcode-terminal'
+import P from 'pino'
 
-const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) });
+const {
+  makeWASocket,
+  useMultiFileAuthState,
+  DisconnectReason,
+  fetchLatestBaileysVersion
+} = baileys
 
 async function startBot() {
-    const { version, isLatest } = await fetchLatestBaileysVersion();
-    console.log(`Using WA version v${version.join('.')}, isLatest: ${isLatest}`);
+  const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+  const { version } = await fetchLatestBaileysVersion()
 
-    const sock = makeWASocket({
-        logger: pino({ level: 'silent' }),
-        printQRInTerminal: true,
-        auth: state,
-        version
-    });
+  const sock = makeWASocket({
+    version,
+    auth: state,
+    logger: P({ level: 'silent' })
+  })
 
-    store.bind(sock.ev);
+  sock.ev.on('connection.update', (update) => {
+    const { connection, lastDisconnect, qr } = update
 
-    sock.ev.on('connection.update', (update) => {
-        const { connection, lastDisconnect } = update;
-        if(connection === 'close') {
-            const shouldReconnect = (lastDisconnect.error)?.output?.statusCode !== DisconnectReason.loggedOut;
-            console.log('connection closed due to', lastDisconnect.error, ', reconnecting:', shouldReconnect);
-            if(shouldReconnect) {
-                startBot();
-            } else {
-                console.log('Connection closed. You are logged out.');
-            }
-        } else if(connection === 'open') {
-            console.log('Connected to WhatsApp');
-        }
-    });
+    if (qr) {
+      qrcode.generate(qr, { small: true })
+      console.log('📱 Silakan scan QR code dengan WhatsApp.')
+    }
 
-    sock.ev.on('messages.upsert', async (m) => {
-        const msg = m.messages[0];
-        if(!msg.message || msg.key.fromMe) return;
+    if (connection === 'close') {
+      const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut
+      console.log('🔌 Koneksi terputus:', lastDisconnect?.error, 'Reconnect?', shouldReconnect)
+      if (shouldReconnect) startBot()
+      else console.log('❌ Tidak reconnect. Sudah logout.')
+    } else if (connection === 'open') {
+      console.log('✅ BOT SKPI sudah terhubung!')
+      console.log('📱 Nomor BOT:', sock.user.id)
+    }
+  })
 
-        const from = msg.key.remoteJid;
-        const type = Object.keys(msg.message)[0];
-        let text = '';
+  sock.ev.on('creds.update', saveCreds)
 
-        if(type === 'conversation') {
-            text = msg.message.conversation;
-        } else if(type === 'extendedTextMessage') {
-            text = msg.message.extendedTextMessage.text;
-        }
+  sock.ev.on('messages.upsert', async (m) => {
+    const msg = m.messages[0]
+    if (!msg.message || msg.key.fromMe) return
 
-        if(!text) return;
+    const sender = msg.key.remoteJid
+    const text = msg.message.conversation || msg.message.extendedTextMessage?.text
 
-        const lowerText = text.toLowerCase();
+    console.log('📨 Pesan dari:', sender)
+    console.log('💬 Isi pesan:', text)
 
-        // Respon sederhana
-        let reply = 'Maaf, perintah tidak dikenali. Ketik "menu" untuk daftar perintah.';
+    if (!text) return
 
-        if(lowerText === 'halo') {
-            reply = 'Halo! Selamat datang di BOT SKPI.';
-        } else if(lowerText === 'menu') {
-            reply = 'Daftar perintah:\n' +
-                    '1. halo\n' +
-                    '2. cek poin [NIM]\n' +
-                    '3. kuis skpi\n' +
-                    'Ketik perintah sesuai format.';
-        } else if(lowerText.startsWith('cek poin ')) {
-            const nim = text.substring(9).trim();
-            // Data poin hardcoded
-            const dataPoin = {
-                '12345678': 1250,
-                '87654321': 900,
-                '11223344': 1100
-            };
-            if(nim in dataPoin) {
-                reply = `Poin SKPI untuk NIM ${nim} adalah: ${dataPoin[nim]} poin.`;
-            } else {
-                reply = `Data poin untuk NIM ${nim} tidak ditemukan.`;
-            }
-        } else if(lowerText === 'kuis skpi') {
-            reply = 'Kuis SKPI:\n1. Apa singkatan SKPI?\nA. Surat Keterangan Pendamping Ijazah\nB. Sistem Komputer dan Proses Informatika\nJawab dengan "jawab A" atau "jawab B".';
-        } else if(lowerText.startsWith('jawab ')) {
-            const answer = text.substring(6).trim().toUpperCase();
-            if(answer === 'A') {
-                reply = 'Benar! SKPI = Surat Keterangan Pendamping Ijazah.';
-            } else if(answer === 'B') {
-                reply = 'Salah. Coba lagi ya!';
-            } else {
-                reply = 'Jawaban tidak valid. Ketik "kuis skpi" untuk memulai kuis.';
-            }
-        }
+    const lowerText = text.toLowerCase()
 
-        await sock.sendMessage(from, { text: reply });
-    });
+    if (lowerText === 'halo') {
+      await sock.sendMessage(sender, { text: 'Halo juga! Ini BOT SKPI 👋' })
+    }
 
-    sock.ev.on('creds.update', saveState);
+    if (lowerText.includes('poin saya')) {
+      await sock.sendMessage(sender, {
+        text: 'Poin kamu sedang dihitung dari sistem Laravel. Tunggu yaa! 😎'
+      })
+    }
+  })
 }
 
-startBot();
+startBot()

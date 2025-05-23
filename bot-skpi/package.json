@@ -1,12 +1,11 @@
 {
-  "name": "bot-skpi",
-  "version": "1.0.0",
-  "description": "Chatbot WhatsApp BOT SKPI",
-  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.17",
+    "pino": "^9.7.0",
+    "qrcode-terminal": "^0.12.0"
+  },
   "scripts": {
     "start": "node index.js"
-  },
-  "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.17"
   }
 }
