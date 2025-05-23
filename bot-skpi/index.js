@@ -1,4 +1,3 @@
-import fs from 'fs'
 import baileys from '@whiskeysockets/baileys'
 import qrcode from 'qrcode-terminal'
 import P from 'pino'
@@ -20,9 +19,6 @@ async function startBot() {
     logger: P({ level: 'silent' })
   })
 
-  // Simpan nomor yang sudah pernah chat supaya bot gak spam kirim bantuan otomatis
-  const usersSeen = new Set()
-
   sock.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect, qr } = update
 
@@ -38,6 +34,7 @@ async function startBot() {
       else console.log('❌ Tidak reconnect. Sudah logout.')
     } else if (connection === 'open') {
       console.log('✅ BOT SKPI sudah terhubung!')
+      console.log(`📱 Nomor BOT: ${sock.user.id}`)
     }
   })
 
@@ -48,84 +45,45 @@ async function startBot() {
     if (!msg.message || msg.key.fromMe) return
 
     const sender = msg.key.remoteJid
-    const text = msg.message.conversation || msg.message.extendedTextMessage?.text
-    if (!text) return
+    const text = msg.message.conversation || msg.message.extendedTextMessage?.text || ''
 
-    const lowerText = text.toLowerCase().trim()
+    console.log('📨 Pesan dari:', sender)
+    console.log('💬 Isi pesan:', text)
 
-    // Jika chat pertama kali, langsung kirim daftar perintah
-    if (!usersSeen.has(sender)) {
-      usersSeen.add(sender)
+    const greetingKeywords = ['hi', 'hai', 'halo', 'hallo', 'hey', 'assalamualaikum', 'pagi', 'selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam']
+
+    if (greetingKeywords.includes(text.toLowerCase())) {
       await sock.sendMessage(sender, {
-        text: `📋 *Daftar Perintah BOT SKPI* 📋
-
-- 👋 *halo*        : Menyapa bot dan mendapatkan balasan sapaan.
-- ℹ️ *info*         : Menampilkan informasi singkat tentang BOT SKPI.
-- 🆘 *bantuan/help* : Menampilkan daftar perintah yang bisa kamu gunakan.
-- 🕒 *waktu*        : Menampilkan waktu dan tanggal saat ini.
-- 📍 *lokasi*       : Mengirim lokasi Universitas Advent Indonesia.
-
-Silakan ketik perintah di atas ya!`
+        text: `👋 Hai! Ada yang bisa kami bantu?\n\n📋 *Daftar Perintah BOT SKPI* 📋\n\n- 👋 *halo*        : Menyapa bot dan mendapatkan balasan sapaan.\n- ℹ *info*         : Menampilkan informasi singkat tentang BOT SKPI.\n- 🆘 *bantuan/help* : Menampilkan daftar perintah yang bisa kamu gunakan.\n- 🕒 *waktu*        : Menampilkan waktu dan tanggal saat ini.\n- 📍 *lokasi*       : Mengirim lokasi Universitas Advent Indonesia.\n\nSelamat menggunakan! 😊`
       })
-      return // biar gak lanjut ke balasan lain saat pertama kali
-    }
-
-    // Array kata sapaan
-    const greetings = ["hi", "hai", "halo", "hallo", "hey", "assalamualaikum", "pagi", "selamat pagi", "selamat siang", "selamat sore", "selamat malam"]
-
-    if (greetings.includes(lowerText)) {
+    } else if (['help', 'bantuan'].includes(text.toLowerCase())) {
       await sock.sendMessage(sender, {
-        text: `👋 Hai, ada yang bisa kami bantu? 😊
-
-📋 *Daftar Perintah BOT SKPI* 📋
-- 👋 *halo*        : Menyapa bot dan mendapatkan balasan sapaan.
-- ℹ️ *info*         : Menampilkan informasi singkat tentang BOT SKPI.
-- 🆘 *bantuan/help* : Menampilkan daftar perintah yang bisa kamu gunakan.
-- 🕒 *waktu*        : Menampilkan waktu dan tanggal saat ini.
-- 📍 *lokasi*       : Mengirim lokasi Universitas Advent Indonesia.
-`
+        text: `🆘 *Bantuan BOT SKPI*\n\nGunakan perintah berikut:\n\n✅ *info* - Informasi tentang SKPI UNAI\n🕒 *waktu* - Tampilkan waktu dan tanggal saat ini\n📍 *lokasi* - Lokasi UNAI\n📚 *skpi* - Penjelasan tentang apa itu SKPI\n✍️ *kontak* - Hubungi admin atau WR III\n\nKetik salah satu perintah di atas untuk mulai.`
       })
-      return
-    }
-
-    if (lowerText === 'info') {
+    } else if (text.toLowerCase() === 'info') {
       await sock.sendMessage(sender, {
-        text: `ℹ️ *Info BOT SKPI*\nBOT ini membantu kamu mendapatkan informasi terkait SKPI Universitas Advent Indonesia.`
+        text: `ℹ *Informasi BOT SKPI*\n\nBot ini dibuat untuk membantu mahasiswa Universitas Advent Indonesia dalam mengakses informasi terkait SKPI (Surat Keterangan Pendamping Ijazah).`
       })
-      return
-    }
-
-    if (lowerText === 'bantuan' || lowerText === 'help') {
-      await sock.sendMessage(sender, {
-        text: `🆘 *Daftar Perintah*\n\n- 👋 halo\n- ℹ️ info\n- 🆘 bantuan/help\n- 🕒 waktu\n- 📍 lokasi`
-      })
-      return
-    }
-
-    if (lowerText === 'waktu') {
-      const now = new Date()
-      await sock.sendMessage(sender, {
-        text: `🕒 Waktu saat ini: ${now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}`
-      })
-      return
-    }
-
-    if (lowerText === 'lokasi') {
+    } else if (text.toLowerCase() === 'waktu') {
+      const waktu = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
+      await sock.sendMessage(sender, { text: `🕒 Waktu saat ini: ${waktu}` })
+    } else if (text.toLowerCase() === 'lokasi') {
       await sock.sendMessage(sender, {
         location: {
-          degreesLatitude: -6.914744,
-          degreesLongitude: 107.609810,
+          degreesLatitude: -6.857,
+          degreesLongitude: 107.6181,
           name: "Universitas Advent Indonesia",
-          address: "Jalan Terusan Ahmad Yani No. 70, Bandung"
+          address: "Jl. Kolonel Masturi No.288, Parongpong, Kab. Bandung Barat"
         }
       })
-      return
+      await sock.sendMessage(sender, {
+        text: `📍 *Google Maps UNAI:*\nhttps://maps.app.goo.gl/9yTyGfBL4TDSfKqv7`
+      })
+    } else {
+      await sock.sendMessage(sender, {
+        text: `❓ Maaf, perintah tidak dikenali.\nKetik *help* untuk melihat daftar perintah.`
+      })
     }
-
-    // Balasan default jika perintah tidak dikenal
-    await sock.sendMessage(sender, {
-      text: `Maaf, perintah tidak dikenali. Ketik *bantuan* atau *help* untuk daftar perintah.`
-    })
   })
 }
 
