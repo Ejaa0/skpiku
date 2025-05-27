@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;
@@ -17,8 +16,8 @@ $defaultAdminPasswordHash = password_hash('rahasia123', PASSWORD_DEFAULT);
 // ======================== HALAMAN UTAMA ========================
 Route::get('/', fn () => view('dashboard'))->name('beranda');
 
-// ======================== LOGIN MAHASISWA DUMMY ========================
-Route::get('/login/mahasiswa', fn () => view('mahasiswa.login'))->name('mahasiswa.login');
+// ======================== LOGIN MAHASISWA (Dummy) ========================
+Route::get('/login/mahasiswa', fn() => view('mahasiswa.login'))->name('mahasiswa.login');
 
 Route::post('/login/mahasiswa', function (Request $request) {
     $request->validate([
@@ -26,7 +25,6 @@ Route::post('/login/mahasiswa', function (Request $request) {
         'password' => 'required',
     ]);
 
-    // Dummy data
     $dummyEmail = 'mahasiswa@unai.ac.id';
     $dummyPassword = '123456';
 
@@ -43,12 +41,24 @@ Route::post('/login/mahasiswa', function (Request $request) {
     return redirect()->route('mahasiswa.login')->with('error', 'Email atau password salah.');
 })->name('mahasiswa.login.submit');
 
+Route::get('/mahasiswa/dashboard', function () {
+    if (!session('is_mahasiswa_logged_in')) {
+        return redirect()->route('mahasiswa.login');
+    }
+
+    $mahasiswa = [
+        'nim' => session('mahasiswa_nim'),
+        'email' => session('mahasiswa_email'),
+        'nama' => session('mahasiswa_nama'),
+    ];
+
+    return view('mahasiswa.dashboard', compact('mahasiswa'));
+})->name('mahasiswa.dashboard');
+
 Route::post('/logout/mahasiswa', function () {
     session()->forget(['is_mahasiswa_logged_in', 'mahasiswa_nim', 'mahasiswa_email', 'mahasiswa_nama']);
     return redirect()->route('mahasiswa.login');
 })->name('logout.mahasiswa');
-
-Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])->name('mahasiswa.dashboard');
 
 // ======================== LOGIN ADMIN ========================
 Route::get('/login/admin', fn () => view('admin.login'))->name('admin.login');
@@ -102,7 +112,7 @@ Route::get('/warek/dashboard', function () {
     return view('warek.dashboard_warek');
 })->name('warek.dashboard');
 
-// ======================== LOGOUT SEMUA ========================
+// ======================== LOGOUT ========================
 Route::post('/logout/warek', function () {
     session()->forget('is_warek_logged_in');
     return redirect()->route('warek.login');
@@ -120,6 +130,16 @@ Route::get('/skpi/{skpi}/export-pdf', [SKPIController::class, 'exportPdf'])->nam
 Route::post('/skpi/generate-diploma', [SKPIController::class, 'generateDiploma']);
 Route::get('/skpi', [SKPIController::class, 'index'])->name('skpi.index');
 Route::resource('skpi', SKPIController::class);
+
+// ======================== MAHASISWA ROUTES ========================
+// Menampilkan halaman data mahasiswa dengan fitur search dan list
+Route::get('/mahasiswa/data', [MahasiswaController::class, 'dataMahasiswa'])->name('mahasiswa.data');
+
+// Halaman dashboard mahasiswa (bisa dipakai untuk dashboard utama mahasiswa)
+Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])->name('mahasiswa.dashboard');
+
+// Route logout mahasiswa via controller
+Route::post('/mahasiswa/logout', [MahasiswaController::class, 'logout'])->name('logout.mahasiswa');
 
 // ======================== RESOURCE CONTROLLERS ========================
 Route::resource('mahasiswa', MahasiswaController::class);
