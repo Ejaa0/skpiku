@@ -13,6 +13,22 @@ class MahasiswaController extends Controller
         return view('mahasiswa.index', compact('mahasiswas'));
     }
 
+    public function dashboard(Request $request)
+    {
+        if (!session('is_mahasiswa_logged_in')) {
+            return redirect()->route('mahasiswa.login');
+        }
+
+        $search = $request->input('search');
+
+        $mahasiswas = Mahasiswa::when($search, function ($query, $search) {
+            return $query->where('nama', 'like', "%{$search}%")
+                         ->orWhere('nim', 'like', "%{$search}%");
+        })->get();
+
+        return view('mahasiswa.dashboard', compact('mahasiswas', 'search'));
+    }
+
     public function create()
     {
         return view('mahasiswa.create');

@@ -1,41 +1,54 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Mahasiswa;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\SKPIController;
 use App\Http\Controllers\PoinMahasiswaController;
 
+// ======================== KONFIG DEFAULT ADMIN ========================
 $defaultAdminEmail = 'rezaivander12@gmail.com';
 $defaultAdminPasswordHash = password_hash('rahasia123', PASSWORD_DEFAULT);
 
-// ======================== HALAMAN UTAMA (DASHBOARD AWAL) ========================
-Route::get('/', function () {
-    return view('dashboard'); // Menampilkan resources/views/dashboard.blade.php
-})->name('beranda');
+// ======================== HALAMAN UTAMA ========================
+Route::get('/', fn () => view('dashboard'))->name('beranda');
 
-// ======================== LOGIN MAHASISWA ========================
+// ======================== LOGIN MAHASISWA DUMMY ========================
 Route::get('/login/mahasiswa', fn () => view('mahasiswa.login'))->name('mahasiswa.login');
 
 Route::post('/login/mahasiswa', function (Request $request) {
-    if ($request->email === 'mahasiswa@unai.ac.id' && $request->password === 'mahasiswa123') {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Dummy data
+    $dummyEmail = 'mahasiswa@unai.ac.id';
+    $dummyPassword = '123456';
+
+    if ($request->email === $dummyEmail && $request->password === $dummyPassword) {
         session([
             'is_mahasiswa_logged_in' => true,
-            'mahasiswa_email' => $request->email,
+            'mahasiswa_email' => $dummyEmail,
+            'mahasiswa_nim' => '1234567890',
+            'mahasiswa_nama' => 'Nama Dummy Mahasiswa',
         ]);
-        return redirect('/mahasiswa/dashboard');
+        return redirect()->route('mahasiswa.dashboard');
     }
+
     return redirect()->route('mahasiswa.login')->with('error', 'Email atau password salah.');
 })->name('mahasiswa.login.submit');
 
-Route::get('/mahasiswa/dashboard', function () {
-    if (!session('is_mahasiswa_logged_in')) {
-        return redirect()->route('mahasiswa.login');
-    }
-    return view('mahasiswa.dashboard');
-})->name('mahasiswa.dashboard');
+Route::post('/logout/mahasiswa', function () {
+    session()->forget(['is_mahasiswa_logged_in', 'mahasiswa_nim', 'mahasiswa_email', 'mahasiswa_nama']);
+    return redirect()->route('mahasiswa.login');
+})->name('logout.mahasiswa');
+
+Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])->name('mahasiswa.dashboard');
 
 // ======================== LOGIN ADMIN ========================
 Route::get('/login/admin', fn () => view('admin.login'))->name('admin.login');
@@ -89,7 +102,7 @@ Route::get('/warek/dashboard', function () {
     return view('warek.dashboard_warek');
 })->name('warek.dashboard');
 
-// ======================== LOGOUT ========================
+// ======================== LOGOUT SEMUA ========================
 Route::post('/logout/warek', function () {
     session()->forget('is_warek_logged_in');
     return redirect()->route('warek.login');
@@ -97,20 +110,16 @@ Route::post('/logout/warek', function () {
 
 Route::post('/logout', function () {
     session()->flush();
-    return redirect()->route('admin.login'); 
+    return redirect()->route('admin.login');
 })->name('logout');
 
-
+// ======================== SKPI ROUTES ========================
 Route::get('/skpi/form', [SKPIController::class, 'form']);
 Route::post('/skpi/generate', [SKPIController::class, 'generate'])->name('skpi.generate');
 Route::get('/skpi/{skpi}/export-pdf', [SKPIController::class, 'exportPdf'])->name('skpi.exportPdf');
-Route::get('/skpi', [SKPIController::class, 'index']);
-Route::post('/skpi/generate', [SKPIController::class, 'generate']);
-Route::resource('skpi', SKPIController::class);
-Route::get('/skpi', [SKPIController::class, 'index']);
-Route::post('/skpi/generate', [SKPIController::class, 'generate']);
 Route::post('/skpi/generate-diploma', [SKPIController::class, 'generateDiploma']);
-Route::get('/skpi', [SkpiController::class, 'index'])->name('skpi.index');
+Route::get('/skpi', [SKPIController::class, 'index'])->name('skpi.index');
+Route::resource('skpi', SKPIController::class);
 
 // ======================== RESOURCE CONTROLLERS ========================
 Route::resource('mahasiswa', MahasiswaController::class);

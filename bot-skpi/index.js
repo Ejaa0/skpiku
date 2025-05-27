@@ -46,7 +46,6 @@ async function startBot() {
 
     const sender = msg.key.remoteJid
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || ''
-    const pushName = msg.pushName || 'Pengguna'
 
     console.log('📨 Pesan dari:', sender)
     console.log('💬 Isi pesan:', text)
@@ -55,15 +54,15 @@ async function startBot() {
 
     if (greetingKeywords.includes(text.toLowerCase())) {
       await sock.sendMessage(sender, {
-        text: `👋 Hai! Ada yang bisa kami bantu?\n\n📋 *Daftar Perintah BOT SKPI* 📋\n\n- 👋 *halo*        : Menyapa bot dan mendapatkan balasan sapaan.\n- ℹ *info*         : Menampilkan informasi singkat tentang BOT SKPI.\n- 🆘 *bantuan/help* : Menampilkan daftar perintah yang bisa kamu gunakan.\n- 🕒 *waktu*        : Menampilkan waktu dan tanggal saat ini.\n- 📍 *lokasi*       : Mengirim lokasi Universitas Advent Indonesia.\n- 📱 *device*       : Menampilkan info perangkat kamu.\n\nSelamat menggunakan! 😊`
+        text: `👋 Hai! Ada yang bisa kami bantu?\n\n📋 *Daftar Perintah BOT SKPI* 📋\n\n- 👋 *halo*        : Menyapa bot dan mendapatkan balasan sapaan.\n- ℹ *info*         : Menampilkan informasi singkat tentang BOT SKPI.\n- 🆘 *bantuan/help* : Menampilkan daftar perintah yang bisa kamu gunakan.\n- 🕒 *waktu*        : Menampilkan waktu dan tanggal saat ini.\n- 📍 *lokasi*       : Mengirim lokasi Universitas Advent Indonesia.\n- 📬 *kontak*       : Hubungi Wakil Rektor III.\n\nSelamat menggunakan! 😊`
       })
     } else if (['help', 'bantuan'].includes(text.toLowerCase())) {
       await sock.sendMessage(sender, {
-        text: `🆘 *Bantuan BOT SKPI*\n\nGunakan perintah berikut:\n\n✅ *info* - Informasi tentang SKPI UNAI\n🕒 *waktu* - Tampilkan waktu dan tanggal saat ini\n📍 *lokasi* - Lokasi UNAI\n📚 *skpi* - Penjelasan tentang apa itu SKPI\n✍️ *kontak* - Hubungi admin atau WR III\n📱 *device* - Info perangkat yang kamu gunakan\n\nKetik salah satu perintah di atas untuk mulai.`
+        text: `🆘 *Bantuan BOT SKPI*\n\nGunakan perintah berikut:\n\n✅ *info* - Informasi tentang SKPI UNAI\n🕒 *waktu* - Tampilkan waktu dan tanggal saat ini\n📍 *lokasi* - Lokasi UNAI\n📚 *skpi* - Penjelasan tentang apa itu SKPI\n📬 *kontak* - Hubungi admin atau WR III\n\nKetik salah satu perintah di atas untuk mulai.`
       })
     } else if (text.toLowerCase() === 'info') {
       await sock.sendMessage(sender, {
-        text: `ℹ *Informasi BOT SKPI*\n\nBot ini dibuat untuk membantu mahasiswa Universitas Advent Indonesia dalam mengakses informasi terkait SKPI (Surat Keterangan Pendamping Ijazah).\n\nSKPI membantu mahasiswa untuk menunjukkan capaian non-akademik yang bisa memperkuat nilai ijazah.`
+        text: `ℹ *Informasi BOT SKPI*\n\nBot ini dibuat untuk membantu mahasiswa Universitas Advent Indonesia dalam mengakses informasi terkait SKPI (Surat Keterangan Pendamping Ijazah). SKPI mencerminkan capaian kegiatan akademik dan non-akademik mahasiswa selama masa studi.`
       })
     } else if (text.toLowerCase() === 'waktu') {
       const waktu = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
@@ -82,29 +81,13 @@ async function startBot() {
       })
     } else if (text.toLowerCase() === 'kontak') {
       await sock.sendMessage(sender, {
-        text: "📞 Hubungi langsung:\n",
+        text: `📞 *Kontak SKPI*\n\n👤 Nama: Sir. Yunus Elon\n📱 WhatsApp: wa.me/6281313361884\n✉️ Email: yunus.elon@unai.edu\n\nSilakan gunakan tombol di bawah ini untuk langsung menghubungi.`,
         footer: 'BOT SKPI',
         buttons: [
           { buttonId: 'chat_wakil_rektor', buttonText: { displayText: 'Chat Sir. Yunus Elon' }, type: 1 },
           { buttonId: 'email_wakil_rektor', buttonText: { displayText: 'Kirim Email' }, type: 1 }
         ],
         headerType: 1
-      })
-    } else if (text === 'chat_wakil_rektor') {
-      await sock.sendMessage(sender, { text: 'https://wa.me/6281313361884' })
-    } else if (text === 'email_wakil_rektor') {
-      await sock.sendMessage(sender, { text: 'mailto:yunus.elon@unai.edu' })
-    } else if (text.toLowerCase() === 'skpi') {
-      await sock.sendMessage(sender, {
-        text: `📚 *Apa itu SKPI?*\n\nSKPI (Surat Keterangan Pendamping Ijazah) adalah dokumen resmi yang menjelaskan capaian kompetensi lulusan secara lengkap, baik akademik maupun non-akademik.\n\nDengan SKPI, mahasiswa bisa lebih mudah menunjukkan kemampuan mereka kepada dunia kerja.`
-      })
-    } else if (text.toLowerCase() === 'tips') {
-      await sock.sendMessage(sender, {
-        text: `💡 *Tips SKPI*\n\n- Ikut aktif dalam kegiatan organisasi dan pengembangan diri.\n- Rajin mendokumentasikan aktivitas dan prestasi.\n- Jaga integritas dan kedisiplinan.\n- Manfaatkan SKPI untuk memperkuat portofolio kerja.\n- Selalu update informasi tentang persyaratan SKPI.`
-      })
-    } else if (text.toLowerCase() === 'device') {
-      await sock.sendMessage(sender, {
-        text: `📱 Informasi perangkat kamu:\n\nNama kontak: ${pushName}\nNomor: ${sender.replace('@s.whatsapp.net', '')}\n\n(Info ini berdasarkan data WhatsApp yang kami terima)`
       })
     } else {
       await sock.sendMessage(sender, {
