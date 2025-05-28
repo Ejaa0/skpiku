@@ -57,7 +57,7 @@
 
             <!-- Sidebar footer -->
             <div class="mt-auto text-xs text-blue-200 text-center">
-                &copy; {{ now()->year }} Universitas Advent Indonesia
+                &copy; {{ now()->year }} Universis Advent Indonesia
             </div>
         </div>
     </aside>

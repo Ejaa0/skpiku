@@ -7,10 +7,21 @@ use Illuminate\Http\Request;
 
 class KegiatanController extends Controller
 {
-    // Tampilkan semua kegiatan
-    public function index()
+    // ✅ Gabungkan logika index dan pencarian
+    public function index(Request $request)
     {
-        $kegiatan = Kegiatan::latest()->get();
+        $search = $request->query('search');
+
+        $kegiatan = Kegiatan::when($search, function ($query, $search) {
+                return $query->where('nim', 'like', "%{$search}%")
+                             ->orWhere('nama', 'like', "%{$search}%")
+                             ->orWhere('jenis_kegiatan', 'like', "%{$search}%")
+                             ->orWhere('nama_kegiatan', 'like', "%{$search}%")
+                             ->orWhere('id_kegiatan', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->get();
+
         return view('kegiatan.index', compact('kegiatan'));
     }
 

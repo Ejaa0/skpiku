@@ -11,7 +11,24 @@
             </div>
         @endif
 
-        <a href="{{ route('kegiatan.create') }}" class="inline-block bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg mb-4">+ Tambah Kegiatan</a>
+        <!-- Form Search -->
+        <form action="{{ route('kegiatan.index') }}" method="GET" class="mb-6 flex flex-wrap gap-2 items-center">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari berdasarkan NIM, nama, jenis kegiatan..."
+                class="border border-gray-300 rounded px-3 py-2 w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+                type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            >
+                🔍 Cari
+            </button>
+        </form>
+
+        <a href="{{ route('kegiatan.create') }}" class="inline-block bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg mb-4 hover:bg-blue-700">+ Tambah Kegiatan</a>
 
         <div class="overflow-x-auto rounded-lg shadow-lg mt-6">
             <table class="min-w-full table-auto border-separate border-spacing-0">
@@ -29,7 +46,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-sm text-gray-800 bg-white">
-                    @foreach($kegiatan as $item)
+                    @forelse($kegiatan as $item)
                         <tr>
                             <td class="border-b px-4 py-3 text-center">{{ $loop->iteration }}</td>
                             <td class="border-b px-4 py-3">{{ $item->nim }}</td>
@@ -43,29 +60,27 @@
                             <td class="border-b px-4 py-3">{{ $item->absensi }}</td>
                             <td class="border-b px-4 py-3 text-center">
                                 <div class="flex justify-center space-x-4">
-                                    <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:text-green-800">
-                                        👁️ Show
+                                    <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:text-green-800" title="Show">
+                                        👁️
                                     </a>
-                                    <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800">
-                                        ✏️ Edit
+                                    <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800" title="Edit">
+                                        ✏️
                                     </a>
                                     <form action="{{ route('kegiatan.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800">
-                                            🗑️ Hapus
+                                        <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
+                                            🗑️
                                         </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
-
-                    @if($kegiatan->isEmpty())
+                    @empty
                         <tr class="text-center">
                             <td colspan="9" class="text-gray-500 py-6">Belum ada kegiatan yang tercatat.</td>
                         </tr>
-                    @endif
+                    @endforelse
                 </tbody>
             </table>
         </div>

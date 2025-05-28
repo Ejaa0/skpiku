@@ -10,11 +10,34 @@
             Daftar Mahasiswa
         </h1>
 
-        <div class="mb-6">
+        <div class="mb-6 flex flex-wrap gap-4">
             <a href="{{ route('mahasiswa.create') }}" class="inline-block bg-gradient-to-r from-blue-700 to-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:scale-105 transform transition duration-300">
                 + Tambah Mahasiswa
             </a>
+
+            <a href="http://127.0.0.1:8000/mahasiswa/data" class="inline-block bg-gradient-to-r from-blue-700 to-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:scale-105 transform transition duration-300">
+                ⬅️ Kembali ke Data Mahasiswa
+            </a>
         </div>
+
+        {{-- Form Search --}}
+        <form action="{{ route('mahasiswa.index') }}" method="GET" class="mb-6 flex gap-2">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari mahasiswa..."
+                class="flex-grow px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+            <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                Cari
+            </button>
+            @if(request('search'))
+                <a href="{{ route('mahasiswa.index') }}" class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-gray-600">
+                    Reset
+                </a>
+            @endif
+        </form>
 
         @if (session('success'))
             <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-lg mb-6 shadow-md animate-pulse">
@@ -24,7 +47,7 @@
 
         <div class="overflow-x-auto rounded-xl shadow-inner">
             <table class="min-w-full w-full text-sm">
-                {{-- Header tabel dengan warna sidebar --}}
+                {{-- Header tabel --}}
                 <thead class="bg-blue-700 text-white uppercase text-xs tracking-wider">
                     <tr>
                         <th class="px-6 py-3 text-left">NIM</th>
@@ -40,9 +63,9 @@
                     </tr>
                 </thead>
 
-                {{-- Isi tabel putih --}}
+                {{-- Isi tabel --}}
                 <tbody class="bg-white divide-y divide-gray-200 text-gray-800">
-                    @foreach ($mahasiswas as $mahasiswa)
+                    @forelse ($mahasiswas as $mahasiswa)
                         <tr class="hover:bg-blue-50 transition duration-200">
                             <td class="px-6 py-4 whitespace-nowrap">{{ $mahasiswa->nim }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $mahasiswa->nama }}</td>
@@ -69,9 +92,20 @@
                                 </form>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="10" class="text-center py-6 text-gray-500">
+                                Tidak ada data mahasiswa yang ditemukan.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- Pagination --}}
+        <div class="mt-6">
+            {{ $mahasiswas->links() }}
         </div>
     </div>
 </div>

@@ -50,7 +50,7 @@
             <a href="{{ route('organisasi.index') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 transition">
                 🏢 <span class="ml-2">Data Organisasi</span>
             </a>
-            <a href="{{ route('mahasiswa.index') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 transition">
+            <a href="{{ url('/mahasiswa/data') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 transition">
                 🎓 <span class="ml-2">Data Mahasiswa</span>
             </a>
             <a href="{{ route('kegiatan.index') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 transition">

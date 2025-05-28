@@ -7,20 +7,30 @@ use App\Models\Mahasiswa;
 
 class MahasiswaController extends Controller
 {
-    // Menampilkan semua data mahasiswa (halaman data mahasiswa)
-    public function index()
+    public function index(Request $request)
     {
-        $mahasiswas = Mahasiswa::all();
+        $query = Mahasiswa::query();
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nim', 'like', "%{$search}%")
+                  ->orWhere('nama', 'like', "%{$search}%")
+                  ->orWhere('temp_lahir', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $mahasiswas = $query->orderBy('nama')->paginate(10)->withQueryString();
+
         return view('mahasiswa.index', compact('mahasiswas'));
     }
 
-    // Menampilkan form tambah mahasiswa
     public function create()
     {
         return view('mahasiswa.create');
     }
 
-    // Menyimpan data mahasiswa baru ke database
     public function store(Request $request)
     {
         $request->validate([
@@ -39,21 +49,18 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil ditambahkan.');
     }
 
-    // Menampilkan detail satu mahasiswa
     public function show($id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
         return view('mahasiswa.show', compact('mahasiswa'));
     }
 
-    // Menampilkan form edit mahasiswa
     public function edit($id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
         return view('mahasiswa.edit', compact('mahasiswa'));
     }
 
-    // Update data mahasiswa
     public function update(Request $request, $id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
@@ -74,7 +81,6 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil diupdate.');
     }
 
-    // Hapus data mahasiswa
     public function destroy($id)
     {
         $mahasiswa = Mahasiswa::findOrFail($id);
@@ -83,7 +89,6 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil dihapus.');
     }
 
-    // Method untuk halaman dashboard mahasiswa (bisa disesuaikan)
     public function dashboard()
     {
         if (!session('is_mahasiswa_logged_in')) {
@@ -95,7 +100,6 @@ class MahasiswaController extends Controller
         return view('mahasiswa.dashboard', compact('mahasiswas'));
     }
 
-    // Halaman data mahasiswa dengan fitur search
     public function dataMahasiswa(Request $request)
     {
         $search = $request->input('search');

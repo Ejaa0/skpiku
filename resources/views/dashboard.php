@@ -59,7 +59,7 @@
 
     <div class="text-center mb-10">
         <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800">
-            Selamat Datang di <span class="text-blue-700">UNAI Gamification!</span>
+            Selamat Datang di <span class="text-blue-700">SKPI UNAI!</span>
         </h1>
         <p class="text-gray-600 mt-2">Silakan pilih role login sesuai dengan peran Anda di sistem SKPI</p>
     </div>

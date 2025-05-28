@@ -146,3 +146,5 @@ Route::resource('mahasiswa', MahasiswaController::class);
 Route::resource('kegiatan', KegiatanController::class);
 Route::resource('organisasi', OrganisasiController::class);
 Route::resource('poin', PoinMahasiswaController::class);
+Route::get('/mahasiswa/data_kegiatan', [MahasiswaController::class, 'dataKegiatan'])
+    ->name('mahasiswa.data_kegiatan');
