@@ -17,7 +17,7 @@
                 type="text"
                 name="search"
                 value="{{ request('search') }}"
-                placeholder="Cari berdasarkan NIM, nama, jenis kegiatan..."
+                placeholder="Cari berdasarkan jenis atau nama kegiatan..."
                 class="border border-gray-300 rounded px-3 py-2 w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
@@ -35,13 +35,10 @@
                 <thead class="bg-blue-600 text-white text-sm uppercase">
                     <tr>
                         <th class="px-4 py-3 border-b">No</th>
-                        <th class="px-4 py-3 border-b">NIM</th>
-                        <th class="px-4 py-3 border-b">Nama</th>
                         <th class="px-4 py-3 border-b">ID Kegiatan</th>
                         <th class="px-4 py-3 border-b">Jenis</th>
                         <th class="px-4 py-3 border-b">Nama Kegiatan</th>
                         <th class="px-4 py-3 border-b">Tanggal</th>
-                        <th class="px-4 py-3 border-b">Absensi</th>
                         <th class="px-4 py-3 border-b text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -49,15 +46,12 @@
                     @forelse($kegiatan as $item)
                         <tr>
                             <td class="border-b px-4 py-3 text-center">{{ $loop->iteration }}</td>
-                            <td class="border-b px-4 py-3">{{ $item->nim }}</td>
-                            <td class="border-b px-4 py-3">{{ $item->nama }}</td>
                             <td class="border-b px-4 py-3">{{ $item->id_kegiatan }}</td>
                             <td class="border-b px-4 py-3">{{ $item->jenis_kegiatan }}</td>
                             <td class="border-b px-4 py-3">{{ $item->nama_kegiatan }}</td>
                             <td class="border-b px-4 py-3">
                                 {{ \Carbon\Carbon::parse($item->tanggal_kegiatan)->translatedFormat('d F Y') }}
                             </td>
-                            <td class="border-b px-4 py-3">{{ $item->absensi }}</td>
                             <td class="border-b px-4 py-3 text-center">
                                 <div class="flex justify-center space-x-4">
                                     <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:text-green-800" title="Show">
@@ -78,7 +72,7 @@
                         </tr>
                     @empty
                         <tr class="text-center">
-                            <td colspan="9" class="text-gray-500 py-6">Belum ada kegiatan yang tercatat.</td>
+                            <td colspan="6" class="text-gray-500 py-6">Belum ada kegiatan yang tercatat.</td>
                         </tr>
                     @endforelse
                 </tbody>

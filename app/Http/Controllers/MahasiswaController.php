@@ -115,4 +115,5 @@ class MahasiswaController extends Controller
 
         return view('mahasiswa.data_mahasiswa', compact('mahasiswas', 'search'));
     }
+    
 }

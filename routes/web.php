@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MahasiswaController;
@@ -8,6 +7,7 @@ use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\SKPIController;
 use App\Http\Controllers\PoinMahasiswaController;
+use Illuminate\Support\Facades\DB;  
 
 // ======================== KONFIG DEFAULT ADMIN ========================
 $defaultAdminEmail = 'rezaivander12@gmail.com';
@@ -132,19 +132,41 @@ Route::get('/skpi', [SKPIController::class, 'index'])->name('skpi.index');
 Route::resource('skpi', SKPIController::class);
 
 // ======================== MAHASISWA ROUTES ========================
-// Menampilkan halaman data mahasiswa dengan fitur search dan list
 Route::get('/mahasiswa/data', [MahasiswaController::class, 'dataMahasiswa'])->name('mahasiswa.data');
 
-// Halaman dashboard mahasiswa (bisa dipakai untuk dashboard utama mahasiswa)
-Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])->name('mahasiswa.dashboard');
-
-// Route logout mahasiswa via controller
-Route::post('/mahasiswa/logout', [MahasiswaController::class, 'logout'])->name('logout.mahasiswa');
+// Jika kamu ingin menampilkan view langsung dari folder resources/views/kegiatan/data_kegiatan.blade.php:
+Route::get('/mahasiswa/data_kegiatan', function () {
+    return view('kegiatan.data_kegiatan');
+})->name('mahasiswa.data_kegiatan');
 
 // ======================== RESOURCE CONTROLLERS ========================
 Route::resource('mahasiswa', MahasiswaController::class);
 Route::resource('kegiatan', KegiatanController::class);
 Route::resource('organisasi', OrganisasiController::class);
 Route::resource('poin', PoinMahasiswaController::class);
-Route::get('/mahasiswa/data_kegiatan', [MahasiswaController::class, 'dataKegiatan'])
-    ->name('mahasiswa.data_kegiatan');
+Route::get('/kegiatan/{id}', [KegiatanController::class, 'show']);
+
+Route::get('/kegiatan/{id}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaForm'])->name('kegiatan.tambahMahasiswaForm');
+
+Route::post('/kegiatan/{id}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaStore'])->name('kegiatan.tambahMahasiswaStore');
+Route::delete('/kegiatan/{id}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])->name('kegiatan.hapusMahasiswa');
+Route::delete('/kegiatan/{id_kegiatan}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])->name('kegiatan.hapusMahasiswa');
+Route::get('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaForm'])->name('kegiatan.tambahMahasiswaForm');
+Route::get('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaForm'])->name('kegiatan.tambahMahasiswa');
+
+// Menyimpan mahasiswa ke kegiatan
+Route::post('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaStore'])->name('kegiatan.storeMahasiswa');
+
+// Menghapus mahasiswa dari kegiatan
+Route::delete('/kegiatan/{id}/{nim}/hapus-mahasiswa', [KegiatanController::class, 'hapusMahasiswa'])->name('kegiatan.hapusMahasiswa');
+
+
+Route::get('/cek-relasi', function () {
+    $data = DB::table('detail_kegiatan_mahasiswa')
+        ->join('mahasiswas', 'detail_kegiatan_mahasiswa.mahasiswa_nim', '=', 'mahasiswas.nim')
+        ->join('kegiatans', 'detail_kegiatan_mahasiswa.kegiatan_id_ref', '=', 'kegiatans.id_kegiatan')
+        ->select('mahasiswas.nama', 'kegiatans.nama_kegiatan')
+        ->get();
+
+    return $data;
+});

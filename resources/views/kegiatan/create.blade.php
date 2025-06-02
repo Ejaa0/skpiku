@@ -18,16 +18,7 @@
         <form action="{{ route('kegiatan.store') }}" method="POST" class="space-y-4">
             @csrf
 
-            <div>
-                <label for="nim" class="block font-semibold">NIM</label>
-                <input type="text" name="nim" id="nim" class="w-full border border-gray-300 rounded p-2" required>
-            </div>
-
-            <div>
-                <label for="nama" class="block font-semibold">Nama</label>
-                <input type="text" name="nama" id="nama" class="w-full border border-gray-300 rounded p-2" required>
-            </div>
-
+            
             <div>
                 <label for="id_kegiatan" class="block font-semibold">ID Kegiatan</label>
                 <input type="text" name="id_kegiatan" id="id_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
@@ -48,11 +39,7 @@
                 <input type="date" name="tanggal_kegiatan" id="tanggal_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
             </div>
 
-            <div>
-                <label for="absensi" class="block font-semibold">Absensi</label>
-                <input type="text" name="absensi" id="absensi" class="w-full border border-gray-300 rounded p-2" required>
-            </div>
-
+            
             <div class="text-right">
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Simpan</button>
             </div>

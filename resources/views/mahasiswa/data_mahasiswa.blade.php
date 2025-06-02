@@ -27,11 +27,11 @@
                         {{ request()->routeIs('mahasiswa.data') ? 'bg-white text-blue-700 font-bold' : 'hover:bg-blue-600' }}">
                     🧾 Data Mahasiswa
                 </a>
-               <a href="{{ route('mahasiswa.data_kegiatan') }}"
-   class="block py-2 px-4 rounded transition duration-200
+                <a href="{{ route('mahasiswa.data_kegiatan') }}"
+                    class="block py-2 px-4 rounded transition duration-200
       {{ request()->routeIs('mahasiswa.data_kegiatan') ? 'bg-white text-blue-700 font-bold' : 'hover:bg-blue-600' }}">
-    📅 Data Kegiatan
-</a>
+                    📅 Data Kegiatan
+                </a>
 
 
                 <form method="POST" action="{{ route('logout.mahasiswa') }}" class="pt-6">

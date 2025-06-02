@@ -8,16 +8,7 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-4">
-            <label class="block font-semibold">NIM</label>
-            <input type="text" name="nim" value="{{ $kegiatan->nim }}" class="w-full border p-2 rounded" required>
-        </div>
-
-        <div class="mb-4">
-            <label class="block font-semibold">Nama</label>
-            <input type="text" name="nama" value="{{ $kegiatan->nama }}" class="w-full border p-2 rounded" required>
-        </div>
-
+        
         <div class="mb-4">
             <label class="block font-semibold">ID Kegiatan</label>
             <input type="text" name="id_kegiatan" value="{{ $kegiatan->id_kegiatan }}" class="w-full border p-2 rounded" required>
@@ -38,10 +29,6 @@
             <input type="date" name="tanggal_kegiatan" value="{{ $kegiatan->tanggal_kegiatan }}" class="w-full border p-2 rounded" required>
         </div>
 
-        <div class="mb-4">
-            <label class="block font-semibold">Absensi</label>
-            <input type="text" name="absensi" value="{{ $kegiatan->absensi }}" class="w-full border p-2 rounded" required>
-        </div>
 
         <div class="flex justify-between">
             <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Update</button>
