@@ -10,11 +10,8 @@ return new class extends Migration
     {
         Schema::create('organisasi', function (Blueprint $table) {
             $table->id();
-            $table->string('nim');
-            $table->string('nama');
             $table->string('id_organisasi');
             $table->string('nama_organisasi');
-            $table->string('absensi');
             $table->timestamps(); // created_at dan updated_at
         });
     }

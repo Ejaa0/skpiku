@@ -20,11 +20,8 @@
                 <thead class="bg-blue-600 text-white text-sm uppercase">
                     <tr>
                         <th class="px-4 py-3 border-b">No</th>
-                        <th class="px-4 py-3 border-b">NIM</th>
-                        <th class="px-4 py-3 border-b">Nama</th>
                         <th class="px-4 py-3 border-b">ID Organisasi</th>
                         <th class="px-4 py-3 border-b">Nama Organisasi</th>
-                        <th class="px-4 py-3 border-b">Absensi</th>
                         <th class="px-4 py-3 border-b text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -32,11 +29,8 @@
                     @foreach($organisasi as $item)
                         <tr>
                             <td class="border-b px-4 py-3 text-center">{{ $loop->iteration }}</td>
-                            <td class="border-b px-4 py-3">{{ $item->nim }}</td>
-                            <td class="border-b px-4 py-3">{{ $item->nama }}</td>
                             <td class="border-b px-4 py-3">{{ $item->id_organisasi }}</td>
                             <td class="border-b px-4 py-3">{{ $item->nama_organisasi }}</td>
-                            <td class="border-b px-4 py-3">{{ $item->absensi }}</td>
                             <td class="border-b px-4 py-3 text-center">
                                 <div class="space-x-3">
                                     <a href="{{ route('organisasi.show', $item->id) }}" class="inline-block text-green-600 hover:text-green-800">👁️ Show</a>
@@ -53,7 +47,7 @@
 
                     @if($organisasi->isEmpty())
                         <tr class="text-center">
-                            <td colspan="7" class="text-gray-500 py-6">Belum ada organisasi yang tercatat.</td>
+                            <td colspan="4" class="text-gray-500 py-6">Belum ada organisasi yang tercatat.</td>
                         </tr>
                     @endif
                 </tbody>

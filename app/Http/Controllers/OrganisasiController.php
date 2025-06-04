@@ -3,93 +3,129 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organisasi;
+use App\Models\DetailOrganisasiMahasiswa;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 
 class OrganisasiController extends Controller
 {
-    // Menampilkan daftar organisasi
+    // Tampilkan semua organisasi
     public function index()
     {
-        // Mengambil semua data organisasi dari database
-        $organisasi = Organisasi::all(); // atau bisa menggunakan pagination seperti Organisasi::paginate(10);
-
-        // Mengirimkan data ke view
+        $organisasi = Organisasi::all();
         return view('organisasi.index', compact('organisasi'));
     }
 
-    // Menampilkan form untuk membuat organisasi baru
-    public function create()
+    // Tampilkan form tambah anggota (lama - lewat query)
+    public function create(Request $request)
     {
-        // Hanya menampilkan form tambah organisasi, tidak perlu mengirimkan data
+        $id_organisasi = $request->query('id_organisasi');
+        $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
+
+        return view('detail_organisasi_mahasiswa.create', [
+            'id_organisasi' => $organisasi->id_organisasi,
+            'nama_organisasi' => $organisasi->nama_organisasi
+        ]);
+    }
+
+    // Simpan data anggota organisasi (versi lama)
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'id_organisasi' => 'required|string',
+            'mahasiswa_nim' => 'required|string',
+            'jabatan' => 'required|string',
+            'status_keanggotaan' => 'required|in:aktif,nonaktif',
+        ]);
+
+        DetailOrganisasiMahasiswa::create($validated);
+
+        return redirect()->route('organisasi.index')->with('success', 'Data anggota organisasi berhasil ditambahkan.');
+    }
+
+    // Tampilkan form tambah organisasi baru
+    public function createOrganisasi()
+    {
         return view('organisasi.create');
     }
 
-    // Menyimpan organisasi baru ke dalam database
-    public function store(Request $request)
+    // Simpan data organisasi baru
+    public function storeOrganisasi(Request $request)
     {
-        // Validasi data yang diterima
-        $validatedData = $request->validate([
-            'nim' => 'required',
-            'nama' => 'required',
-            'id_organisasi' => 'required',
-            'nama_organisasi' => 'required',
-            'absensi' => 'required'
+        $validated = $request->validate([
+            'id_organisasi' => 'required|string|unique:organisasi,id_organisasi',
+            'nama_organisasi' => 'required|string',
         ]);
 
-        // Menyimpan data ke database
-        Organisasi::create($validatedData);
+        Organisasi::create($validated);
 
-        // Redirect ke halaman daftar organisasi dengan pesan sukses
-        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil ditambahkan.');
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi baru berhasil ditambahkan.');
     }
 
-    // Menampilkan form untuk mengedit organisasi
+    // Tampilkan form edit organisasi
     public function edit($id)
     {
-        // Mencari organisasi berdasarkan ID
         $organisasi = Organisasi::findOrFail($id);
-
         return view('organisasi.edit', compact('organisasi'));
     }
 
-    // Memperbarui data organisasi di database
+    // Simpan perubahan data organisasi
     public function update(Request $request, $id)
     {
-        // Validasi data yang diterima
         $validatedData = $request->validate([
-            'nim' => 'required',
-            'nama' => 'required',
-            'id_organisasi' => 'required',
-            'nama_organisasi' => 'required',
-            'absensi' => 'required'
+            'id_organisasi' => 'required|string',
+            'nama_organisasi' => 'required|string',
         ]);
 
-        // Mencari organisasi berdasarkan ID dan memperbarui data
         $organisasi = Organisasi::findOrFail($id);
         $organisasi->update($validatedData);
 
-        // Redirect ke halaman daftar organisasi dengan pesan sukses
         return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil diperbarui.');
     }
 
-    // Menghapus organisasi
+    // Hapus organisasi
     public function destroy($id)
     {
-        // Mencari organisasi berdasarkan ID dan menghapusnya
         $organisasi = Organisasi::findOrFail($id);
         $organisasi->delete();
 
-        // Redirect ke halaman daftar organisasi dengan pesan sukses
         return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil dihapus.');
     }
 
-    // Menampilkan detail organisasi (opsional, jika dibutuhkan)
+    // Tampilkan detail organisasi dan anggotanya
     public function show($id)
     {
-        // Mencari organisasi berdasarkan ID
         $organisasi = Organisasi::findOrFail($id);
+        $detailMahasiswa = DetailOrganisasiMahasiswa::where('id_organisasi', $organisasi->id_organisasi)->get();
 
-        // Menampilkan detail organisasi
-        return view('organisasi.show', compact('organisasi'));
+        return view('organisasi.show', compact('organisasi', 'detailMahasiswa'));
+    }
+
+    // ✅ Form tambah anggota organisasi (versi lengkap & lebih baik)
+    public function formTambahAnggota($id)
+    {
+        $organisasi = Organisasi::findOrFail($id);
+        $mahasiswa = Mahasiswa::all(); // Ambil semua mahasiswa
+
+        return view('organisasi.tambah_anggota', compact('organisasi', 'mahasiswa'));
+    }
+
+    // ✅ Simpan anggota organisasi dari form versi lengkap
+    public function simpanAnggota(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'mahasiswa_nim' => 'required|string|exists:mahasiswa,nim',
+            'jabatan' => 'required|string',
+            'status_keanggotaan' => 'required|in:aktif,nonaktif',
+        ]);
+
+        DetailOrganisasiMahasiswa::create([
+            'id_organisasi' => Organisasi::findOrFail($id)->id_organisasi,
+            'mahasiswa_nim' => $validated['mahasiswa_nim'],
+            'jabatan' => $validated['jabatan'],
+            'status_keanggotaan' => $validated['status_keanggotaan'],
+        ]);
+
+        return redirect()->route('organisasi.show', $id)->with('success', 'Anggota berhasil ditambahkan.');
     }
 }
