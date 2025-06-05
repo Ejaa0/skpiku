@@ -2,26 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Mahasiswa::query();
+        $search = $request->input('search');
 
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('nim', 'like', "%{$search}%")
-                  ->orWhere('nama', 'like', "%{$search}%")
-                  ->orWhere('temp_lahir', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        $mahasiswas = $query->orderBy('nama')->paginate(10)->withQueryString();
+        $mahasiswas = Mahasiswa::when($search, function ($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%")
+                             ->orWhere('nim', 'like', "%{$search}%");
+            })
+            ->paginate(10);
 
         return view('mahasiswa.index', compact('mahasiswas'));
     }
@@ -35,13 +29,14 @@ class MahasiswaController extends Controller
     {
         $request->validate([
             'nim' => 'required|unique:mahasiswas,nim',
-            'temp_lahir' => 'required|string|max:255',
+            'nama' => 'required',
+            'temp_lahir' => 'required',
             'tgl_lahir' => 'required|date',
-            'sex' => 'required|string|in:L,P',
-            'agama' => 'required|string|max:50',
-            'hobi' => 'nullable|string|max:255',
-            'angkatan' => 'required|integer|min:1900|max:' . date('Y'),
-            'email' => 'required|email|unique:mahasiswas,email',
+            'sex' => 'required|in:L,P',
+            'agama' => 'required',
+            'hobi' => 'required',
+            'angkatan' => 'required|numeric',
+            'email' => 'required|email',
         ]);
 
         Mahasiswa::create($request->all());
@@ -49,71 +44,39 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil ditambahkan.');
     }
 
-    public function show($id)
+    public function show(Mahasiswa $mahasiswa)
     {
-        $mahasiswa = Mahasiswa::findOrFail($id);
         return view('mahasiswa.show', compact('mahasiswa'));
     }
 
-    public function edit($id)
+    public function edit(Mahasiswa $mahasiswa)
     {
-        $mahasiswa = Mahasiswa::findOrFail($id);
         return view('mahasiswa.edit', compact('mahasiswa'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Mahasiswa $mahasiswa)
     {
-        $mahasiswa = Mahasiswa::findOrFail($id);
-
         $request->validate([
-            'nim' => 'required|unique:mahasiswas,nim,' . $id,
-            'temp_lahir' => 'required|string|max:255',
+            'nim' => 'required|unique:mahasiswas,nim,' . $mahasiswa->nim . ',nim',
+            'nama' => 'required',
+            'temp_lahir' => 'required',
             'tgl_lahir' => 'required|date',
-            'sex' => 'required|string|in:L,P',
-            'agama' => 'required|string|max:50',
-            'hobi' => 'nullable|string|max:255',
-            'angkatan' => 'required|integer|min:1900|max:' . date('Y'),
-            'email' => 'required|email|unique:mahasiswas,email,' . $id,
+            'sex' => 'required|in:L,P',
+            'agama' => 'required',
+            'hobi' => 'required',
+            'angkatan' => 'required|numeric',
+            'email' => 'required|email',
         ]);
 
         $mahasiswa->update($request->all());
 
-        return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil diupdate.');
+        return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(Mahasiswa $mahasiswa)
     {
-        $mahasiswa = Mahasiswa::findOrFail($id);
         $mahasiswa->delete();
 
         return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil dihapus.');
     }
-
-    public function dashboard()
-    {
-        if (!session('is_mahasiswa_logged_in')) {
-            return redirect()->route('mahasiswa.login');
-        }
-
-        $mahasiswas = Mahasiswa::all();
-
-        return view('mahasiswa.dashboard', compact('mahasiswas'));
-    }
-
-    public function dataMahasiswa(Request $request)
-    {
-        $search = $request->input('search');
-
-        $query = Mahasiswa::query();
-
-        if ($search) {
-            $query->where('nim', 'like', "%{$search}%")
-                  ->orWhere('nama', 'like', "%{$search}%");
-        }
-
-        $mahasiswas = $query->get();
-
-        return view('mahasiswa.data_mahasiswa', compact('mahasiswas', 'search'));
-    }
-    
 }

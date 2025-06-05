@@ -32,7 +32,7 @@ class KegiatanController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'id_kegiatan' => 'required|string',
+            'id_kegiatan' => 'required|string|unique:kegiatans,id_kegiatan',
             'jenis_kegiatan' => 'required|string',
             'nama_kegiatan' => 'required|string',
             'tanggal_kegiatan' => 'required|date',
@@ -67,7 +67,7 @@ class KegiatanController extends Controller
         $kegiatan = Kegiatan::findOrFail($id);
 
         $validatedData = $request->validate([
-            'id_kegiatan' => 'required|string',
+            'id_kegiatan' => 'required|string|unique:kegiatans,id_kegiatan,' . $kegiatan->id,
             'jenis_kegiatan' => 'required|string',
             'nama_kegiatan' => 'required|string',
             'tanggal_kegiatan' => 'required|date',
@@ -95,7 +95,7 @@ class KegiatanController extends Controller
         $mahasiswa = Mahasiswa::when($keyword, function ($query) use ($keyword) {
             return $query->where('nim', 'like', "%$keyword%")
                          ->orWhere('nama', 'like', "%$keyword%");
-        })->paginate(10);
+        })->paginate(10)->withQueryString();
 
         return view('kegiatan.tambah_mahasiswa', compact('kegiatan', 'mahasiswa'));
     }

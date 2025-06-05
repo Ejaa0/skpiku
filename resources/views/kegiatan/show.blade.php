@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-6xl mx-auto mt-12 px-4 sm:px-6 lg:px-8"> {{-- Padding horizontal responsif --}}
+    <div class="max-w-6xl mx-auto mt-12 px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-yellow-300">
             <h2 class="text-2xl sm:text-3xl font-extrabold text-yellow-600 mb-6 border-b pb-2">📋 Detail Kegiatan</h2>
 
@@ -40,8 +40,7 @@
                 <p class="text-gray-500">Belum ada mahasiswa yang mengikuti kegiatan ini.</p>
             @else
                 <div class="overflow-x-auto rounded-lg shadow">
-                    <table
-                        class="min-w-full w-full divide-y divide-gray-200 rounded-lg overflow-hidden text-sm sm:text-base">
+                    <table class="min-w-full w-full divide-y divide-gray-200 rounded-lg overflow-hidden text-sm sm:text-base">
                         <thead class="bg-yellow-500 text-white uppercase tracking-wider text-xs sm:text-sm">
                             <tr>
                                 <th class="px-4 sm:px-6 py-3 text-left">No</th>
@@ -56,16 +55,15 @@
                                     <td class="px-4 sm:px-6 py-3 whitespace-nowrap">{{ $index + 1 }}</td>
                                     <td class="px-4 sm:px-6 py-3 whitespace-nowrap">{{ $mhs->nim }}</td>
                                     <td class="px-4 sm:px-6 py-3 whitespace-nowrap">{{ $mhs->nama }}</td>
-                                    <td class="px-4 sm:px-6 py-3 text-center">
-                                        <form
-                                            action="{{ route('kegiatan.hapusMahasiswa', [$kegiatan->id_kegiatan, $mhs->nim]) }}"
+                                    <td class="px-4 sm:px-6 py-3 text-center space-x-2">
+                                        <form action="{{ route('kegiatan.hapusMahasiswa', [$kegiatan->id, $mhs->nim]) }}"
                                             method="POST"
                                             onsubmit="return confirm('Yakin ingin menghapus mahasiswa ini dari kegiatan?');"
-                                            class="inline">
+                                            class="inline-block">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="text-red-600 hover:text-red-800 flex items-center gap-1 text-sm font-medium mx-auto">
+                                                class="text-red-600 hover:text-red-800 flex items-center gap-1 text-sm font-medium">
                                                 🗑️ Hapus
                                             </button>
                                         </form>
