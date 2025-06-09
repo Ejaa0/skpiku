@@ -225,3 +225,4 @@ Route::delete('/kegiatan/{id}', [KegiatanController::class, 'destroy'])->name('k
 Route::delete('/kegiatan/{id_kegiatan}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])
      ->name('kegiatan.hapusMahasiswa');
      Route::delete('/kegiatan/{id}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])->name('kegiatan.hapusMahasiswa');
+Route::resource('poin', PoinMahasiswaController::class);

@@ -14,9 +14,12 @@ class PoinMahasiswa extends Model
     protected $fillable = [
         'nim',
         'nama',
-        'nama_kegiatan',
-        'jenis_kegiatan',
-        'tanggal_kegiatan',
+        'tipe',                 // wajib ditambahkan
+        'nama_kegiatan',        // nullable, tapi harus di-include
+        'jenis_kegiatan',       // nullable, tapi harus di-include
+        'tanggal_kegiatan',     // nullable, tapi harus di-include
+        'jabatan',              // nullable, tapi harus di-include
+        'status_keanggotaan',   // nullable, tapi harus di-include
         'deskripsi',
         'poin',
     ];

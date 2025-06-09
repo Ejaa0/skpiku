@@ -15,13 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('nim');
             $table->string('nama');
-            $table->string('nama_kegiatan');
-            $table->string('jenis_kegiatan');
-            $table->string('tanggal_kegiatan');
-            $table->string('deskripsi');
-            $table->integer('poin');
+            $table->enum('tipe', ['kegiatan', 'organisasi']); // <- penanda asal poin
+            $table->string('nama_kegiatan')->nullable();       // jika tipe = kegiatan
+            $table->string('jenis_kegiatan')->nullable();      // jika tipe = kegiatan
+            $table->date('tanggal_kegiatan')->nullable();      // jika tipe = kegiatan
+            $table->string('jabatan')->nullable();             // jika tipe = organisasi
+            $table->string('status_keanggotaan')->nullable();  // jika tipe = organisasi
+            $table->text('deskripsi')->nullable();
+            $table->integer('poin');                           // 100 atau 250
             $table->timestamps();
-        });
+});
+
     }
 
     /**

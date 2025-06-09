@@ -110,6 +110,6 @@ class OrganisasiController extends Controller
         ]);
 
         return redirect()->route('organisasi.show', $id_organisasi)
-                         ->with('success', 'Anggota berhasil ditambahkan.');
+                        ->with('success', 'Anggota berhasil ditambahkan.');
     }
 }

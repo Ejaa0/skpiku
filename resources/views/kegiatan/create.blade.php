@@ -18,7 +18,6 @@
         <form action="{{ route('kegiatan.store') }}" method="POST" class="space-y-4">
             @csrf
 
-            
             <div>
                 <label for="id_kegiatan" class="block font-semibold">ID Kegiatan</label>
                 <input type="text" name="id_kegiatan" id="id_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
@@ -39,8 +38,8 @@
                 <input type="date" name="tanggal_kegiatan" id="tanggal_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
             </div>
 
-            
-            <div class="text-right">
+            <div class="flex justify-between items-center pt-4">
+                <a href="{{ route('kegiatan.index') }}" class="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400 transition">← Kembali</a>
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Simpan</button>
             </div>
         </form>
