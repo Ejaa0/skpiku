@@ -2,99 +2,103 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PoinMahasiswa;
-use App\Models\Mahasiswa;
-use App\Models\Kegiatan;
-use App\Models\Organisasi;
 use Illuminate\Http\Request;
+use App\Models\PoinMahasiswa;
+use Illuminate\Support\Facades\DB;
 
 class PoinMahasiswaController extends Controller
 {
     public function index()
-    {
-        $data = PoinMahasiswa::orderBy('created_at', 'desc')->get();
-        return view('poin.index', compact('data'));
+{
+    // Update poin semua mahasiswa dulu sebelum ambil data untuk tampil
+    $mahasiswas = DB::table('mahasiswas')->pluck('nim');
+    
+    foreach ($mahasiswas as $nim) {
+        $this->updatePoinMahasiswa($nim);
+    }
+    
+    // Ambil semua data poin mahasiswa yang sudah update
+    $poinMahasiswas = PoinMahasiswa::all();
+    return view('poin.index', compact('poinMahasiswas'));
+}
+
+// Tambahkan fungsi update poin mahasiswa di controller yang sama
+private function updatePoinMahasiswa($nim)
+{
+    $nama = DB::table('mahasiswas')->where('nim', $nim)->value('nama');
+
+    if (!$nama) {
+        $nama = DB::table('detail_kegiatan_mahasiswa')->where('mahasiswa_nim', $nim)->value('nama')
+            ?? DB::table('detail_organisasi_mahasiswa')->where('nim', $nim)->value('nama');
     }
 
-    public function create()
-    {
-        $mahasiswas = Mahasiswa::all();
-        $kegiatans = Kegiatan::all();
-        $organisasis = Organisasi::all();
+    if (!$nama) return false;
 
-        return view('poin.create', compact('mahasiswas', 'kegiatans', 'organisasis'));
-    }
+    $jumlahKegiatan = DB::table('detail_kegiatan_mahasiswa')->where('mahasiswa_nim', $nim)->count();
+    $jumlahOrganisasi = DB::table('detail_organisasi_mahasiswa')->where('nim', $nim)->count();
+
+    $totalPoin = ($jumlahKegiatan * 100) + ($jumlahOrganisasi * 250);
+
+    PoinMahasiswa::updateOrCreate(
+        ['nim' => $nim],
+        ['nama' => $nama, 'poin' => $totalPoin]
+    );
+
+    return true;
+}
 
     public function store(Request $request)
     {
         $request->validate([
-            'nim' => 'required|exists:mahasiswas,nim',
-            'nama' => 'required|string',
-            'tipe' => 'required|in:kegiatan,organisasi',
-            'nama_kegiatan' => 'required_if:tipe,kegiatan',
-            'jenis_kegiatan' => 'required_if:tipe,kegiatan',
-            'tanggal_kegiatan' => 'required_if:tipe,kegiatan|date',
-            'jabatan' => 'required_if:tipe,organisasi',
-            'status_keanggotaan' => 'required_if:tipe,organisasi',
-            'deskripsi' => 'nullable|string',
-            'poin' => 'required|integer|min:0',
+            'nim' => 'required|string|max:20',
+        ], [
+            'nim.required' => 'Pilih mahasiswa terlebih dahulu.',
+            'nim.string' => 'Format NIM tidak valid.',
+            'nim.max' => 'NIM maksimal 20 karakter.',
         ]);
 
-        PoinMahasiswa::create($request->only([
-            'nim', 'nama', 'tipe',
-            'nama_kegiatan', 'jenis_kegiatan', 'tanggal_kegiatan',
-            'jabatan', 'status_keanggotaan', 'deskripsi', 'poin',
-        ]));
+        $nim = $request->nim;
 
-        return redirect()->route('poin.index')->with('success', 'Data berhasil ditambahkan.');
+        // Cari nama mahasiswa di tabel mahasiswas
+        $nama = DB::table('mahasiswas')->where('nim', $nim)->value('nama');
+
+        // Jika tidak ditemukan, cari di tabel detail kegiatan atau organisasi
+        if (!$nama) {
+            $nama = DB::table('detail_kegiatan_mahasiswa')->where('mahasiswa_nim', $nim)->value('nama')
+                ?? DB::table('detail_organisasi_mahasiswa')->where('nim', $nim)->value('nama');
+        }
+
+        if (!$nama) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
+        // Hitung jumlah keikutsertaan kegiatan dan organisasi
+        $jumlahKegiatan = DB::table('detail_kegiatan_mahasiswa')->where('mahasiswa_nim', $nim)->count();
+        $jumlahOrganisasi = DB::table('detail_organisasi_mahasiswa')->where('nim', $nim)->count();
+
+        // Hitung total poin: misal kegiatan 100 poin, organisasi 250 poin
+        $totalPoin = ($jumlahKegiatan * 100) + ($jumlahOrganisasi * 250);
+
+        // Simpan atau update data poin mahasiswa
+        PoinMahasiswa::updateOrCreate(
+            ['nim' => $nim],
+            ['nama' => $nama, 'poin' => $totalPoin]
+        );
+
+        return redirect()->route('poin.index')->with('success', 'Poin mahasiswa berhasil disimpan.');
     }
 
-    public function show(string $id)
+    public function destroy($id)
     {
-        $data = PoinMahasiswa::findOrFail($id);
-        return view('poin.show', compact('data'));
-    }
-
-    public function edit(string $id)
-    {
-        $data = PoinMahasiswa::findOrFail($id);
-        $mahasiswas = Mahasiswa::all();
-        $kegiatans = Kegiatan::all();
-        $organisasis = Organisasi::all();
-
-        return view('poin.edit', compact('data', 'mahasiswas', 'kegiatans', 'organisasis'));
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'nim' => 'required|exists:mahasiswas,nim',
-            'nama' => 'required|string',
-            'tipe' => 'required|in:kegiatan,organisasi',
-            'nama_kegiatan' => 'required_if:tipe,kegiatan',
-            'jenis_kegiatan' => 'required_if:tipe,kegiatan',
-            'tanggal_kegiatan' => 'required_if:tipe,kegiatan|date',
-            'jabatan' => 'required_if:tipe,organisasi',
-            'status_keanggotaan' => 'required_if:tipe,organisasi',
-            'deskripsi' => 'nullable|string',
-            'poin' => 'required|integer|min:0',
-        ]);
-
-        $data = PoinMahasiswa::findOrFail($id);
-        $data->update($request->only([
-            'nim', 'nama', 'tipe',
-            'nama_kegiatan', 'jenis_kegiatan', 'tanggal_kegiatan',
-            'jabatan', 'status_keanggotaan', 'deskripsi', 'poin',
-        ]));
-
-        return redirect()->route('poin.index')->with('success', 'Data berhasil diperbarui.');
-    }
-
-    public function destroy(string $id)
-    {
-        $data = PoinMahasiswa::findOrFail($id);
-        $data->delete();
+        $poin = PoinMahasiswa::findOrFail($id);
+        $poin->delete();
 
         return redirect()->route('poin.index')->with('success', 'Data berhasil dihapus.');
     }
+    public function getAllLatestPoin()
+{
+    $data = PoinMahasiswa::select('nim', 'poin')->get();
+    return response()->json($data);
+}
+
 }

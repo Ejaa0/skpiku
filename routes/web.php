@@ -26,7 +26,6 @@ Route::prefix('login/mahasiswa')->group(function () {
             'password' => 'required',
         ]);
 
-        // Dummy login mahasiswa
         if ($request->email === 'mahasiswa@unai.ac.id' && $request->password === '123456') {
             session([
                 'is_mahasiswa_logged_in' => true,
@@ -45,7 +44,6 @@ Route::middleware(['web'])->group(function () {
         if (!session('is_mahasiswa_logged_in')) {
             return redirect()->route('mahasiswa.login');
         }
-
         return view('mahasiswa.dashboard', [
             'mahasiswa' => [
                 'nim' => session('mahasiswa_nim'),
@@ -135,16 +133,9 @@ Route::get('/warek/dashboard', function () {
     return view('warek.dashboard_warek');
 })->name('warek.dashboard');
 
-// ========================== Logout Routes ==========================
-Route::post('/logout/warek', function () {
-    session()->forget('is_warek_logged_in');
-    return redirect()->route('warek.login');
-})->name('logout.warek');
-
-Route::post('/logout', function () {
-    session()->flush();
-    return redirect()->route('admin.login');
-})->name('logout');
+// ========================== Logout ==========================
+Route::post('/logout/warek', fn () => redirect()->route('warek.login')->with(session()->forget('is_warek_logged_in')))->name('logout.warek');
+Route::post('/logout', fn () => redirect()->route('admin.login')->with(session()->flush()))->name('logout');
 
 // ========================== SKPI Routes ==========================
 Route::prefix('skpi')->group(function () {
@@ -161,26 +152,20 @@ Route::get('/mahasiswa/data_kegiatan', fn () => view('kegiatan.data_kegiatan'))-
 Route::resource('mahasiswa', MahasiswaController::class);
 
 // ========================== Organisasi Routes ==========================
-// Resource tanpa create, store, show (buat manual)
 Route::resource('organisasi', OrganisasiController::class)->except(['create', 'store', 'show']);
-
 Route::get('/organisasi/create', [OrganisasiController::class, 'create'])->name('organisasi.create');
 Route::post('/organisasi', [OrganisasiController::class, 'store'])->name('organisasi.store');
 Route::get('/organisasi/{id_organisasi}', [OrganisasiController::class, 'show'])->name('organisasi.show');
-
-// ========================== Anggota Organisasi Routes ==========================
 Route::get('/organisasi/{id_organisasi}/anggota/create', [OrganisasiController::class, 'formTambahAnggota'])->name('organisasi.anggota.create');
 Route::post('/organisasi/{id_organisasi}/anggota', [OrganisasiController::class, 'simpanAnggota'])->name('organisasi.anggota.store');
 
 // ========================== Kegiatan Routes ==========================
 Route::resource('kegiatan', KegiatanController::class);
-
 Route::get('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaForm'])->name('kegiatan.tambahMahasiswaForm');
 Route::post('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaStore'])->name('kegiatan.storeMahasiswa');
 Route::delete('/kegiatan/{id_kegiatan}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])->name('kegiatan.hapusMahasiswa');
 
 // ========================== Detail Organisasi Mahasiswa Routes ==========================
-// Index manual dengan join tabel untuk menampilkan data lengkap
 Route::get('/detail-organisasi', function () {
     $data = DB::table('detail_organisasi_mahasiswa')
         ->join('mahasiswas', 'detail_organisasi_mahasiswa.mahasiswa_nim', '=', 'mahasiswas.nim')
@@ -202,17 +187,14 @@ Route::delete('/detail-organisasi/{id}', function ($id) {
     return redirect()->route('detail_organisasi_mahasiswa.index')->with('success', 'Data berhasil dihapus.');
 })->name('detail_organisasi_mahasiswa.destroy');
 
-// Create & Store manual dengan parameter id_organisasi di URL path
 Route::get('/detail_organisasi_mahasiswa/create/{id_organisasi}', [DetailOrganisasiMahasiswaController::class, 'create'])->name('detail_organisasi_mahasiswa.create');
 Route::post('/detail_organisasi_mahasiswa/store', [DetailOrganisasiMahasiswaController::class, 'store'])->name('detail_organisasi_mahasiswa.store');
-
-// Resource except create & store
 Route::resource('detail_organisasi_mahasiswa', DetailOrganisasiMahasiswaController::class)->except(['create', 'store']);
 
 // ========================== Poin Mahasiswa Routes ==========================
 Route::resource('poin', PoinMahasiswaController::class);
 
-// ========================== Debugging: Cek Relasi ==========================
+// ========================== Debug: Cek Relasi ==========================
 Route::get('/cek-relasi', function () {
     return DB::table('detail_kegiatan_mahasiswa')
         ->join('mahasiswas', 'detail_kegiatan_mahasiswa.mahasiswa_nim', '=', 'mahasiswas.nim')
@@ -220,9 +202,6 @@ Route::get('/cek-relasi', function () {
         ->select('detail_kegiatan_mahasiswa.*', 'mahasiswas.nama', 'kegiatans.nama_kegiatan')
         ->get();
 })->name('cek-relasi');
-
-Route::delete('/kegiatan/{id}', [KegiatanController::class, 'destroy'])->name('kegiatan.destroy');
-Route::delete('/kegiatan/{id_kegiatan}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])
-     ->name('kegiatan.hapusMahasiswa');
-     Route::delete('/kegiatan/{id}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])->name('kegiatan.hapusMahasiswa');
-Route::resource('poin', PoinMahasiswaController::class);
+Route::get('/poin/create', [PoinMahasiswaController::class, 'create'])->name('poin.create');
+Route::post('/poin/store', [PoinMahasiswaController::class, 'store'])->name('poin.store');
+Route::get('/poin/latest/all', [PoinMahasiswaController::class, 'getAllLatestPoin']);
