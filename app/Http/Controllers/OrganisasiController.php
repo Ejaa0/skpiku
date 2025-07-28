@@ -10,10 +10,18 @@ use Illuminate\Validation\Rule;
 
 class OrganisasiController extends Controller
 {
-    // Tampilkan semua organisasi
-    public function index()
+    // Tampilkan semua organisasi dengan fitur search
+    public function index(Request $request)
     {
-        $organisasi = Organisasi::all();
+        $query = Organisasi::query();
+
+        if ($request->has('search') && $request->search !== null) {
+            $search = $request->search;
+            $query->where('nama_organisasi', 'like', '%' . $search . '%');
+        }
+
+        $organisasi = $query->paginate(10); // Pakai pagination
+
         return view('organisasi.index', compact('organisasi'));
     }
 
@@ -43,7 +51,7 @@ class OrganisasiController extends Controller
         return view('organisasi.edit', compact('organisasi'));
     }
 
-    // Simpan perubahan data organisasi (tidak mengubah id_organisasi)
+    // Simpan perubahan data organisasi
     public function update(Request $request, string $id_organisasi)
     {
         $validated = $request->validate([
@@ -51,8 +59,6 @@ class OrganisasiController extends Controller
         ]);
 
         $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
-
-        // Update hanya nama_organisasi
         $organisasi->nama_organisasi = $validated['nama_organisasi'];
         $organisasi->save();
 
@@ -84,7 +90,7 @@ class OrganisasiController extends Controller
         return view('organisasi.show', compact('organisasi', 'detailMahasiswa'));
     }
 
-    // Tampilkan form tambah anggota organisasi (opsional)
+    // Tampilkan form tambah anggota organisasi
     public function formTambahAnggota(string $id_organisasi)
     {
         $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();

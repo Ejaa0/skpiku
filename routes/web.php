@@ -20,6 +20,7 @@ Route::get('/', fn () => view('dashboard'))->name('beranda');
 // ========================== Login Mahasiswa ==========================
 Route::prefix('login/mahasiswa')->group(function () {
     Route::get('/', fn () => view('mahasiswa.login'))->name('mahasiswa.login');
+
     Route::post('/', function (Request $request) {
         $request->validate([
             'email' => 'required|email',
@@ -35,6 +36,7 @@ Route::prefix('login/mahasiswa')->group(function () {
             ]);
             return redirect()->route('mahasiswa.dashboard');
         }
+
         return back()->with('error', 'Email atau password salah.');
     })->name('mahasiswa.login.submit');
 });
@@ -54,7 +56,12 @@ Route::middleware(['web'])->group(function () {
     })->name('mahasiswa.dashboard');
 
     Route::post('/logout/mahasiswa', function () {
-        session()->forget(['is_mahasiswa_logged_in', 'mahasiswa_nim', 'mahasiswa_email', 'mahasiswa_nama']);
+        session()->forget([
+            'is_mahasiswa_logged_in',
+            'mahasiswa_nim',
+            'mahasiswa_email',
+            'mahasiswa_nama',
+        ]);
         return redirect()->route('mahasiswa.login');
     })->name('logout.mahasiswa');
 });
@@ -62,6 +69,7 @@ Route::middleware(['web'])->group(function () {
 // ========================== Login Admin ==========================
 Route::prefix('login/admin')->group(function () use ($defaultAdminEmail, $defaultAdminPasswordHash) {
     Route::get('/', fn () => view('admin.login'))->name('admin.login');
+
     Route::post('/', function (Request $request) use ($defaultAdminEmail, $defaultAdminPasswordHash) {
         $request->validate([
             'email' => 'required|email',
@@ -76,6 +84,7 @@ Route::prefix('login/admin')->group(function () use ($defaultAdminEmail, $defaul
             ]);
             return redirect()->route('admin.dashboard');
         }
+
         return back()->with('error', 'Email atau password salah.');
     })->name('admin.login.submit');
 });
@@ -90,15 +99,18 @@ Route::get('/admin/dashboard', function () {
 // ========================== Login Organisasi ==========================
 Route::prefix('login/organisasi')->group(function () {
     Route::get('/', fn () => view('organisasi.login'))->name('organisasi.login');
+
     Route::post('/', function (Request $request) {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
         if ($request->email === 'organisasi@unai.ac.id' && $request->password === 'org123') {
             session(['is_org_logged_in' => true]);
             return redirect()->route('organisasi.dashboard');
         }
+
         return back()->with('error', 'Email atau password salah.');
     })->name('organisasi.login.submit');
 });
@@ -113,15 +125,18 @@ Route::get('/organisasi/dashboard', function () {
 // ========================== Login Warek ==========================
 Route::prefix('login/warek')->group(function () {
     Route::get('/', fn () => view('warek.login'))->name('warek.login');
+
     Route::post('/', function (Request $request) {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
         if ($request->email === 'warek@unai.ac.id' && $request->password === 'warek123') {
             session(['is_warek_logged_in' => true]);
             return redirect()->route('warek.dashboard');
         }
+
         return back()->with('error', 'Email atau password salah.');
     })->name('warek.login.submit');
 });
@@ -134,8 +149,15 @@ Route::get('/warek/dashboard', function () {
 })->name('warek.dashboard');
 
 // ========================== Logout ==========================
-Route::post('/logout/warek', fn () => redirect()->route('warek.login')->with(session()->forget('is_warek_logged_in')))->name('logout.warek');
-Route::post('/logout', fn () => redirect()->route('admin.login')->with(session()->flush()))->name('logout');
+Route::post('/logout/warek', function () {
+    session()->forget('is_warek_logged_in');
+    return redirect()->route('warek.login');
+})->name('logout.warek');
+
+Route::post('/logout', function () {
+    session()->flush();
+    return redirect()->route('admin.login');
+})->name('logout');
 
 // ========================== SKPI Routes ==========================
 Route::prefix('skpi')->group(function () {
@@ -202,6 +224,8 @@ Route::get('/cek-relasi', function () {
         ->select('detail_kegiatan_mahasiswa.*', 'mahasiswas.nama', 'kegiatans.nama_kegiatan')
         ->get();
 })->name('cek-relasi');
+
+// ========================== Poin Additional Routes ==========================
 Route::get('/poin/create', [PoinMahasiswaController::class, 'create'])->name('poin.create');
 Route::post('/poin/store', [PoinMahasiswaController::class, 'store'])->name('poin.store');
 Route::get('/poin/latest/all', [PoinMahasiswaController::class, 'getAllLatestPoin']);
