@@ -214,6 +214,13 @@ Route::post('/detail_organisasi_mahasiswa/store', [DetailOrganisasiMahasiswaCont
 Route::resource('detail_organisasi_mahasiswa', DetailOrganisasiMahasiswaController::class)->except(['create', 'store']);
 
 // ========================== Poin Mahasiswa Routes ==========================
+// Tambahkan route export sebelum resource agar tidak tertimpa resource route
+Route::get('poin/export', [PoinMahasiswaController::class, 'export'])->name('poin.export');
+
+// Route untuk ambil data poin terbaru via AJAX
+Route::get('/poin/latest/all', [PoinMahasiswaController::class, 'getAllLatestPoin'])->name('poin.latestAll');
+
+// Resource route untuk CRUD poin mahasiswa
 Route::resource('poin', PoinMahasiswaController::class);
 
 // ========================== Debug: Cek Relasi ==========================
@@ -224,8 +231,3 @@ Route::get('/cek-relasi', function () {
         ->select('detail_kegiatan_mahasiswa.*', 'mahasiswas.nama', 'kegiatans.nama_kegiatan')
         ->get();
 })->name('cek-relasi');
-
-// ========================== Poin Additional Routes ==========================
-Route::get('/poin/create', [PoinMahasiswaController::class, 'create'])->name('poin.create');
-Route::post('/poin/store', [PoinMahasiswaController::class, 'store'])->name('poin.store');
-Route::get('/poin/latest/all', [PoinMahasiswaController::class, 'getAllLatestPoin']);

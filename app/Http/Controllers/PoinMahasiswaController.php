@@ -8,21 +8,29 @@ use Illuminate\Support\Facades\DB;
 
 class PoinMahasiswaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // Update poin semua mahasiswa dulu sebelum ambil data untuk tampil
         $mahasiswas = DB::table('mahasiswas')->pluck('nim');
-        
+
         foreach ($mahasiswas as $nim) {
-            // false artinya jangan update poin otomatis, hanya update nama saja
-            $this->updatePoinMahasiswa($nim, false);
+            $this->updatePoinMahasiswa($nim);
         }
 
-        $poinMahasiswas = PoinMahasiswa::all();
-        return view('poin.index', compact('poinMahasiswas'));
+        $search = $request->input('search');
+
+        // Ambil semua data poin mahasiswa dan filter jika ada pencarian
+        $poinMahasiswas = PoinMahasiswa::when($search, function ($query, $search) {
+            return $query->where('nama', 'like', "%$search%")
+                         ->orWhere('nim', 'like', "%$search%");
+        })
+        ->orderByDesc('poin') // urutkan dari poin tertinggi
+        ->get();
+
+        return view('poin.index', compact('poinMahasiswas', 'search'));
     }
 
-    // Tambah parameter $updatePoin untuk mengontrol update poin atau tidak
-    private function updatePoinMahasiswa($nim, $updatePoin = true)
+    private function updatePoinMahasiswa($nim)
     {
         $nama = DB::table('mahasiswas')->where('nim', $nim)->value('nama');
 
@@ -33,28 +41,15 @@ class PoinMahasiswaController extends Controller
 
         if (!$nama) return false;
 
-        if ($updatePoin) {
-            $jumlahKegiatan = DB::table('detail_kegiatan_mahasiswa')->where('mahasiswa_nim', $nim)->count();
-            $jumlahOrganisasi = DB::table('detail_organisasi_mahasiswa')->where('nim', $nim)->count();
+        $jumlahKegiatan = DB::table('detail_kegiatan_mahasiswa')->where('mahasiswa_nim', $nim)->count();
+        $jumlahOrganisasi = DB::table('detail_organisasi_mahasiswa')->where('nim', $nim)->count();
 
-            $totalPoin = ($jumlahKegiatan * 100) + ($jumlahOrganisasi * 250);
+        $totalPoin = ($jumlahKegiatan * 100) + ($jumlahOrganisasi * 250);
 
-            if ($totalPoin == 0) {
-                PoinMahasiswa::where('nim', $nim)->delete();
-                return false;
-            }
-
-            PoinMahasiswa::updateOrCreate(
-                ['nim' => $nim],
-                ['nama' => $nama, 'poin' => $totalPoin]
-            );
-        } else {
-            // update hanya nama, biar poin yang di-edit manual tetap aman
-            PoinMahasiswa::updateOrCreate(
-                ['nim' => $nim],
-                ['nama' => $nama]
-            );
-        }
+        PoinMahasiswa::updateOrCreate(
+            ['nim' => $nim],
+            ['nama' => $nama, 'poin' => $totalPoin]
+        );
 
         return true;
     }
@@ -69,9 +64,14 @@ class PoinMahasiswaController extends Controller
     {
         $request->validate([
             'nim' => 'required|string|max:20',
+        ], [
+            'nim.required' => 'Pilih mahasiswa terlebih dahulu.',
+            'nim.string' => 'Format NIM tidak valid.',
+            'nim.max' => 'NIM maksimal 20 karakter.',
         ]);
 
         $nim = $request->nim;
+
         $nama = DB::table('mahasiswas')->where('nim', $nim)->value('nama');
 
         if (!$nama) {
@@ -85,11 +85,8 @@ class PoinMahasiswaController extends Controller
 
         $jumlahKegiatan = DB::table('detail_kegiatan_mahasiswa')->where('mahasiswa_nim', $nim)->count();
         $jumlahOrganisasi = DB::table('detail_organisasi_mahasiswa')->where('nim', $nim)->count();
-        $totalPoin = ($jumlahKegiatan * 100) + ($jumlahOrganisasi * 250);
 
-        if ($totalPoin == 0) {
-            return back()->with('error', 'Mahasiswa belum memiliki poin dari kegiatan atau organisasi.');
-        }
+        $totalPoin = ($jumlahKegiatan * 100) + ($jumlahOrganisasi * 250);
 
         PoinMahasiswa::updateOrCreate(
             ['nim' => $nim],
@@ -97,28 +94,6 @@ class PoinMahasiswaController extends Controller
         );
 
         return redirect()->route('poin.index')->with('success', 'Poin mahasiswa berhasil disimpan.');
-    }
-
-    public function edit($id)
-    {
-        $poin = PoinMahasiswa::findOrFail($id);
-        return view('poin.edit', compact('poin'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'poin' => 'required|integer|min:0',
-        ]);
-
-        $poin = PoinMahasiswa::findOrFail($id);
-        $poin->update([
-            'nama' => $request->nama,
-            'poin' => $request->poin,
-        ]);
-
-        return redirect()->route('poin.index')->with('success', 'Data poin berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -133,5 +108,34 @@ class PoinMahasiswaController extends Controller
     {
         $data = PoinMahasiswa::select('nim', 'poin')->get();
         return response()->json($data);
+    }
+
+    public function export()
+    {
+        $poinMahasiswas = PoinMahasiswa::orderByDesc('poin')->get();
+
+        $filename = 'poin_mahasiswa_' . date('Ymd_His') . '.csv';
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $columns = ['NIM', 'Nama', 'Poin'];
+
+        $callback = function() use ($poinMahasiswas, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($poinMahasiswas as $poin) {
+                fputcsv($file, [$poin->nim, $poin->nama, $poin->poin]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

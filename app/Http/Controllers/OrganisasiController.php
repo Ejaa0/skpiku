@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 
 class OrganisasiController extends Controller
 {
-    // Tampilkan semua organisasi dengan fitur search
     public function index(Request $request)
     {
         $query = Organisasi::query();
@@ -20,18 +19,16 @@ class OrganisasiController extends Controller
             $query->where('nama_organisasi', 'like', '%' . $search . '%');
         }
 
-        $organisasi = $query->paginate(10); // Pakai pagination
+        $organisasi = $query->paginate(10);
 
         return view('organisasi.index', compact('organisasi'));
     }
 
-    // Tampilkan form tambah organisasi baru
     public function create()
     {
         return view('organisasi.create');
     }
 
-    // Simpan data organisasi baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -44,14 +41,12 @@ class OrganisasiController extends Controller
         return redirect()->route('organisasi.index')->with('success', 'Organisasi baru berhasil ditambahkan.');
     }
 
-    // Tampilkan form edit organisasi
     public function edit(string $id_organisasi)
     {
         $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
         return view('organisasi.edit', compact('organisasi'));
     }
 
-    // Simpan perubahan data organisasi
     public function update(Request $request, string $id_organisasi)
     {
         $validated = $request->validate([
@@ -65,16 +60,19 @@ class OrganisasiController extends Controller
         return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil diperbarui.');
     }
 
-    // Hapus organisasi
     public function destroy(string $id_organisasi)
     {
         $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
+
+        // Hapus semua data keanggotaan mahasiswa terkait organisasi ini
+        DetailOrganisasiMahasiswa::where('id_organisasi', $id_organisasi)->delete();
+
+        // Hapus organisasi
         $organisasi->delete();
 
-        return redirect()->route('organisasi.index')->with('success', 'Organisasi berhasil dihapus.');
+        return redirect()->route('organisasi.index')->with('success', 'Organisasi dan data anggotanya berhasil dihapus.');
     }
 
-    // Tampilkan detail organisasi dan daftar anggotanya
     public function show(string $id_organisasi)
     {
         $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
@@ -90,7 +88,6 @@ class OrganisasiController extends Controller
         return view('organisasi.show', compact('organisasi', 'detailMahasiswa'));
     }
 
-    // Tampilkan form tambah anggota organisasi
     public function formTambahAnggota(string $id_organisasi)
     {
         $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
@@ -99,7 +96,6 @@ class OrganisasiController extends Controller
         return view('organisasi.tambah_anggota', compact('organisasi', 'mahasiswa'));
     }
 
-    // Simpan anggota baru ke organisasi
     public function simpanAnggota(Request $request, string $id_organisasi)
     {
         $validated = $request->validate([
