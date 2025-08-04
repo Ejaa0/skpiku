@@ -54,17 +54,17 @@
                             </td>
                             <td class="border-b px-4 py-3 text-center">
                                 <div class="flex justify-center space-x-4">
-                                    <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:text-green-800" title="Show">
-                                        👁️
+                                    <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:text-green-800 flex items-center space-x-1" title="Show">
+                                        <span>👁️</span><span>Show</span>
                                     </a>
-                                    <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800" title="Edit">
-                                        ✏️
+                                    <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800 flex items-center space-x-1" title="Edit">
+                                        <span>✏️</span><span>Edit</span>
                                     </a>
-                                    <form action="{{ route('kegiatan.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?')">
+                                    <form action="{{ route('kegiatan.destroy', $item->id) }}" method="POST" class="inline flex items-center space-x-1" onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
-                                            🗑️
+                                        <button type="submit" class="text-red-600 hover:text-red-800 flex items-center space-x-1" title="Delete">
+                                            <span>🗑️</span><span>Delete</span>
                                         </button>
                                     </form>
                                 </div>
