@@ -83,15 +83,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="bg-blue-100 p-5 rounded-lg shadow hover:scale-105 transition-transform">
                     <p class="text-gray-800 font-semibold">Total Organisasi</p>
-                    <h2 class="text-2xl font-bold text-blue-600">12</h2>
+                    <h2 class="text-2xl font-bold text-blue-600">{{ $totalOrganisasi }}</h2>
                 </div>
                 <div class="bg-green-100 p-5 rounded-lg shadow hover:scale-105 transition-transform">
                     <p class="text-gray-800 font-semibold">Kegiatan Terjadwal</p>
-                    <h2 class="text-2xl font-bold text-green-600">8</h2>
+                    <h2 class="text-2xl font-bold text-green-600">{{ $totalKegiatan }}</h2>
                 </div>
                 <div class="bg-yellow-100 p-5 rounded-lg shadow hover:scale-105 transition-transform">
                     <p class="text-gray-800 font-semibold">Laporan Masuk</p>
-                    <h2 class="text-2xl font-bold text-yellow-600">5</h2>
+                    <h2 class="text-2xl font-bold text-yellow-600">{{ $laporanMasuk }}</h2>
                 </div>
             </div>
         </div>

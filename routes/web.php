@@ -9,6 +9,8 @@ use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\SKPIController;
 use App\Http\Controllers\DetailOrganisasiMahasiswaController;
 use App\Http\Controllers\PoinMahasiswaController;
+use App\Http\Controllers\WarekController;
+
 
 // ========================== Default Admin ==========================
 $defaultAdminEmail = 'rezaivander12@gmail.com';
@@ -231,3 +233,6 @@ Route::get('/cek-relasi', function () {
         ->select('detail_kegiatan_mahasiswa.*', 'mahasiswas.nama', 'kegiatans.nama_kegiatan')
         ->get();
 })->name('cek-relasi');
+
+
+Route::get('/warek/dashboard', [WarekController::class, 'index'])->name('warek.dashboard');

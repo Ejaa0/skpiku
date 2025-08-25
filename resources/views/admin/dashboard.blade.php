@@ -13,7 +13,7 @@
 
     <!-- Header -->
     <header class="mb-12">
-        <h1 class="text-4xl font-extrabold mb-2">🎯 Dashboard Admin Kekinian</h1>
+        <h1 class="text-4xl font-extrabold mb-2">🎯 Dashboard Admin</h1>
         <p class="text-lg text-gray-600 dark:text-gray-300">Kelola data mahasiswa, kegiatan, organisasi, dan poin SKPI dengan mudah.</p>
     </header>
 

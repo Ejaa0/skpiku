@@ -168,49 +168,44 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Tabel Poin -->
-            <div class="lg:col-span-2 overflow-x-auto bg-white rounded shadow">
-                <table class="min-w-full text-sm border border-gray-200">
-                    <thead class="bg-blue-600 text-white"> <!-- ✅ Ubah warna header tabel -->
-                        <tr class="text-left">
-                            <th class="py-3 px-4 border-b">NIM</th>
-                            <th class="py-2 px-4 border-b">Nama</th>
-                            <th class="py-2 px-4 border-b">Poin</th>
-                            <th class="py-2 px-4 border-b">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($poinMahasiswas as $item)
-                            <tr class="border-b hover:bg-gray-50 transition-all">
-                                <td class="py-2 px-4">{{ $item->nim }}</td>
-                                <td class="py-2 px-4">{{ $item->nama }}</td>
-                                <td class="py-2 px-4 font-semibold" id="poin-{{ $item->nim }}">{{ $item->poin }}</td>
-                                <td class="py-2 px-4 flex space-x-2">
-                                    <a href="{{ route('poin.show', $item->id) }}"
-                                        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">View</a>
-                                    @if ($item->poin >= 1000)
-                                        <a href="{{ url('/skpi') }}"
-                                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg shadow-sm transition">
-                                            🎓 Buat SKPI
-                                        </a>
-                                    @endif
-                                    <form action="{{ route('poin.destroy', $item->id) }}" method="POST"
-                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit"
-                                            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="py-4 text-center text-gray-500">Belum ada data poin mahasiswa.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            <div class="lg:col-span-2 overflow-x-auto bg-white rounded shadow border border-gray-300">
+    <table class="min-w-full text-sm text-left border-collapse border border-gray-300">
+        <thead class="bg-blue-600 text-white select-none">
+            <tr>
+                <th class="py-3 px-4 border border-blue-700">NIM</th>
+                <th class="py-3 px-4 border border-blue-700">Nama</th>
+                <th class="py-3 px-4 border border-blue-700">Poin</th>
+                <th class="py-3 px-4 border border-blue-700">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($poinMahasiswas as $item)
+                <tr class="border-b border-gray-300 hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+                    <td class="py-2 px-4 border border-gray-300">{{ $item->nim }}</td>
+                    <td class="py-2 px-4 border border-gray-300">{{ $item->nama }}</td>
+                    <td class="py-2 px-4 border border-gray-300 font-semibold" id="poin-{{ $item->nim }}">{{ $item->poin }}</td>
+                    <td class="py-2 px-4 border border-gray-300 flex space-x-2">
+                        <a href="{{ route('poin.show', $item->id) }}" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition">View</a>
+                        
+                        <form action="{{ route('poin.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">Hapus</button>
+                        </form>
 
+                        {{-- Tombol Buat SKPI --}}
+                        @if($item->poin >= 1000)
+                        <a href="http://127.0.0.1:8000/skpi" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded shadow transition">
+                            🎓 Buat SKPI
+                        </a>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="4" class="py-4 text-center text-gray-500">Belum ada data poin mahasiswa.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
             <!-- Leaderboard -->
             <div class="bg-white shadow rounded p-4">
                 <h2 class="text-xl font-bold mb-4">🏆 Leaderboard</h2>
