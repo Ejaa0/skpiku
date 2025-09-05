@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard Mahasiswa</title>
+    <meta charset="UTF-8">
+    <title>Profil Mahasiswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-100 flex">
 
-<body class="bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 min-h-screen flex">
-
-    <!-- Sidebar -->
+    <!-- Sidebar (sama persis dengan dashboard) -->
     <aside id="sidebar" class="bg-indigo-900 text-indigo-100 w-64 flex-shrink-0 flex flex-col 
         transition-transform duration-300 ease-in-out md:translate-x-0 -translate-x-full 
         fixed md:static inset-y-0 left-0 z-30">
@@ -26,23 +24,20 @@
 
         <!-- Menu Sidebar -->
         <nav class="flex flex-col mt-6 px-4 space-y-2 flex-grow">
-            <!-- Dashboard -->
-            <a href="#" class="py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center space-x-3 font-semibold">
+            <a href="/mahasiswa/dashboard" class="py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center space-x-3 font-semibold">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M3 6h18M3 18h18" />
                 </svg>
                 <span>Dashboard</span>
             </a>
             
-            <!-- Profil -->
-            <a href="/profile" class="py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center space-x-3 font-semibold">
+            <a href="/profile" class="py-3 px-4 rounded-lg bg-indigo-700 transition flex items-center space-x-3 font-semibold">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 10-8 0v2m12 0v-2a4 4 0 118 0v2m-6 4h6" />
                 </svg>
                 <span>Profil</span>
             </a>
 
-            <!-- Riwayat Poin -->
             <a href="/poin/riwayat" class="py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center space-x-3 font-semibold">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 16h8m-4-12v12m-6 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -50,7 +45,6 @@
                 <span>Riwayat Poin</span>
             </a>
 
-            <!-- Lihat SKPI -->
             <a href="/skpi/mahasiswa" class="py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center space-x-3 font-semibold">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z" />
@@ -58,7 +52,6 @@
                 <span>Lihat SKPI</span>
             </a>
 
-            <!-- Logout -->
             <button id="logoutBtn" class="py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center space-x-3 font-semibold mt-auto mb-4 w-full text-left">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" />
@@ -78,35 +71,25 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
-            <h1 class="text-indigo-700 font-bold text-lg">Dashboard Mahasiswa</h1>
+            <h1 class="text-indigo-700 font-bold text-lg">Profil Mahasiswa</h1>
             <div></div>
         </header>
 
         <!-- Isi Konten -->
         <main class="p-8 flex-grow bg-white bg-opacity-90 rounded-tl-3xl rounded-tr-3xl shadow-xl min-h-screen">
-            <h2 class="text-3xl font-bold mb-6 text-indigo-900">🎓 Selamat Datang, Mahasiswa!</h2>
+            <h2 class="text-3xl font-bold mb-6 text-indigo-900">👤 Profil Mahasiswa</h2>
 
-            <!-- Section Berita -->
-            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- Card contoh -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                    <img src="https://source.unsplash.com/400x200/?education,university" alt="Berita 1" class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-indigo-800 mb-2">Pelatihan SKPI untuk Mahasiswa Baru</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Ikuti pelatihan SKPI yang akan diadakan pada tanggal 10 Juni 2025. Pastikan kamu mendaftar sebelum tanggal 5 Juni!</p>
-                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">Baca Selengkapnya →</a>
-                    </div>
-                </div>
-
-                <!-- Tambah card lainnya (2,3,4,5,6) sesuai contohmu -->
-                <!-- ... -->
-            </section>
+            <div class="bg-indigo-50 p-6 rounded-xl shadow-md max-w-lg">
+                <p class="mb-3"><span class="font-semibold text-indigo-900">Nama:</span> {{ $profile['nama'] }}</p>
+                <p class="mb-3"><span class="font-semibold text-indigo-900">Email:</span> {{ $profile['email'] }}</p>
+                <p class="mb-3"><span class="font-semibold text-indigo-900">Jurusan:</span> {{ $profile['jurusan'] }}</p>
+                <p class="mb-3"><span class="font-semibold text-indigo-900">Angkatan:</span> {{ $profile['angkatan'] }}</p>
+            </div>
         </main>
 
         <!-- Footer -->
         <footer class="text-center py-6 text-indigo-700 font-semibold select-none">
-            &copy; 2025 Sistem SKPI UNAI • Dashboard Mahasiswa
+            &copy; 2025 Sistem SKPI UNAI • Profil Mahasiswa
         </footer>
     </div>
 
@@ -131,20 +114,17 @@
         const confirmLogout = document.getElementById('confirmLogout');
         const cancelLogout = document.getElementById('cancelLogout');
 
-        // Sidebar toggle mobile
         openBtn.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
         closeBtn.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
 
-        // Logout modal
         logoutBtn.addEventListener('click', () => modalBg.classList.remove('hidden'));
         confirmLogout.addEventListener('click', () => window.location.href = '/login/mahasiswa');
         cancelLogout.addEventListener('click', () => modalBg.classList.add('hidden'));
 
-        // Tutup modal kalau klik di luar box
         modalBg.addEventListener('click', (e) => {
             if (e.target === modalBg) modalBg.classList.add('hidden');
         });
     </script>
-
 </body>
 </html>
+    

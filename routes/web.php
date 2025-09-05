@@ -10,6 +10,7 @@ use App\Http\Controllers\SKPIController;
 use App\Http\Controllers\DetailOrganisasiMahasiswaController;
 use App\Http\Controllers\PoinMahasiswaController;
 use App\Http\Controllers\WarekController;
+use App\Http\Controllers\ProfileController;
 
 
 // ========================== Default Admin ==========================
@@ -236,3 +237,8 @@ Route::get('/cek-relasi', function () {
 
 
 Route::get('/warek/dashboard', [WarekController::class, 'index'])->name('warek.dashboard');
+
+
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+
+
