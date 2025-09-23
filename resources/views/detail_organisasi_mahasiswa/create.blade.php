@@ -39,13 +39,33 @@
                         <td class="px-6 py-2">{{ $mhs->nim }}</td>
                         <td class="px-6 py-2">{{ $mhs->nama }}</td>
                         <td class="px-6 py-2">
-                            <input type="text" name="jabatan" class="border px-2 py-1 w-full rounded"
-                                   placeholder="Contoh: Ketua" required>
+                            @php
+                                $oldJabatan = old('jabatan');
+                                $oldCustom = old('jabatan_custom');
+                            @endphp
+                            <select name="jabatan" 
+                                    class="jabatan-select border px-2 py-1 w-full rounded" required>
+                                <option value="">-- Pilih Jabatan --</option>
+                                <option value="ketua" {{ $oldJabatan == 'ketua' ? 'selected' : '' }}>Ketua</option>
+                                <option value="wakil" {{ $oldJabatan == 'wakil' ? 'selected' : '' }}>Wakil</option>
+                                <option value="bendahara" {{ $oldJabatan == 'bendahara' ? 'selected' : '' }}>Bendahara</option>
+                                <option value="divisi acara" {{ $oldJabatan == 'divisi acara' ? 'selected' : '' }}>Divisi Acara</option>
+                                <option value="divisi olahraga" {{ $oldJabatan == 'divisi olahraga' ? 'selected' : '' }}>Divisi Olahraga</option>
+                                <option value="divisi multimedia" {{ $oldJabatan == 'divisi multimedia' ? 'selected' : '' }}>Divisi Multimedia</option>
+                                <option value="divisi logistik" {{ $oldJabatan == 'divisi logistik' ? 'selected' : '' }}>Divisi Logistik</option>
+                                <option value="divisi humas" {{ $oldJabatan == 'divisi humas' ? 'selected' : '' }}>Divisi Humas</option>
+                                <option value="lainnya" {{ strtolower($oldJabatan) == 'lainnya' ? 'selected' : '' }}>➕ Lainnya</option>
+                            </select>
+                            {{-- Input tambahan jika pilih "Lainnya" --}}
+                            <input type="text" name="jabatan_custom" 
+                                   class="jabatan-custom mt-2 {{ strtolower($oldJabatan) == 'lainnya' ? '' : 'hidden' }} w-full px-2 py-1 border rounded"
+                                   placeholder="Masukkan jabatan/divisi baru..."
+                                   value="{{ $oldCustom }}">
                         </td>
                         <td class="px-6 py-2">
                             <select name="status_keanggotaan" class="border px-2 py-1 rounded w-full" required>
-                                <option value="aktif">Aktif</option>
-                                <option value="nonaktif">Nonaktif</option>
+                                <option value="aktif" {{ old('status_keanggotaan') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                <option value="nonaktif" {{ old('status_keanggotaan') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                             </select>
                         </td>
                         <td class="px-6 py-2 text-center">
@@ -68,10 +88,29 @@
     @endif
 
     <div class="mt-6">
-<a href="{{ route('organisasi.show', $organisasi->id_organisasi) }}"
-   class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
-    ← Kembali ke Detail Organisasi
-</a>
+        <a href="{{ route('organisasi.show', $organisasi->id_organisasi) }}"
+           class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
+            ← Kembali ke Detail Organisasi
+        </a>
     </div>
 </div>
+
+{{-- SCRIPT: Show input custom jika pilih "Lainnya" --}}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".jabatan-select").forEach(select => {
+            select.addEventListener("change", function () {
+                const input = this.parentElement.querySelector(".jabatan-custom");
+                if (this.value.toLowerCase() === "lainnya") {
+                    input.classList.remove("hidden");
+                    input.setAttribute("required", "true");
+                } else {
+                    input.classList.add("hidden");
+                    input.removeAttribute("required");
+                    input.value = "";
+                }
+            });
+        });
+    });
+</script>
 @endsection

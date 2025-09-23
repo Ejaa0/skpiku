@@ -11,6 +11,7 @@ use App\Http\Controllers\DetailOrganisasiMahasiswaController;
 use App\Http\Controllers\PoinMahasiswaController;
 use App\Http\Controllers\WarekController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PenentuanPoinController;
 
 
 // ========================== Default Admin ==========================
@@ -241,4 +242,14 @@ Route::get('/warek/dashboard', [WarekController::class, 'index'])->name('warek.d
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
 
+
+Route::get('/penentuan-poin', [PenentuanPoinController::class, 'index'])
+    ->name('penentuan-poin.index');
+Route::resource('penentuan_poin', PenentuanPoinController::class);
+
+Route::get('/organisasi/{id}/anggota/create', [DetailOrganisasiMahasiswaController::class, 'create'])
+    ->name('detail_organisasi.create');
+
+Route::post('/organisasi/{id}/anggota', [DetailOrganisasiMahasiswaController::class, 'store'])
+    ->name('detail_organisasi.store');
 

@@ -76,6 +76,7 @@
                                 ['name' => 'Kegiatan', 'icon' => '📅', 'route' => 'kegiatan.index'],
                                 ['name' => 'Organisasi', 'icon' => '🏢', 'route' => 'organisasi.index'],
                                 ['name' => 'Poin', 'icon' => '🏅', 'route' => 'poin.index'],
+                                ['name' => 'Penentuan Poin', 'icon' => '⚖️', 'route' => 'penentuan-poin.index'],
                             ];
                         @endphp
                         @foreach($menu as $item)

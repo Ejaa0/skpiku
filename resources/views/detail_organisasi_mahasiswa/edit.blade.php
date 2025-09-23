@@ -46,10 +46,10 @@
 
             {{-- Tombol --}}
             <div class="flex justify-between pt-4">
-                <a href="{{ route('organisasi.show', $organisasi->id) }}"
-                   class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
-                    ← Kembali ke Detail Organisasi
-                </a>
+                <a href="{{ route('organisasi.show', $organisasi->id_organisasi) }}"
+   class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
+    ← Kembali ke Detail Organisasi
+</a>
                 <button type="submit"
                         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
                     💾 Simpan Perubahan

@@ -12,9 +12,6 @@ class DetailOrganisasiMahasiswaController extends Controller
 {
     /**
      * Tampilkan form tambah anggota untuk organisasi tertentu.
-     *
-     * @param string $id_organisasi
-     * @return \Illuminate\View\View
      */
     public function create($id_organisasi)
     {
@@ -30,41 +27,45 @@ class DetailOrganisasiMahasiswaController extends Controller
 
     /**
      * Simpan data anggota ke organisasi.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'id_organisasi' => 'required|exists:organisasi,id_organisasi',
-        'nim' => 'required|exists:mahasiswas,nim',
-        'jabatan' => 'required|string|max:255',
-        'status_keanggotaan' => 'required|in:aktif,nonaktif',
-    ]);
+    {
+        $validated = $request->validate([
+            'id_organisasi'       => 'required|exists:organisasi,id_organisasi',
+            'nim'                 => 'required|exists:mahasiswas,nim',
+            'jabatan'             => 'required|string|max:100',
+            'jabatan_custom'      => 'nullable|string|max:100',
+            'status_keanggotaan'  => 'required|in:aktif,nonaktif',
+        ]);
 
-    $mahasiswa = Mahasiswa::where('nim', $request->nim)->firstOrFail();
-    $organisasi = Organisasi::where('id_organisasi', $request->id_organisasi)->firstOrFail();
+        // Validasi tambahan: jika jabatan = "lainnya", wajib isi custom
+        if (strtolower($validated['jabatan']) === 'lainnya' && empty($validated['jabatan_custom'])) {
+            return back()->withErrors(['jabatan_custom' => 'Jabatan lainnya harus diisi.'])->withInput();
+        }
 
-    DetailOrganisasiMahasiswa::create([
-        'id_organisasi' => $request->id_organisasi,
-        'nim' => $mahasiswa->nim,
-        'nama' => $mahasiswa->nama,
-        'nama_organisasi' => $organisasi->nama_organisasi,  // tambahkan ini
-        'jabatan' => $request->jabatan,
-        'status_keanggotaan' => $request->status_keanggotaan,
-    ]);
+        $mahasiswa  = Mahasiswa::where('nim', $validated['nim'])->firstOrFail();
+        $organisasi = Organisasi::where('id_organisasi', $validated['id_organisasi'])->firstOrFail();
 
-    return redirect()->route('organisasi.show', $request->id_organisasi)
-                     ->with('success', 'Anggota berhasil ditambahkan.');
-}
+        // Pilih jabatan: custom jika "lainnya"
+        $jabatan = strtolower($validated['jabatan']) === 'lainnya'
+            ? $validated['jabatan_custom']
+            : $validated['jabatan'];
 
+        DetailOrganisasiMahasiswa::create([
+            'id_organisasi'      => $organisasi->id_organisasi,
+            'nim'                => $mahasiswa->nim,
+            'nama'               => $mahasiswa->nama,
+            'nama_organisasi'    => $organisasi->nama_organisasi,
+            'jabatan'            => $jabatan,
+            'status_keanggotaan' => $validated['status_keanggotaan'],
+        ]);
+
+        return redirect()->route('organisasi.show', $organisasi->id_organisasi)
+                         ->with('success', 'Anggota berhasil ditambahkan.');
+    }
 
     /**
      * Tampilkan halaman detail organisasi dan daftar anggotanya.
-     *
-     * @param string $id_organisasi
-     * @return \Illuminate\View\View
      */
     public function show($id_organisasi)
     {
@@ -76,9 +77,6 @@ class DetailOrganisasiMahasiswaController extends Controller
 
     /**
      * Tampilkan form edit anggota organisasi.
-     *
-     * @param int $id
-     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -90,26 +88,32 @@ class DetailOrganisasiMahasiswaController extends Controller
 
     /**
      * Perbarui data anggota organisasi.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'nim' => ['required', 'string', Rule::exists('mahasiswas', 'nim')], // sudah benar
-            'jabatan' => 'required|string|max:100',
+            'nim'                => ['required', 'string', Rule::exists('mahasiswas', 'nim')],
+            'jabatan'            => 'required|string|max:100',
+            'jabatan_custom'     => 'nullable|string|max:100',
             'status_keanggotaan' => 'required|in:aktif,nonaktif',
         ]);
 
-        $anggota = DetailOrganisasiMahasiswa::findOrFail($id);
+        // Validasi tambahan: jika jabatan = "lainnya", wajib isi custom
+        if (strtolower($validated['jabatan']) === 'lainnya' && empty($validated['jabatan_custom'])) {
+            return back()->withErrors(['jabatan_custom' => 'Jabatan lainnya harus diisi.'])->withInput();
+        }
+
+        $anggota   = DetailOrganisasiMahasiswa::findOrFail($id);
         $mahasiswa = Mahasiswa::where('nim', $validated['nim'])->firstOrFail();
 
+        $jabatan = strtolower($validated['jabatan']) === 'lainnya'
+            ? $validated['jabatan_custom']
+            : $validated['jabatan'];
+
         $anggota->update([
-            'nim' => $mahasiswa->nim,
-            'nama' => $mahasiswa->nama,
-            'jabatan' => $validated['jabatan'],
+            'nim'                => $mahasiswa->nim,
+            'nama'               => $mahasiswa->nama,
+            'jabatan'            => $jabatan,
             'status_keanggotaan' => $validated['status_keanggotaan'],
         ]);
 
@@ -119,9 +123,6 @@ class DetailOrganisasiMahasiswaController extends Controller
 
     /**
      * Hapus anggota dari organisasi.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
