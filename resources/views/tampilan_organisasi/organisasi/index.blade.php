@@ -1,49 +1,53 @@
-@extends('tampilan_organisasi.dashboard_organisasi')
+@extends('layouts.dashboard_organisasi')
+
+@section('title', 'Daftar Organisasi')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-300">
-            Profil Organisasi
-        </h2>
-        <a href="{{ route('organisasi.edit', $organisasi->id) }}"
-           class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow transition">
-            Edit Profil
-        </a>
-    </div>
+<h2 class="text-2xl font-bold mb-4">Daftar Organisasi</h2>
 
-    <!-- Detail Organisasi -->
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Nama Organisasi</p>
-                <p class="text-lg font-semibold">{{ $organisasi->nama_organisasi }}</p>
-            </div>
-            <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">ID Organisasi</p>
-                <p class="text-lg font-semibold">{{ $organisasi->id_organisasi }}</p>
-            </div>
-            <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Email</p>
-                <p class="text-lg font-semibold">{{ $organisasi->email ?? '-' }}</p>
-            </div>
-            <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Deskripsi</p>
-                <p class="text-lg font-semibold">{{ $organisasi->deskripsi ?? '-' }}</p>
-            </div>
-        </div>
-    </div>
+@if (session('success'))
+<div class="mb-4 p-3 bg-green-200 text-green-800 rounded">
+    {{ session('success') }}
+</div>
+@endif
 
-    <!-- Tombol hapus -->
-    <form action="{{ route('organisasi.destroy', $organisasi->id) }}" method="POST" 
-          onsubmit="return confirm('Apakah Anda yakin ingin menghapus organisasi ini?');">
-        @csrf
-        @method('DELETE')
-        <button type="submit" 
-                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">
-            Hapus Organisasi
-        </button>
-    </form>
+<a href="{{ route('organisasi.self.create') }}" 
+   class="mb-4 inline-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+   + Tambah Organisasi
+</a>
+
+<div class="overflow-x-auto shadow rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-200 dark:bg-gray-700">
+            <tr>
+                <th class="px-4 py-2 text-left">ID</th>
+                <th class="px-4 py-2 text-left">Nama Organisasi</th>
+                <th class="px-4 py-2 text-left">Email</th>
+                <th class="px-4 py-2 text-left">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            @forelse($organisasi as $org)
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-2">{{ $org->id }}</td>
+                <td class="px-4 py-2">{{ $org->nama_organisasi }}</td>
+                <td class="px-4 py-2">{{ $org->email }}</td>
+                <td class="px-4 py-2 flex gap-2">
+                    <a href="{{ route('organisasi.self.edit', $org->id) }}" 
+                       class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Edit</a>
+                    <form action="{{ route('organisasi.self.destroy', $org->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="4" class="px-4 py-6 text-center">Belum ada organisasi.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection
