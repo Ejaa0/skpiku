@@ -1,29 +1,32 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http;
 
-use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session; // Untuk mengakses helper session
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-class AdminAuth
+class Kernel extends HttpKernel
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
-    public function handle(Request $request, Closure $next)
-    {
-        // Periksa apakah session 'is_admin_logged_in' ada dan bernilai true
-        if (!Session::get('is_admin_logged_in')) {
-            // Jika tidak, redirect ke halaman login admin dengan pesan error
-            return redirect()->route('admin.login')->with('error', 'Anda harus login sebagai admin untuk mengakses halaman ini.');
-        }
+    // Middleware global
+    protected $middleware = [
+        // daftar middleware global
+    ];
 
-        // Jika sudah login sebagai admin, lanjutkan ke request berikutnya
-        return $next($request);
-    }
+    // Middleware grup
+    protected $middlewareGroups = [
+        'web' => [
+            // daftar middleware web
+        ],
+
+        'api' => [
+            // daftar middleware api
+        ],
+    ];
+
+    // Middleware per route
+    protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'admin.auth' => \App\Http\Middleware\AdminAuth::class,
+        'organisasi.auth' => \App\Http\Middleware\OrganisasiAuth::class,
+        'warek.auth' => \App\Http\Middleware\WarekAuth::class, // <- benar di sini
+    ];
 }

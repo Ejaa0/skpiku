@@ -75,6 +75,7 @@
             <thead>
                 <tr class="bg-gray-100 dark:bg-gray-700">
                     <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Nama Organisasi</th>
+                    <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Jabatan</th>
                     <th class="px-4 py-2 text-right text-gray-700 dark:text-gray-200">Poin</th>
                 </tr>
             </thead>
@@ -85,6 +86,7 @@
                     @endphp
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100 font-medium">{{ $organisasi->nama_organisasi }}</td>
+                        <td class="px-4 py-2 text-gray-800 dark:text-gray-100 font-medium">{{ $organisasi->jabatan }}</td>
                         <td class="px-4 py-2 text-right">
                             <span class="inline-block px-3 py-1 rounded-full font-semibold bg-green-500 text-white">
                                 🟢 {{ $orgPoin }}
@@ -93,7 +95,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2" class="px-4 py-2 text-center text-gray-500 dark:text-gray-400">
+                        <td colspan="3" class="px-4 py-2 text-center text-gray-500 dark:text-gray-400">
                             Belum ada organisasi.
                         </td>
                     </tr>

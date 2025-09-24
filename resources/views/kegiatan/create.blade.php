@@ -20,22 +20,29 @@
 
             <div>
                 <label for="id_kegiatan" class="block font-semibold">ID Kegiatan</label>
-                <input type="text" name="id_kegiatan" id="id_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
+                <input type="text" name="id_kegiatan" id="id_kegiatan" class="w-full border border-gray-300 rounded p-2" 
+                       value="{{ old('id_kegiatan') }}" required>
             </div>
 
             <div>
                 <label for="jenis_kegiatan" class="block font-semibold">Jenis Kegiatan</label>
-                <input type="text" name="jenis_kegiatan" id="jenis_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
+                <select name="jenis_kegiatan" id="jenis_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
+                    <option value="">-- Pilih Jenis Kegiatan --</option>
+                    <option value="Major" {{ old('jenis_kegiatan') == 'Major' ? 'selected' : '' }}>Major</option>
+                    <option value="Reguler" {{ old('jenis_kegiatan') == 'Reguler' ? 'selected' : '' }}>Reguler</option>
+                </select>
             </div>
 
             <div>
                 <label for="nama_kegiatan" class="block font-semibold">Nama Kegiatan</label>
-                <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
+                <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="w-full border border-gray-300 rounded p-2"
+                       value="{{ old('nama_kegiatan') }}" required>
             </div>
 
             <div>
                 <label for="tanggal_kegiatan" class="block font-semibold">Tanggal Kegiatan</label>
-                <input type="date" name="tanggal_kegiatan" id="tanggal_kegiatan" class="w-full border border-gray-300 rounded p-2" required>
+                <input type="date" name="tanggal_kegiatan" id="tanggal_kegiatan" class="w-full border border-gray-300 rounded p-2"
+                       value="{{ old('tanggal_kegiatan') }}" required>
             </div>
 
             <div class="flex justify-between items-center pt-4">
