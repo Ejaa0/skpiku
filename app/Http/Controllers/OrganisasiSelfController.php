@@ -21,11 +21,11 @@ class OrganisasiSelfController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'id_organisasi' => 'required|integer|unique:organisasi,id_organisasi',
             'nama_organisasi' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
         ]);
 
-        Organisasi::create($request->all());
+        Organisasi::create($request->only('id_organisasi','nama_organisasi'));
         return redirect()->route('organisasi.self.index')->with('success', 'Organisasi berhasil ditambahkan.');
     }
 
@@ -38,12 +38,12 @@ class OrganisasiSelfController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'id_organisasi' => 'required|integer|unique:organisasi,id_organisasi,'.$id.',id_organisasi',
             'nama_organisasi' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
         ]);
 
         $organisasi = Organisasi::findOrFail($id);
-        $organisasi->update($request->all());
+        $organisasi->update($request->only('id_organisasi','nama_organisasi'));
         return redirect()->route('organisasi.self.index')->with('success', 'Organisasi berhasil diupdate.');
     }
 

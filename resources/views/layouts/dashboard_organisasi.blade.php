@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" x-data="{ open: false, darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,6 +27,7 @@
     <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
+
 <body class="bg-white text-black dark:bg-gray-900 dark:text-white transition-all min-h-screen flex">
 
     <!-- Sidebar -->
@@ -43,13 +45,13 @@
             <!-- Navigation -->
             <nav class="space-y-2 flex flex-col">
                 <a href="{{ route('organisasi.self.index') }}"
-                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.self.index') ? 'bg-blue-800' : '' }}">
+                    class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.self.index') ? 'bg-blue-800' : '' }}">
                     <span class="material-icons">groups</span>
                     <span class="text-sm font-semibold">Organisasi</span>
                 </a>
 
                 <a href="{{ route('kegiatan.index') }}"
-                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('kegiatan.index') ? 'bg-blue-800' : '' }}">
+                    class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('kegiatan.index') ? 'bg-blue-800' : '' }}">
                     <span class="material-icons">event</span>
                     <span class="text-sm font-semibold">Kegiatan</span>
                 </a>
@@ -86,4 +88,5 @@
     </div>
 
 </body>
+
 </html>
