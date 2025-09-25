@@ -7,10 +7,15 @@ use App\Models\Organisasi;
 
 class OrganisasiSelfController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $organisasi = Organisasi::all();
-        return view('tampilan_organisasi.organisasi.index', compact('organisasi'));
+        $search = $request->input('search');
+        $organisasi = Organisasi::query()
+            ->when($search, fn($query) => $query->where('nama_organisasi', 'like', "%{$search}%"))
+            ->orderBy('id_organisasi', 'asc')
+            ->get();
+
+        return view('tampilan_organisasi.organisasi.index', compact('organisasi', 'search'));
     }
 
     public function create()
@@ -25,7 +30,8 @@ class OrganisasiSelfController extends Controller
             'nama_organisasi' => 'required|string|max:255',
         ]);
 
-        Organisasi::create($request->only('id_organisasi','nama_organisasi'));
+        Organisasi::create($request->only('id_organisasi', 'nama_organisasi'));
+
         return redirect()->route('organisasi.self.index')->with('success', 'Organisasi berhasil ditambahkan.');
     }
 
@@ -44,6 +50,7 @@ class OrganisasiSelfController extends Controller
 
         $organisasi = Organisasi::findOrFail($id);
         $organisasi->update($request->only('id_organisasi','nama_organisasi'));
+
         return redirect()->route('organisasi.self.index')->with('success', 'Organisasi berhasil diupdate.');
     }
 
@@ -51,6 +58,13 @@ class OrganisasiSelfController extends Controller
     {
         $organisasi = Organisasi::findOrFail($id);
         $organisasi->delete();
+
         return redirect()->route('organisasi.self.index')->with('success', 'Organisasi berhasil dihapus.');
+    }
+
+    public function show($id)
+    {
+        $organisasi = Organisasi::findOrFail($id);
+        return view('tampilan_organisasi.organisasi.show', compact('organisasi'));
     }
 }

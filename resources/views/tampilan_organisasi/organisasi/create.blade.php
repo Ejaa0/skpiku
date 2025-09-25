@@ -19,8 +19,8 @@
     @csrf
     <div>
         <label class="block mb-1 font-semibold">ID Organisasi</label>
-        <input type="text" value="Auto" readonly
-               class="w-full px-3 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        <input type="number" name="id_organisasi" value="{{ old('id_organisasi') }}" 
+               class="w-full px-3 py-2 border rounded dark:bg-gray-700 dark:border-gray-600" required>
     </div>
     <div>
         <label class="block mb-1 font-semibold">Nama Organisasi</label>

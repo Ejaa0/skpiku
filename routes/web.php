@@ -185,5 +185,13 @@ Route::prefix('org-self')->group(function () {
     Route::post('/',[OrganisasiSelfController::class,'store'])->name('organisasi.self.store');
     Route::get('/{id}/edit',[OrganisasiSelfController::class,'edit'])->name('organisasi.self.edit');
     Route::put('/{id}',[OrganisasiSelfController::class,'update'])->name('organisasi.self.update');
+    Route::get('/{id}', [OrganisasiSelfController::class,'show'])->name('organisasi.self.show');
     Route::delete('/{id}',[OrganisasiSelfController::class,'destroy'])->name('organisasi.self.destroy');
+});
+
+Route::prefix('detail-organisasi')->group(function () {
+    Route::get('{id}/create', [DetailOrganisasiMahasiswaController::class, 'create'])
+        ->name('detail-organisasi-mahasiswa.create');
+    Route::post('', [DetailOrganisasiMahasiswaController::class, 'store'])
+        ->name('detail-organisasi-mahasiswa.store');
 });
