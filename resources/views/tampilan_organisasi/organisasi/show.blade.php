@@ -3,24 +3,59 @@
 @section('title', 'Detail Organisasi')
 
 @section('content')
-<h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Detail Organisasi</h2>
+<div class="p-6">
+    <h2 class="text-xl font-bold text-green-600 mb-4">
+        Detail Organisasi: {{ $organisasi->nama_organisasi }}
+    </h2>
 
-<div class="max-w-lg mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
-    <div class="mb-4">
-        <label class="block text-gray-600 dark:text-gray-300 font-semibold mb-1">ID Organisasi</label>
-        <p class="text-gray-800 dark:text-gray-100 text-lg">{{ $organisasi->id_organisasi }}</p>
+    <!-- Tombol tambah anggota -->
+    <a href="{{ route('organisasi.self.tambah_anggota', $organisasi->id_organisasi) }}"
+       class="mb-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+       ➕ Tambah Anggota
+    </a>
+
+    <!-- Tabel anggota -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-2 px-4 border-b text-left">NIM</th>
+                    <th class="py-2 px-4 border-b text-left">Nama</th>
+                    <th class="py-2 px-4 border-b text-left">Jabatan</th>
+                    <th class="py-2 px-4 border-b text-left">Status Keanggotaan</th>
+                    <th class="py-2 px-4 border-b text-left">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($mahasiswa as $m)
+                <tr class="hover:bg-gray-50">
+                    <td class="py-2 px-4 border-b">{{ $m->nim }}</td>
+                    <td class="py-2 px-4 border-b">{{ $m->nama }}</td>
+                    <td class="py-2 px-4 border-b">{{ $m->jabatan ?? '-' }}</td>
+                    <td class="py-2 px-4 border-b">{{ $m->status_keanggotaan ?? '-' }}</td>
+                    <td class="py-2 px-4 border-b space-x-2">
+                        <a href="{{ route('organisasi.self.edit_anggota', [$organisasi->id_organisasi, $m->nim]) }}"
+                           class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                           Edit
+                        </a>
+                        <form action="{{ route('organisasi.self.delete_anggota', [$organisasi->id_organisasi, $m->nim]) }}" method="POST" class="inline-block"
+                              onsubmit="return confirm('Yakin ingin menghapus anggota ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
-    <div class="mb-4">
-        <label class="block text-gray-600 dark:text-gray-300 font-semibold mb-1">Nama Organisasi</label>
-        <p class="text-gray-800 dark:text-gray-100 text-lg">{{ $organisasi->nama_organisasi }}</p>
-    </div>
-
-    <div class="flex justify-between mt-6">
-        <a href="{{ route('organisasi.self.edit', $organisasi->id_organisasi) }}" 
-           class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Edit</a>
-        <a href="{{ route('organisasi.self.index') }}" 
-           class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Kembali</a>
-    </div>
+    <a href="{{ route('organisasi.self.index') }}"
+       class="mt-4 inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+       ← Kembali ke Daftar Organisasi
+    </a>
 </div>
 @endsection

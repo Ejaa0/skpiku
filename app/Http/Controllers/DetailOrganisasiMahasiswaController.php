@@ -67,17 +67,25 @@ class DetailOrganisasiMahasiswaController extends Controller
     /**
      * Tampilkan halaman detail organisasi dan daftar anggotanya.
      */
-    public function show($id_organisasi)
-    {
-        $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
-        $detailMahasiswa = DetailOrganisasiMahasiswa::where('id_organisasi', $id_organisasi)->get();
+    public function show($id)
+{
+    $organisasi = Organisasi::findOrFail($id);
 
-        return view('organisasi.show', compact('organisasi', 'detailMahasiswa'));
-    }
+    // Ambil anggota organisasi beserta data mahasiswa
+    $mahasiswa = DB::table('detail_organisasi_mahasiswa as dom')
+        ->join('mahasiswas as m', 'm.nim', '=', 'dom.nim')
+        ->where('dom.id_organisasi', $id)
+        ->select(
+            'm.nim',
+            'm.nama',
+            'dom.jabatan',
+            'dom.status_keanggotaan'
+        )
+        ->get();
 
-    /**
-     * Tampilkan form edit anggota organisasi.
-     */
+    return view('tampilan_organisasi.organisasi.show', compact('organisasi', 'mahasiswa'));
+}
+
     public function edit($id)
     {
         $detail = DetailOrganisasiMahasiswa::findOrFail($id);

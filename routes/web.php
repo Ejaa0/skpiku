@@ -195,3 +195,19 @@ Route::prefix('detail-organisasi')->group(function () {
     Route::post('', [DetailOrganisasiMahasiswaController::class, 'store'])
         ->name('detail-organisasi-mahasiswa.store');
 });
+Route::get('/organisasi/{id_organisasi}/tambah-anggota', [OrganisasiController::class, 'formTambahAnggota'])->name('organisasi.anggota.create');
+Route::get('/organisasi/{id_organisasi}/tambah-anggota', [OrganisasiSelfController::class, 'tambahAnggota'])
+    ->name('organisasi.self.tambah_anggota');
+
+Route::post('/organisasi/{id_organisasi}/anggota', [OrganisasiSelfController::class, 'storeAnggota'])
+    ->name('organisasi.self.store_anggota');
+Route::get('/organisasi/{id_organisasi}/anggota/{nim}/edit', [OrganisasiSelfController::class, 'editAnggota'])
+    ->name('organisasi.self.edit_anggota');
+
+// Update anggota
+Route::put('/organisasi/{id_organisasi}/anggota/{nim}', [OrganisasiSelfController::class, 'updateAnggota'])
+    ->name('organisasi.self.update_anggota');
+
+// Hapus anggota
+Route::delete('/organisasi/{id_organisasi}/anggota/{nim}', [OrganisasiSelfController::class, 'deleteAnggota'])
+    ->name('organisasi.self.delete_anggota');
