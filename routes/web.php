@@ -13,6 +13,7 @@ use App\Http\Controllers\WarekController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrganisasiSelfController;
 use App\Http\Controllers\PenentuanPoinController;
+use App\Http\Controllers\KegiatanSelfController;
 
 // ========================== Default Admin ==========================
 $defaultAdminEmail = 'rezaivander12@gmail.com';
@@ -211,3 +212,49 @@ Route::put('/organisasi/{id_organisasi}/anggota/{nim}', [OrganisasiSelfControlle
 // Hapus anggota
 Route::delete('/organisasi/{id_organisasi}/anggota/{nim}', [OrganisasiSelfController::class, 'deleteAnggota'])
     ->name('organisasi.self.delete_anggota');
+
+    Route::prefix('kegiatan-self')->name('kegiatan-self.')->group(function () {
+    // Index berdasarkan id organisasi
+    Route::get('/{id_organisasi}', [KegiatanSelfController::class, 'index'])->name('index');
+
+    // Tambah kegiatan
+    Route::get('/{id_organisasi}/create', [KegiatanSelfController::class, 'create'])->name('create');
+    Route::post('/{id_organisasi}', [KegiatanSelfController::class, 'store'])->name('store');
+
+    // Detail / edit / update / delete kegiatan
+    Route::get('/org-self', [OrganisasiSelfController::class, 'index'])->name('organisasi.self.index');
+
+// Kegiatan milik organisasi
+Route::prefix('org-self/kegiatan')->group(function () {
+    Route::get('/', [KegiatanSelfController::class, 'index'])->name('kegiatan-self.index');
+    Route::get('/create', [KegiatanSelfController::class, 'create'])->name('kegiatan-self.create');
+    Route::post('/', [KegiatanSelfController::class, 'store'])->name('kegiatan-self.store');
+    Route::get('/{id}', [KegiatanSelfController::class, 'show'])->name('kegiatan-self.show');
+    Route::get('/{id}/edit', [KegiatanSelfController::class, 'edit'])->name('kegiatan-self.edit');
+    Route::put('/{id}', [KegiatanSelfController::class, 'update'])->name('kegiatan-self.update');
+    Route::delete('/{id}', [KegiatanSelfController::class, 'destroy'])->name('kegiatan-self.destroy');
+
+     // Daftar kegiatan untuk organisasi tertentu
+    Route::get('/{id}/kegiatan', [KegiatanSelfController::class, 'index'])->name('kegiatan-self.index');
+    
+    // Form tambah kegiatan
+    Route::get('/{id}/kegiatan/create', [KegiatanSelfController::class, 'create'])->name('kegiatan-self.create');
+
+    // Simpan kegiatan
+    Route::post('/{id}/kegiatan', [KegiatanSelfController::class, 'store'])->name('kegiatan-self.store');
+
+    // Form edit kegiatan
+    Route::get('/{id}/kegiatan/{kegiatan}', [KegiatanSelfController::class, 'edit'])->name('kegiatan-self.edit');
+
+    // Update kegiatan
+    Route::put('/{id}/kegiatan/{kegiatan}', [KegiatanSelfController::class, 'update'])->name('kegiatan-self.update');
+
+    // Hapus kegiatan
+    Route::delete('/{id}/kegiatan/{kegiatan}', [KegiatanSelfController::class, 'destroy'])->name('kegiatan-self.destroy');
+
+    // Detail kegiatan
+    Route::get('/{id}/kegiatan/{kegiatan}/show', [KegiatanSelfController::class, 'show'])->name('kegiatan-self.show');
+    
+});
+});
+

@@ -7,6 +7,7 @@ use App\Models\Organisasi;
 use App\Models\Mahasiswa;
 use App\Models\DetailOrganisasiMahasiswa;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class DetailOrganisasiMahasiswaController extends Controller
 {
@@ -17,10 +18,22 @@ class DetailOrganisasiMahasiswaController extends Controller
     {
         $organisasi = Organisasi::where('id_organisasi', $id_organisasi)->firstOrFail();
 
+        // Ambil semua NIM mahasiswa yang sudah jadi anggota organisasi ini
+        $sudahAnggota = DetailOrganisasiMahasiswa::where('id_organisasi', $id_organisasi)
+            ->pluck('nim')
+            ->toArray();
+
+        // Query mahasiswa + pencarian + exclude yang sudah anggota
         $mahasiswa = Mahasiswa::when(request()->input('cari'), function ($query, $cari) {
-            $query->where('nim', 'like', '%' . $cari . '%')
-                  ->orWhere('nama', 'like', '%' . $cari . '%');
-        })->paginate(10);
+                $query->where(function ($q) use ($cari) {
+                    $q->where('nim', 'like', '%' . $cari . '%')
+                      ->orWhere('nama', 'like', '%' . $cari . '%');
+                });
+            })
+            ->when(!empty($sudahAnggota), function ($query) use ($sudahAnggota) {
+                $query->whereNotIn('nim', $sudahAnggota);
+            })
+            ->paginate(10);
 
         return view('detail_organisasi_mahasiswa.create', compact('organisasi', 'mahasiswa'));
     }
@@ -41,6 +54,15 @@ class DetailOrganisasiMahasiswaController extends Controller
         // Validasi tambahan: jika jabatan = "lainnya", wajib isi custom
         if (strtolower($validated['jabatan']) === 'lainnya' && empty($validated['jabatan_custom'])) {
             return back()->withErrors(['jabatan_custom' => 'Jabatan lainnya harus diisi.'])->withInput();
+        }
+
+        // Cegah duplikat anggota di organisasi yang sama
+        $cek = DetailOrganisasiMahasiswa::where('id_organisasi', $validated['id_organisasi'])
+            ->where('nim', $validated['nim'])
+            ->exists();
+
+        if ($cek) {
+            return back()->withErrors(['nim' => 'Mahasiswa ini sudah menjadi anggota organisasi.'])->withInput();
         }
 
         $mahasiswa  = Mahasiswa::where('nim', $validated['nim'])->firstOrFail();
@@ -68,24 +90,27 @@ class DetailOrganisasiMahasiswaController extends Controller
      * Tampilkan halaman detail organisasi dan daftar anggotanya.
      */
     public function show($id)
-{
-    $organisasi = Organisasi::findOrFail($id);
+    {
+        $organisasi = Organisasi::findOrFail($id);
 
-    // Ambil anggota organisasi beserta data mahasiswa
-    $mahasiswa = DB::table('detail_organisasi_mahasiswa as dom')
-        ->join('mahasiswas as m', 'm.nim', '=', 'dom.nim')
-        ->where('dom.id_organisasi', $id)
-        ->select(
-            'm.nim',
-            'm.nama',
-            'dom.jabatan',
-            'dom.status_keanggotaan'
-        )
-        ->get();
+        // Ambil anggota organisasi beserta data mahasiswa
+        $mahasiswa = DB::table('detail_organisasi_mahasiswa as dom')
+            ->join('mahasiswas as m', 'm.nim', '=', 'dom.nim')
+            ->where('dom.id_organisasi', $id)
+            ->select(
+                'm.nim',
+                'm.nama',
+                'dom.jabatan',
+                'dom.status_keanggotaan'
+            )
+            ->get();
 
-    return view('tampilan_organisasi.organisasi.show', compact('organisasi', 'mahasiswa'));
-}
+        return view('tampilan_organisasi.organisasi.show', compact('organisasi', 'mahasiswa'));
+    }
 
+    /**
+     * Tampilkan form edit anggota organisasi.
+     */
     public function edit($id)
     {
         $detail = DetailOrganisasiMahasiswa::findOrFail($id);
