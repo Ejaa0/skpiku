@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrganisasiSelfController extends Controller
 {
+    // ================== INDEX ==================
     public function index(Request $request)
     {
         $query = Organisasi::query();
@@ -22,6 +23,7 @@ class OrganisasiSelfController extends Controller
         return view('tampilan_organisasi.organisasi.index', compact('organisasi', 'search'));
     }
 
+    // ================== CREATE ==================
     public function create()
     {
         return view('tampilan_organisasi.organisasi.create');
@@ -40,6 +42,7 @@ class OrganisasiSelfController extends Controller
         return redirect()->route('organisasi.self.index')->with('success', 'Organisasi berhasil ditambahkan.');
     }
 
+    // ================== EDIT ORGANISASI ==================
     public function edit($id)
     {
         $organisasi = Organisasi::findOrFail($id);
@@ -48,16 +51,22 @@ class OrganisasiSelfController extends Controller
 
     public function update(Request $request, $id)
     {
-        $organisasi = Organisasi::findOrFail($id);
         $request->validate([
+            'id_organisasi' => 'required|integer|unique:organisasi,id_organisasi,'.$id.',id_organisasi',
             'nama_organisasi' => 'required|string|max:255',
         ]);
 
-        $organisasi->update(['nama_organisasi' => $request->nama_organisasi]);
+        $organisasi = Organisasi::findOrFail($id);
+        $organisasi->update([
+            'id_organisasi' => $request->id_organisasi,
+            'nama_organisasi' => $request->nama_organisasi,
+        ]);
 
-        return redirect()->route('organisasi.self.index')->with('success', 'Data organisasi berhasil diperbarui.');
+        return redirect()->route('organisasi.self.index')
+                         ->with('success', 'Data organisasi berhasil diperbarui.');
     }
 
+    // ================== SHOW ==================
     public function show($id)
     {
         $organisasi = Organisasi::findOrFail($id);
@@ -71,6 +80,7 @@ class OrganisasiSelfController extends Controller
         return view('tampilan_organisasi.organisasi.show', compact('organisasi', 'mahasiswa'));
     }
 
+    // ================== DELETE ORGANISASI ==================
     public function destroy($id)
     {
         $organisasi = Organisasi::findOrFail($id);
@@ -79,17 +89,16 @@ class OrganisasiSelfController extends Controller
         return redirect()->route('organisasi.self.index')->with('success', 'Organisasi berhasil dihapus.');
     }
 
+    // ================== TAMBAH ANGGOTA ==================
     public function tambahAnggota($id)
     {
         $organisasi = Organisasi::findOrFail($id);
 
-        // Ambil nim mahasiswa yang sudah menjadi anggota
         $anggotaExisting = DB::table('detail_organisasi_mahasiswa')
             ->where('id_organisasi', $id)
             ->pluck('nim')
             ->toArray();
 
-        // Ambil seluruh mahasiswa yang belum menjadi anggota
         $mahasiswa = DB::table('mahasiswas')
             ->whereNotIn('nim', $anggotaExisting)
             ->get();
@@ -105,7 +114,6 @@ class OrganisasiSelfController extends Controller
             'status_keanggotaan' => 'required|in:aktif,tidak aktif',
         ]);
 
-        // Ambil data organisasi dan mahasiswa
         $organisasi = DB::table('organisasi')->where('id_organisasi', $id_organisasi)->first();
         $mahasiswa = DB::table('mahasiswas')->where('nim', $request->mahasiswa_nim)->first();
 
@@ -122,19 +130,17 @@ class OrganisasiSelfController extends Controller
                          ->with('success', 'Anggota berhasil ditambahkan.');
     }
 
+    // ================== EDIT ANGGOTA ==================
     public function editAnggota($id_organisasi, $nim)
-    {
-        $organisasi = Organisasi::findOrFail($id_organisasi);
+{
+    $organisasi = Organisasi::findOrFail($id_organisasi); // ambil data organisasi
+    $anggota = DB::table('detail_organisasi_mahasiswa')
+        ->where('id_organisasi', $id_organisasi)
+        ->where('nim', $nim)
+        ->first();
 
-        $anggota = DB::table('detail_organisasi_mahasiswa')
-            ->join('mahasiswas', 'detail_organisasi_mahasiswa.nim', '=', 'mahasiswas.nim')
-            ->where('detail_organisasi_mahasiswa.id_organisasi', $id_organisasi)
-            ->where('detail_organisasi_mahasiswa.nim', $nim)
-            ->select('detail_organisasi_mahasiswa.*', 'mahasiswas.nama')
-            ->first();
-
-        return view('tampilan_organisasi.organisasi.edit_anggota', compact('organisasi', 'anggota'));
-    }
+    return view('tampilan_organisasi.organisasi.edit_anggota', compact('organisasi', 'anggota'));
+}
 
     public function updateAnggota(Request $request, $id_organisasi, $nim)
     {
@@ -152,9 +158,10 @@ class OrganisasiSelfController extends Controller
             ]);
 
         return redirect()->route('organisasi.self.show', $id_organisasi)
-            ->with('success', 'Data anggota berhasil diperbarui.');
+                         ->with('success', 'Data anggota berhasil diperbarui.');
     }
 
+    // ================== DELETE ANGGOTA ==================
     public function deleteAnggota($id_organisasi, $nim)
     {
         DB::table('detail_organisasi_mahasiswa')

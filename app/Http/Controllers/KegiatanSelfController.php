@@ -17,9 +17,7 @@ class KegiatanSelfController extends Controller
 
         $kegiatans = $query->orderBy('tanggal_kegiatan', 'desc')->paginate(10)->withQueryString();
 
-        return view('tampilan_kegiatan.kegiatan.index', [
-            'kegiatans' => $kegiatans
-        ]);
+        return view('tampilan_kegiatan.kegiatan.index', compact('kegiatans'));
     }
 
     public function create()
