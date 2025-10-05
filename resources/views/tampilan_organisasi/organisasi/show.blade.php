@@ -37,10 +37,11 @@
                     <td class="px-6 py-4">{{ $m->jabatan ?? '-' }}</td>
                     <td class="px-6 py-4">{{ $m->status_keanggotaan ?? '-' }}</td>
                     <td class="px-6 py-4 flex gap-2">
-                        <a href="{{ route('organisasi.self.edit_anggota', [$organisasi->id_organisasi, $m->nim]) }}"
-                           class="px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">
-                           Edit
-                        </a>
+                        <a href="{{ route('organisasi.self.edit', $organisasi->id_organisasi) }}"
+   class="px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">
+   Edit
+</a>
+
                         <form action="{{ route('organisasi.self.delete_anggota', [$organisasi->id_organisasi, $m->nim]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus anggota ini?')">
                             @csrf
                             @method('DELETE')

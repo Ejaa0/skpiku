@@ -49,8 +49,7 @@
                     <td class="px-6 py-4 border-b flex gap-2">
                         <a href="{{ route('organisasi.self.show', $org->id_organisasi) }}" 
                            class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Lihat</a>
-                        <a href="{{ route('organisasi.self.edit', $org->id_organisasi) }}" 
-                           class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Edit</a>
+                        
                         <form action="{{ route('organisasi.self.destroy', $org->id_organisasi) }}" method="POST" onsubmit="return confirm('Yakin hapus?')">
                             @csrf
                             @method('DELETE')

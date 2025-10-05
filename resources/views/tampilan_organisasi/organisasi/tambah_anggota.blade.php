@@ -4,7 +4,9 @@
 
 @section('content')
 <div class="p-6">
-    <h2 class="text-2xl font-bold text-green-600 mb-6">➕ Tambah Anggota: {{ $organisasi->nama_organisasi }}</h2>
+    <h2 class="text-2xl font-bold text-green-600 mb-6">
+        ➕ Tambah Anggota: {{ $organisasi->nama_organisasi }}
+    </h2>
 
     @if ($errors->any())
         <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -33,6 +35,7 @@
                     <td class="py-2 px-4">{{ $m->nim }}</td>
                     <td class="py-2 px-4">{{ $m->nama }}</td>
                     <td class="py-2 px-4">
+                        {{-- 🔧 ROUTE FIXED DI SINI --}}
                         <form action="{{ route('organisasi.self.store_anggota', $organisasi->id_organisasi) }}" method="POST" class="inline-flex items-center space-x-2 w-full">
                             @csrf
                             <input type="hidden" name="mahasiswa_nim" value="{{ $m->nim }}">
@@ -76,4 +79,3 @@
     </a>
 </div>
 @endsection
-    

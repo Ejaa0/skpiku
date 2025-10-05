@@ -114,16 +114,4 @@ class OrganisasiController extends Controller
         return redirect()->route('organisasi.show', $id_organisasi)
                         ->with('success', 'Anggota berhasil ditambahkan.');
     }
-    public function deleteAnggota($id_organisasi, $nim)
-{
-    \DB::table('detail_organisasi_mahasiswa')
-        ->where('id_organisasi', $id_organisasi)
-        ->where('nim', $nim)
-        ->delete();
-
-    return redirect()
-        ->route('organisasi.self.show', $id_organisasi)
-        ->with('success', 'Anggota berhasil dihapus.');
-}
-
 }
