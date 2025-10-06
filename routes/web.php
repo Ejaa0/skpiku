@@ -165,22 +165,22 @@ Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index
 Route::get('/penentuan-poin', [PenentuanPoinController::class, 'index'])->name('penentuan-poin.index');
 Route::resource('penentuan_poin', PenentuanPoinController::class);
 
-// ========================== ORGANISASI SELF (DASHBOARD ORGANISASI) ==========================
+// ========================== ORGANISASI SELF ==========================
 Route::prefix('org-self')->name('organisasi.self.')->group(function () {
     Route::get('/', [OrganisasiSelfController::class, 'index'])->name('index');
     Route::get('/create', [OrganisasiSelfController::class, 'create'])->name('create');
     Route::post('/store', [OrganisasiSelfController::class, 'store'])->name('store');
     Route::get('/edit/{id}', [OrganisasiSelfController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}', [OrganisasiSelfController::class, 'update'])->name('update');
-    Route::delete('/delete/{id}', [OrganisasiSelfController::class, 'destroy'])->name('destroy');
+    Route::post('/update/{id}', [OrganisasiSelfController::class, 'update'])->name('update');
     Route::get('/show/{id}', [OrganisasiSelfController::class, 'show'])->name('show');
+    Route::delete('/destroy/{id}', [OrganisasiSelfController::class, 'destroy'])->name('destroy');
 
-    // ===== ANGGOTA ORGANISASI =====
-    Route::get('/{id}/tambah-anggota', [OrganisasiSelfController::class, 'tambahAnggota'])->name('tambah_anggota');
-    Route::post('/{id}/store-anggota', [OrganisasiSelfController::class, 'storeAnggota'])->name('store_anggota');
-    Route::get('/{id}/edit-anggota/{nim}', [OrganisasiSelfController::class, 'editAnggota'])->name('edit_anggota');
-    Route::put('/{id}/update-anggota/{nim}', [OrganisasiSelfController::class, 'updateAnggota'])->name('update_anggota');
-    Route::delete('/{id}/delete-anggota/{nim}', [OrganisasiSelfController::class, 'deleteAnggota'])->name('delete_anggota');
+    // Anggota
+    Route::get('/tambah-anggota/{id_organisasi}', [OrganisasiSelfController::class, 'tambahAnggota'])->name('tambah_anggota');
+    Route::post('/store-anggota/{id_organisasi}', [OrganisasiSelfController::class, 'storeAnggota'])->name('store_anggota');
+    Route::delete('/delete-anggota/{id_organisasi}/{nim}', [OrganisasiSelfController::class, 'deleteAnggota'])->name('delete_anggota');
+    Route::get('/edit-anggota/{id_organisasi}/{nim}', [OrganisasiSelfController::class, 'editAnggota'])->name('edit_anggota');
+    Route::post('/update-anggota/{id_organisasi}/{nim}', [OrganisasiSelfController::class, 'updateAnggota'])->name('update_anggota');
 });
 
 // ========================== KEGIATAN SELF ==========================
@@ -190,6 +190,6 @@ Route::prefix('kegiatan-self')->name('kegiatan-self.')->group(function () {
     Route::post('/', [KegiatanSelfController::class, 'store'])->name('store');
     Route::get('/{id}/show', [KegiatanSelfController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [KegiatanSelfController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [KegiatanSelfController::class, 'update'])->name('update');
+    Route::post('/{id}/update', [KegiatanSelfController::class, 'update'])->name('update');
     Route::delete('/{id}', [KegiatanSelfController::class, 'destroy'])->name('destroy');
 });

@@ -14,7 +14,7 @@ class OrganisasiSelfController extends Controller
         $query = Organisasi::query();
 
         if ($request->has('search') && $request->search != '') {
-            $query->where('nama_organisasi', 'like', '%'.$request->search.'%');
+            $query->where('nama_organisasi', 'like', '%' . $request->search . '%');
         }
 
         $organisasi = $query->get();
@@ -50,21 +50,25 @@ class OrganisasiSelfController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'id_organisasi' => 'required|integer|unique:organisasi,id_organisasi,'.$id.',id_organisasi',
-            'nama_organisasi' => 'required|string|max:255',
-        ]);
+{
+    $org = OrganisasiMahasiswa::where('nim', $id)->firstOrFail();
 
-        $organisasi = Organisasi::findOrFail($id);
-        $organisasi->update([
-            'id_organisasi' => $request->id_organisasi,
-            'nama_organisasi' => $request->nama_organisasi,
-        ]);
+    $request->validate([
+        'nama_organisasi' => 'required|string|max:255',
+        'jabatan' => 'required|string|max:255',
+        'status_keanggotaan' => 'required|string|max:255',
+    ]);
 
-        return redirect()->route('organisasi.self.index')
-                         ->with('success', 'Data organisasi berhasil diperbarui.');
-    }
+    $org->update([
+        'nama_organisasi' => $request->nama_organisasi,
+        'jabatan' => $request->jabatan,
+        'status_keanggotaan' => $request->status_keanggotaan,
+    ]);
+
+    return redirect()->route('organisasi.self.show', $id)
+                     ->with('success', 'Data berhasil diperbarui!');
+}
+
 
     // ================== SHOW ==================
     public function show($id)
@@ -111,10 +115,10 @@ class OrganisasiSelfController extends Controller
         $request->validate([
             'mahasiswa_nim' => 'required|exists:mahasiswas,nim',
             'jabatan' => 'nullable|string|max:255',
-            'status_keanggotaan' => 'required|in:aktif,tidak aktif',
+            'status_keanggotaan' => 'required|in:aktif,nonaktif',
         ]);
 
-        $organisasi = DB::table('organisasi')->where('id_organisasi', $id_organisasi)->first();
+        $organisasi = DB::table('organisasis')->where('id', $id_organisasi)->first();
         $mahasiswa = DB::table('mahasiswas')->where('nim', $request->mahasiswa_nim)->first();
 
         DB::table('detail_organisasi_mahasiswa')->insert([
@@ -133,33 +137,40 @@ class OrganisasiSelfController extends Controller
     // ================== EDIT ANGGOTA ==================
     public function editAnggota($id_organisasi, $nim)
 {
-    $organisasi = Organisasi::findOrFail($id_organisasi); // ambil data organisasi
-    $anggota = DB::table('detail_organisasi_mahasiswa')
+    $anggota = \DB::table('detail_organisasi_mahasiswa')
         ->where('id_organisasi', $id_organisasi)
         ->where('nim', $nim)
         ->first();
 
-    return view('tampilan_organisasi.organisasi.edit_anggota', compact('organisasi', 'anggota'));
+    if (!$anggota) {
+        return redirect()->route('organisasi.self.show', $id_organisasi)
+                         ->with('error', 'Anggota tidak ditemukan.');
+    }
+
+    return view('tampilan_organisasi.organisasi.edit', [
+        'anggota' => $anggota,
+        'id_organisasi' => $id_organisasi
+    ]);
 }
 
-    public function updateAnggota(Request $request, $id_organisasi, $nim)
-    {
-        $request->validate([
-            'jabatan' => 'nullable|string|max:255',
-            'status_keanggotaan' => 'required|in:aktif,tidak aktif',
+public function updateAnggota(Request $request, $id_organisasi, $nim)
+{
+    $request->validate([
+        'jabatan' => 'nullable|string|max:255',
+        'status_keanggotaan' => 'required|in:aktif,nonaktif',
+    ]);
+
+    \DB::table('detail_organisasi_mahasiswa')
+        ->where('id_organisasi', $id_organisasi)
+        ->where('nim', $nim)
+        ->update([
+            'jabatan' => $request->jabatan,
+            'status_keanggotaan' => $request->status_keanggotaan,
         ]);
 
-        DB::table('detail_organisasi_mahasiswa')
-            ->where('id_organisasi', $id_organisasi)
-            ->where('nim', $nim)
-            ->update([
-                'jabatan' => $request->jabatan,
-                'status_keanggotaan' => $request->status_keanggotaan,
-            ]);
-
-        return redirect()->route('organisasi.self.show', $id_organisasi)
-                         ->with('success', 'Data anggota berhasil diperbarui.');
-    }
+    return redirect()->route('organisasi.self.show', $id_organisasi)
+                     ->with('success', 'Data anggota berhasil diperbarui.');
+}
 
     // ================== DELETE ANGGOTA ==================
     public function deleteAnggota($id_organisasi, $nim)
