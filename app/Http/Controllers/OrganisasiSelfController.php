@@ -111,28 +111,38 @@ class OrganisasiSelfController extends Controller
     }
 
     public function storeAnggota(Request $request, $id_organisasi)
-    {
-        $request->validate([
-            'mahasiswa_nim' => 'required|exists:mahasiswas,nim',
-            'jabatan' => 'nullable|string|max:255',
-            'status_keanggotaan' => 'required|in:aktif,nonaktif',
-        ]);
+{
+    // Validasi input
+    $request->validate([
+        'mahasiswa_nim' => 'required|exists:mahasiswas,nim',
+        'jabatan' => 'nullable|string|max:255',
+        'status_keanggotaan' => 'required|in:aktif,nonaktif',
+    ]);
 
-        $organisasi = DB::table('organisasis')->where('id', $id_organisasi)->first();
-        $mahasiswa = DB::table('mahasiswas')->where('nim', $request->mahasiswa_nim)->first();
+    // Ambil organisasi pakai model, pastikan ada
+    $organisasi = Organisasi::findOrFail($id_organisasi);
 
-        DB::table('detail_organisasi_mahasiswa')->insert([
-            'id_organisasi' => $id_organisasi,
-            'nama_organisasi' => $organisasi->nama_organisasi,
-            'nim' => $request->mahasiswa_nim,
-            'nama' => $mahasiswa->nama,
-            'jabatan' => $request->jabatan,
-            'status_keanggotaan' => $request->status_keanggotaan,
-        ]);
+    // Ambil data mahasiswa dari tabel mahasiswas
+    $mahasiswa = DB::table('mahasiswas')->where('nim', $request->mahasiswa_nim)->first();
 
-        return redirect()->route('organisasi.self.show', $id_organisasi)
-                         ->with('success', 'Anggota berhasil ditambahkan.');
+    if (!$mahasiswa) {
+        return redirect()->back()->with('error', 'Mahasiswa tidak ditemukan.');
     }
+
+    // Masukkan data anggota ke detail_organisasi_mahasiswa
+    DB::table('detail_organisasi_mahasiswa')->insert([
+        'id_organisasi' => $organisasi->id_organisasi,
+        'nama_organisasi' => $organisasi->nama_organisasi,
+        'nim' => $mahasiswa->nim,
+        'nama' => $mahasiswa->nama,
+        'jabatan' => $request->jabatan,
+        'status_keanggotaan' => $request->status_keanggotaan,
+    ]);
+
+    return redirect()->route('organisasi.self.show', $id_organisasi)
+                     ->with('success', 'Anggota berhasil ditambahkan.');
+}
+
 
     // ================== EDIT ANGGOTA ==================
     public function editAnggota($id_organisasi, $nim)

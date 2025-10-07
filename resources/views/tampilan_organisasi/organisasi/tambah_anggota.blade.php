@@ -8,6 +8,7 @@
         ➕ Tambah Anggota: {{ $organisasi->nama_organisasi }}
     </h2>
 
+    {{-- Tampilkan error validasi --}}
     @if ($errors->any())
         <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
             <ul class="list-disc pl-5">
@@ -35,11 +36,10 @@
                     <td class="py-2 px-4">{{ $m->nim }}</td>
                     <td class="py-2 px-4">{{ $m->nama }}</td>
                     <td class="py-2 px-4">
-                        {{-- 🔧 ROUTE FIXED DI SINI --}}
-                        <form action="{{ route('organisasi.self.store_anggota', $organisasi->id_organisasi) }}" method="POST" class="inline-flex items-center space-x-2 w-full">
+                        <form action="{{ route('organisasi.self.store_anggota', $organisasi->id_organisasi) }}" method="POST" class="flex items-center space-x-2">
                             @csrf
                             <input type="hidden" name="mahasiswa_nim" value="{{ $m->nim }}">
-                            <select name="jabatan" class="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400">
+                            <select name="jabatan" class="border border-gray-300 rounded px-2 py-1">
                                 <option value="Ketua">Ketua</option>
                                 <option value="Wakil">Wakil</option>
                                 <option value="Sekretaris">Sekretaris</option>
@@ -54,13 +54,15 @@
                             </select>
                     </td>
                     <td class="py-2 px-4">
-                            <select name="status_keanggotaan" class="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400">
+                            <select name="status_keanggotaan" class="border border-gray-300 rounded px-2 py-1">
                                 <option value="aktif">Aktif</option>
-                                <option value="tidak aktif">Tidak Aktif</option>
+                                <option value="nonaktif">Tidak Aktif</option>
                             </select>
                     </td>
                     <td class="py-2 px-4">
-                            <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200">Tambah</button>
+                            <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200">
+                                Tambah
+                            </button>
                         </form>
                     </td>
                 </tr>
