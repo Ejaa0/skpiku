@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use App\Models\User;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
@@ -17,9 +18,11 @@ use App\Http\Controllers\PenentuanPoinController;
 use App\Http\Controllers\KegiatanSelfController;
 
 // ========================== HALAMAN UTAMA ==========================
-Route::get('/', fn() => view('dashboard'))->name('beranda');
+Route::get('/', fn() => redirect()->route('login'));
 
 // ========================== LOGIN ==========================
+Route::get('/', fn() => redirect()->route('login'));
+
 Route::get('/login', fn() => view('login'))->name('login');
 Route::post('/login', function(Request $request) {
     $request->validate([
@@ -42,7 +45,6 @@ Route::post('/login', function(Request $request) {
         'user_role' => $user->role,
     ]);
 
-    // Redirect sesuai role
     return match($user->role) {
         'admin' => redirect()->route('admin.dashboard'),
         'warek' => redirect()->route('warek.dashboard'),
@@ -52,20 +54,37 @@ Route::post('/login', function(Request $request) {
     };
 })->name('login.submit');
 
+// ========================== FORGOT PASSWORD (ISI SENDIRI) ==========================
+Route::get('/forgot-password', fn() => view('forgot-password'))->name('forgot-password');
+
+Route::post('/forgot-password', function(Request $request){
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:6|confirmed', // harus ada password_confirmation
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+    if(!$user) return back()->with('error', 'Email tidak ditemukan.');
+
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    return back()->with('success', 'Password berhasil diganti. Silakan login dengan password baru.');
+});
+
+
 // ========================== LOGOUT ==========================
 Route::post('/logout', function() {
     session()->flush();
     return redirect()->route('login');
 })->name('logout');
 
-// ========================== DASHBOARD ROLE ==========================
+// ========================== DASHBOARD SESUAI ROLE ==========================
 Route::middleware(['web'])->group(function () {
 
-    Route::get('/admin/dashboard', fn() => view('admin.dashboard'))
-        ->name('admin.dashboard');
+    Route::get('/admin/dashboard', fn() => view('admin.dashboard'))->name('admin.dashboard');
 
-    Route::get('/warek/dashboard', [WarekController::class, 'index'])
-        ->name('warek.dashboard');
+    Route::get('/warek/dashboard', fn() => view('warek.dashboard'))->name('warek.dashboard');
 
     Route::get('/mahasiswa/dashboard', function() {
         if (!session('is_logged_in') || session('user_role') !== 'mahasiswa') {
@@ -73,7 +92,7 @@ Route::middleware(['web'])->group(function () {
         }
         return view('mahasiswa.dashboard', [
             'mahasiswa' => [
-                'nim' => '1234567890', // bisa diganti ambil dari DB
+                'nim' => '1234567890',
                 'email' => session('user_email'),
                 'nama' => session('user_name'),
             ]
@@ -86,7 +105,6 @@ Route::middleware(['web'])->group(function () {
         }
         return view('tampilan_organisasi.dashboard_organisasi');
     })->name('organisasi.dashboard');
-
 });
 
 // ========================== SKPI ==========================
@@ -141,7 +159,6 @@ Route::prefix('org-self')->name('organisasi.self.')->group(function () {
     Route::get('/show/{id}', [OrganisasiSelfController::class, 'show'])->name('show');
     Route::delete('/destroy/{id}', [OrganisasiSelfController::class, 'destroy'])->name('destroy');
 
-    // Anggota
     Route::get('/tambah-anggota/{id_organisasi}', [OrganisasiSelfController::class, 'tambahAnggota'])->name('tambah_anggota');
     Route::post('/store-anggota/{id_organisasi}', [OrganisasiSelfController::class, 'storeAnggota'])->name('store_anggota');
     Route::delete('/delete-anggota/{id_organisasi}/{nim}', [OrganisasiSelfController::class, 'deleteAnggota'])->name('delete_anggota');
