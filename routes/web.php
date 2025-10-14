@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;
@@ -14,114 +16,78 @@ use App\Http\Controllers\OrganisasiSelfController;
 use App\Http\Controllers\PenentuanPoinController;
 use App\Http\Controllers\KegiatanSelfController;
 
-// ========================== DEFAULT ADMIN ==========================
-$defaultAdminEmail = 'rezaivander12@gmail.com';
-$defaultAdminPasswordHash = password_hash('rahasia123', PASSWORD_DEFAULT);
-
 // ========================== HALAMAN UTAMA ==========================
 Route::get('/', fn() => view('dashboard'))->name('beranda');
 
-// ========================== LOGIN MAHASISWA ==========================
-Route::prefix('login/mahasiswa')->group(function () {
-    Route::get('/', fn() => view('mahasiswa.login'))->name('mahasiswa.login');
-    Route::post('/', function (Request $request) {
-        $request->validate(['email' => 'required|email', 'password' => 'required']);
-        if ($request->email === 'mahasiswa@unai.ac.id' && $request->password === '123456') {
-            session([
-                'is_mahasiswa_logged_in' => true,
-                'mahasiswa_email' => $request->email,
-                'mahasiswa_nim' => '1234567890',
-                'mahasiswa_nama' => 'Nama Dummy Mahasiswa',
-            ]);
-            return redirect()->route('mahasiswa.dashboard');
-        }
-        return back()->with('error', 'Email atau password salah.');
-    })->name('mahasiswa.login.submit');
-});
+// ========================== LOGIN ==========================
+Route::get('/login', fn() => view('login'))->name('login');
+Route::post('/login', function(Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return back()->with('error', 'Email atau password salah.');
+    }
+
+    // Simpan session
+    session([
+        'is_logged_in' => true,
+        'user_id' => $user->id,
+        'user_name' => $user->name,
+        'user_email' => $user->email,
+        'user_role' => $user->role,
+    ]);
+
+    // Redirect sesuai role
+    return match($user->role) {
+        'admin' => redirect()->route('admin.dashboard'),
+        'warek' => redirect()->route('warek.dashboard'),
+        'mahasiswa' => redirect()->route('mahasiswa.dashboard'),
+        'organisasi' => redirect()->route('organisasi.dashboard'),
+        default => redirect()->route('login')
+    };
+})->name('login.submit');
+
+// ========================== LOGOUT ==========================
+Route::post('/logout', function() {
+    session()->flush();
+    return redirect()->route('login');
+})->name('logout');
+
+// ========================== DASHBOARD ROLE ==========================
 Route::middleware(['web'])->group(function () {
-    Route::get('/mahasiswa/dashboard', function () {
-        if (!session('is_mahasiswa_logged_in')) return redirect()->route('mahasiswa.login');
+
+    Route::get('/admin/dashboard', fn() => view('admin.dashboard'))
+        ->name('admin.dashboard');
+
+    Route::get('/warek/dashboard', [WarekController::class, 'index'])
+        ->name('warek.dashboard');
+
+    Route::get('/mahasiswa/dashboard', function() {
+        if (!session('is_logged_in') || session('user_role') !== 'mahasiswa') {
+            return redirect()->route('login');
+        }
         return view('mahasiswa.dashboard', [
             'mahasiswa' => [
-                'nim' => session('mahasiswa_nim'),
-                'email' => session('mahasiswa_email'),
-                'nama' => session('mahasiswa_nama'),
+                'nim' => '1234567890', // bisa diganti ambil dari DB
+                'email' => session('user_email'),
+                'nama' => session('user_name'),
             ]
         ]);
     })->name('mahasiswa.dashboard');
 
-    Route::post('/logout/mahasiswa', function () {
-        session()->forget(['is_mahasiswa_logged_in', 'mahasiswa_nim', 'mahasiswa_email', 'mahasiswa_nama']);
-        return redirect()->route('mahasiswa.login');
-    })->name('logout.mahasiswa');
-});
-
-// ========================== LOGIN ADMIN ==========================
-Route::prefix('login/admin')->group(function () use ($defaultAdminEmail, $defaultAdminPasswordHash) {
-    Route::get('/', fn() => view('admin.login'))->name('admin.login');
-    Route::post('/', function (Request $request) use ($defaultAdminEmail, $defaultAdminPasswordHash) {
-        $request->validate(['email' => 'required|email', 'password' => 'required']);
-        if ($request->email === $defaultAdminEmail && password_verify($request->password, $defaultAdminPasswordHash)) {
-            session([
-                'is_admin_logged_in' => true,
-                'admin_email' => $request->email,
-                'admin_name' => 'Admin Sistem'
-            ]);
-            return redirect()->route('admin.dashboard');
+    Route::get('/organisasi/dashboard', function() {
+        if (!session('is_logged_in') || session('user_role') !== 'organisasi') {
+            return redirect()->route('login');
         }
-        return back()->with('error', 'Email atau password salah.');
-    })->name('admin.login.submit');
+        return view('tampilan_organisasi.dashboard_organisasi');
+    })->name('organisasi.dashboard');
+
 });
-
-Route::get('/admin/dashboard', function () {
-    if (!session('is_admin_logged_in')) return redirect()->route('admin.login');
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-
-// ========================== LOGIN ORGANISASI ==========================
-Route::prefix('login/organisasi')->group(function () {
-    Route::get('/', fn() => view('tampilan_organisasi.login'))->name('organisasi.login');
-    Route::post('/', function (Request $request) {
-        $request->validate(['email' => 'required|email', 'password' => 'required']);
-        if ($request->email === 'organisasi@unai.ac.id' && $request->password === 'org123') {
-            session(['is_org_logged_in' => true]);
-            return redirect()->route('organisasi.dashboard');
-        }
-        return back()->with('error', 'Email atau password salah.');
-    })->name('organisasi.login.submit');
-});
-
-Route::get('/organisasi/dashboard', function () {
-    if (!session('is_org_logged_in')) return redirect()->route('organisasi.login');
-    return view('tampilan_organisasi.dashboard_organisasi');
-})->name('organisasi.dashboard');
-
-// ========================== LOGIN WAREK ==========================
-Route::prefix('login/warek')->group(function () {
-    Route::get('/', fn() => view('warek.login'))->name('warek.login');
-    Route::post('/', function (Request $request) {
-        $request->validate(['email' => 'required|email', 'password' => 'required']);
-        if ($request->email === 'warek@unai.ac.id' && $request->password === 'warek123') {
-            session(['is_warek_logged_in' => true]);
-            return redirect()->route('warek.dashboard');
-        }
-        return back()->with('error', 'Email atau password salah.');
-    })->name('warek.login.submit');
-});
-
-Route::get('/warek/dashboard', [WarekController::class, 'index'])->name('warek.dashboard');
-
-// ========================== LOGOUT ==========================
-Route::post('/logout', function () {
-    session()->flush();
-    return redirect()->route('admin.login');
-})->name('logout');
-
-Route::post('/logout/warek', function () {
-    session()->forget('is_warek_logged_in');
-    return redirect()->route('warek.login');
-})->name('logout.warek');
 
 // ========================== SKPI ==========================
 Route::prefix('skpi')->group(function () {
