@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\Organisasi;
+use App\Models\Kegiatan;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\OrganisasiController;
@@ -21,8 +22,6 @@ use App\Http\Controllers\KegiatanSelfController;
 Route::get('/', fn() => redirect()->route('login'));
 
 // ========================== LOGIN ==========================
-Route::get('/', fn() => redirect()->route('login'));
-
 Route::get('/login', fn() => view('login'))->name('login');
 Route::post('/login', function(Request $request) {
     $request->validate([
@@ -31,12 +30,10 @@ Route::post('/login', function(Request $request) {
     ]);
 
     $user = User::where('email', $request->email)->first();
-
     if (!$user || !Hash::check($request->password, $user->password)) {
         return back()->with('error', 'Email atau password salah.');
     }
 
-    // Simpan session
     session([
         'is_logged_in' => true,
         'user_id' => $user->id,
@@ -54,13 +51,12 @@ Route::post('/login', function(Request $request) {
     };
 })->name('login.submit');
 
-// ========================== FORGOT PASSWORD (ISI SENDIRI) ==========================
+// ========================== FORGOT PASSWORD ==========================
 Route::get('/forgot-password', fn() => view('forgot-password'))->name('forgot-password');
-
 Route::post('/forgot-password', function(Request $request){
     $request->validate([
         'email' => 'required|email',
-        'password' => 'required|min:6|confirmed', // harus ada password_confirmation
+        'password' => 'required|min:6|confirmed',
     ]);
 
     $user = User::where('email', $request->email)->first();
@@ -72,19 +68,30 @@ Route::post('/forgot-password', function(Request $request){
     return back()->with('success', 'Password berhasil diganti. Silakan login dengan password baru.');
 });
 
-
 // ========================== LOGOUT ==========================
 Route::post('/logout', function() {
     session()->flush();
     return redirect()->route('login');
 })->name('logout');
 
+Route::post('/warek/logout', function() {
+    session()->flush();
+    return redirect()->route('login');
+})->name('logout.warek');
+
 // ========================== DASHBOARD SESUAI ROLE ==========================
 Route::middleware(['web'])->group(function () {
 
     Route::get('/admin/dashboard', fn() => view('admin.dashboard'))->name('admin.dashboard');
 
-    Route::get('/warek/dashboard', fn() => view('warek.dashboard'))->name('warek.dashboard');
+    Route::get('/warek/dashboard', function() {
+        if (!session('is_logged_in') || session('user_role') !== 'warek') {
+            return redirect()->route('login');
+        }
+        $totalOrganisasi = Organisasi::count();
+        $totalKegiatan = Kegiatan::count();
+        return view('warek.dashboard', compact('totalOrganisasi', 'totalKegiatan'));
+    })->name('warek.dashboard');
 
     Route::get('/mahasiswa/dashboard', function() {
         if (!session('is_logged_in') || session('user_role') !== 'mahasiswa') {
@@ -120,7 +127,7 @@ Route::resource('skpi', SKPIController::class);
 Route::get('/mahasiswa/data', [MahasiswaController::class, 'dataMahasiswa'])->name('mahasiswa.data');
 Route::resource('mahasiswa', MahasiswaController::class);
 
-// ========================== ORGANISASI (ADMIN) ==========================
+// ========================== ORGANISASI ==========================
 Route::resource('organisasi', OrganisasiController::class);
 Route::get('/organisasi/{id_organisasi}/anggota/create', [OrganisasiController::class, 'formTambahAnggota'])->name('organisasi.anggota.create');
 Route::post('/organisasi/{id_organisasi}/anggota', [OrganisasiController::class, 'simpanAnggota'])->name('organisasi.anggota.store');
@@ -168,11 +175,24 @@ Route::prefix('org-self')->name('organisasi.self.')->group(function () {
 
 // ========================== KEGIATAN SELF ==========================
 Route::prefix('kegiatan-self')->name('kegiatan-self.')->group(function () {
+
+    // List semua kegiatan
     Route::get('/', [KegiatanSelfController::class, 'index'])->name('index');
+
+    // Buat kegiatan baru
     Route::get('/create', [KegiatanSelfController::class, 'create'])->name('create');
-    Route::post('/', [KegiatanSelfController::class, 'store'])->name('store');
+    Route::post('/store', [KegiatanSelfController::class, 'store'])->name('store');
+
+    // Tambah mahasiswa ke kegiatan (spesifik, letakkan sebelum route {id}/show agar tidak konflik)
+    Route::get('/{id}/add-mahasiswa', [KegiatanSelfController::class, 'addMahasiswa'])->name('addMahasiswa');
+    Route::post('/{id}/store-mahasiswa', [KegiatanSelfController::class, 'storeMahasiswa'])->name('storeMahasiswa');
+
+    // Detail, edit, update, hapus kegiatan (lebih umum)
     Route::get('/{id}/show', [KegiatanSelfController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [KegiatanSelfController::class, 'edit'])->name('edit');
     Route::post('/{id}/update', [KegiatanSelfController::class, 'update'])->name('update');
     Route::delete('/{id}', [KegiatanSelfController::class, 'destroy'])->name('destroy');
+
+    // Hapus mahasiswa dari kegiatan
+    Route::delete('/{id}/mahasiswa/{nim}', [KegiatanSelfController::class, 'destroyMahasiswa'])->name('destroyMahasiswa');
 });

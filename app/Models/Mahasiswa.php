@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-use App\Models\Mahasiswa;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,8 +15,7 @@ class Mahasiswa extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    // Jika kamu tidak punya kolom created_at dan updated_at di tabel mahasiswas,
-    // uncomment baris ini:
+    // Jika tidak ada kolom created_at & updated_at
     // public $timestamps = false;
 
     protected $fillable = [
@@ -35,5 +33,24 @@ class Mahasiswa extends Model
     public function getRouteKeyName()
     {
         return 'nim';
+    }
+
+    // Relasi ke pivot/detail kegiatan
+    public function detailKegiatan()
+    {
+        return $this->hasMany(DetailKegiatanMahasiswa::class, 'mahasiswa_nim', 'nim');
+    }
+
+    // Relasi langsung ke kegiatan lewat pivot
+    public function kegiatan()
+    {
+        return $this->hasManyThrough(
+            Kegiatan::class,
+            DetailKegiatanMahasiswa::class,
+            'mahasiswa_nim', // FK pivot ke mahasiswa
+            'id_kegiatan',   // PK di Kegiatan
+            'nim',           // PK di Mahasiswa
+            'kegiatan_id_ref' // FK pivot ke kegiatan
+        );
     }
 }

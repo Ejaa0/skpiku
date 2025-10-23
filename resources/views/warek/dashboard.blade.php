@@ -15,19 +15,16 @@
         <img src="https://www.svgrepo.com/show/331482/dashboard.svg" alt="Dashboard Illustration" class="w-32 h-32 hidden md:block">
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-        <div class="bg-white dark:bg-gray-700 p-5 rounded-xl shadow hover:shadow-xl transition duration-300">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">👥 Total Organisasi</h2>
-            <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">12</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <div class="bg-blue-100 dark:bg-blue-800 p-5 rounded-lg shadow hover:scale-105 transition-transform">
+            <p class="text-gray-800 dark:text-white font-semibold">Total Organisasi</p>
+            <h2 class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $totalOrganisasi }}</h2>
         </div>
-        <div class="bg-white dark:bg-gray-700 p-5 rounded-xl shadow hover:shadow-xl transition duration-300">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">📆 Kegiatan Terjadwal</h2>
-            <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">8</p>
+        <div class="bg-green-100 dark:bg-green-800 p-5 rounded-lg shadow hover:scale-105 transition-transform">
+            <p class="text-gray-800 dark:text-white font-semibold">Kegiatan Terjadwal</p>
+            <h2 class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $totalKegiatan }}</h2>
         </div>
-        <div class="bg-white dark:bg-gray-700 p-5 rounded-xl shadow hover:shadow-xl transition duration-300">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">📝 Laporan Masuk</h2>
-            <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">5</p>
-        </div>
+       
     </div>
 </div>
 @endsection

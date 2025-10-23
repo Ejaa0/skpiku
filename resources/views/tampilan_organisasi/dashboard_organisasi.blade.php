@@ -37,7 +37,7 @@
                     <span class="material-icons">groups</span>
                     <span class="text-sm font-semibold">Organisasi</span>
                 </a>
-                <a href="{{ route('kegiatan.index') }}"
+                <a href="{{ route('kegiatan-self.index') }}"
                     class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('kegiatan.index') ? 'bg-blue-800' : '' }}">
                     <span class="material-icons">event</span>
                     <span class="text-sm font-semibold">Kegiatan</span>

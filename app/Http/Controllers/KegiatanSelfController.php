@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Kegiatan;
+use App\Models\Mahasiswa;
+use App\Models\DetailKegiatanMahasiswa;
 
 class KegiatanSelfController extends Controller
 {
@@ -15,7 +17,9 @@ class KegiatanSelfController extends Controller
             $query->where('nama_kegiatan', 'like', '%' . $request->search . '%');
         }
 
-        $kegiatans = $query->orderBy('tanggal_kegiatan', 'desc')->paginate(10)->withQueryString();
+        $kegiatans = $query->orderBy('tanggal_kegiatan', 'desc')
+                           ->paginate(10)
+                           ->withQueryString();
 
         return view('tampilan_kegiatan.kegiatan.index', compact('kegiatans'));
     }
@@ -28,21 +32,21 @@ class KegiatanSelfController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nim' => 'required',
-            'nama' => 'required',
+            'id_kegiatan' => 'required|unique:kegiatans,id_kegiatan|integer',
+            'nama_kegiatan' => 'required|string|max:255',
             'tanggal_kegiatan' => 'required|date',
-            'nama_kegiatan' => 'required',
-            'deskripsi' => 'nullable'
+            'jenis_kegiatan' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
         ]);
 
-        Kegiatan::create($request->all());
+        Kegiatan::create($request->only('id_kegiatan', 'nama_kegiatan', 'tanggal_kegiatan', 'jenis_kegiatan', 'deskripsi'));
 
         return redirect()->route('kegiatan-self.index')->with('success', 'Kegiatan berhasil ditambahkan.');
     }
 
     public function show($id)
     {
-        $kegiatan = Kegiatan::findOrFail($id);
+        $kegiatan = Kegiatan::with('detailMahasiswa.mahasiswa')->findOrFail($id);
         return view('tampilan_kegiatan.kegiatan.show', compact('kegiatan'));
     }
 
@@ -57,14 +61,13 @@ class KegiatanSelfController extends Controller
         $kegiatan = Kegiatan::findOrFail($id);
 
         $request->validate([
-            'nim' => 'required',
-            'nama' => 'required',
+            'nama_kegiatan' => 'required|string|max:255',
             'tanggal_kegiatan' => 'required|date',
-            'nama_kegiatan' => 'required',
-            'deskripsi' => 'nullable'
+            'jenis_kegiatan' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
         ]);
 
-        $kegiatan->update($request->all());
+        $kegiatan->update($request->only('nama_kegiatan', 'tanggal_kegiatan', 'jenis_kegiatan', 'deskripsi'));
 
         return redirect()->route('kegiatan-self.index')->with('success', 'Kegiatan berhasil diperbarui.');
     }
@@ -75,5 +78,43 @@ class KegiatanSelfController extends Controller
         $kegiatan->delete();
 
         return redirect()->route('kegiatan-self.index')->with('success', 'Kegiatan berhasil dihapus.');
+    }
+
+    // Tambah mahasiswa
+    public function addMahasiswa($id)
+    {
+        $kegiatan = Kegiatan::findOrFail($id);
+        $mahasiswas = Mahasiswa::all();
+        return view('tampilan_kegiatan.kegiatan.add_mahasiswa', compact('kegiatan', 'mahasiswas'));
+    }
+
+    public function storeMahasiswa(Request $request, $id)
+    {
+        $request->validate([
+            'mahasiswa_nim' => 'required|exists:mahasiswas,nim',
+        ]);
+
+        $kegiatan = Kegiatan::findOrFail($id);
+
+        if ($kegiatan->detailMahasiswa()->where('mahasiswa_nim', $request->mahasiswa_nim)->exists()) {
+            return back()->with('error', 'Mahasiswa sudah terdaftar.');
+        }
+
+        $kegiatan->detailMahasiswa()->create([
+            'mahasiswa_nim' => $request->mahasiswa_nim,
+        ]);
+
+        return redirect()->route('kegiatan-self.show', $id)->with('success', 'Mahasiswa berhasil ditambahkan.');
+    }
+
+    public function destroyMahasiswa($kegiatanId, $nim)
+    {
+        $detail = DetailKegiatanMahasiswa::where('kegiatan_id_ref', $kegiatanId)
+                                         ->where('mahasiswa_nim', $nim)
+                                         ->firstOrFail();
+        $detail->delete();
+
+        return redirect()->route('kegiatan-self.show', $kegiatanId)
+                         ->with('success', 'Mahasiswa berhasil dihapus.');
     }
 }
