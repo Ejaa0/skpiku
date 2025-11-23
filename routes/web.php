@@ -17,6 +17,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrganisasiSelfController;
 use App\Http\Controllers\PenentuanPoinController;
 use App\Http\Controllers\KegiatanSelfController;
+use App\Http\Controllers\OrganisasiDashboardController;
+use App\Http\Controllers\WarekPoinController;
+use App\Http\Controllers\WarekOrganisasiController;
 
 // ========================== HALAMAN UTAMA ==========================
 Route::get('/', fn() => redirect()->route('login'));
@@ -82,8 +85,10 @@ Route::post('/warek/logout', function() {
 // ========================== DASHBOARD SESUAI ROLE ==========================
 Route::middleware(['web'])->group(function () {
 
+    // Admin
     Route::get('/admin/dashboard', fn() => view('admin.dashboard'))->name('admin.dashboard');
 
+    // WR III
     Route::get('/warek/dashboard', function() {
         if (!session('is_logged_in') || session('user_role') !== 'warek') {
             return redirect()->route('login');
@@ -93,6 +98,7 @@ Route::middleware(['web'])->group(function () {
         return view('warek.dashboard', compact('totalOrganisasi', 'totalKegiatan'));
     })->name('warek.dashboard');
 
+    // Mahasiswa
     Route::get('/mahasiswa/dashboard', function() {
         if (!session('is_logged_in') || session('user_role') !== 'mahasiswa') {
             return redirect()->route('login');
@@ -106,13 +112,19 @@ Route::middleware(['web'])->group(function () {
         ]);
     })->name('mahasiswa.dashboard');
 
-    Route::get('/organisasi/dashboard', function() {
-        if (!session('is_logged_in') || session('user_role') !== 'organisasi') {
-            return redirect()->route('login');
-        }
-        return view('tampilan_organisasi.dashboard_organisasi');
-    })->name('organisasi.dashboard');
+    // Dashboard Organisasi
+    Route::get('/organisasi/dashboard', [OrganisasiDashboardController::class, 'index'])
+        ->name('organisasi.dashboard');
 });
+
+// ========================== POIN MAHASISWA WR III ==========================
+Route::get('/warek/poin', [WarekPoinController::class, 'index'])->name('warek.poin');
+
+// ========================== WR III DATA ORGANISASI ==========================
+Route::get('/warek/dataorganisasi', [WarekOrganisasiController::class, 'index'])
+    ->name('warek.dataorganisasi.index');
+Route::get('/warek/dataorganisasi/show/{id_organisasi}', [WarekOrganisasiController::class, 'show'])
+    ->name('warek.dataorganisasi.show');
 
 // ========================== SKPI ==========================
 Route::prefix('skpi')->group(function () {
@@ -129,22 +141,33 @@ Route::resource('mahasiswa', MahasiswaController::class);
 
 // ========================== ORGANISASI ==========================
 Route::resource('organisasi', OrganisasiController::class);
-Route::get('/organisasi/{id_organisasi}/anggota/create', [OrganisasiController::class, 'formTambahAnggota'])->name('organisasi.anggota.create');
-Route::post('/organisasi/{id_organisasi}/anggota', [OrganisasiController::class, 'simpanAnggota'])->name('organisasi.anggota.store');
+Route::get('/organisasi/{id_organisasi}/anggota/create', [OrganisasiController::class, 'formTambahAnggota'])
+    ->name('organisasi.anggota.create');
+Route::post('/organisasi/{id_organisasi}/anggota', [OrganisasiController::class, 'simpanAnggota'])
+    ->name('organisasi.anggota.store');
 
 // ========================== KEGIATAN ==========================
 Route::resource('kegiatan', KegiatanController::class);
-Route::get('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaForm'])->name('kegiatan.tambahMahasiswaForm');
-Route::post('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaStore'])->name('kegiatan.storeMahasiswa');
-Route::delete('/kegiatan/{id_kegiatan}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])->name('kegiatan.hapusMahasiswa');
+Route::get('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaForm'])
+    ->name('kegiatan.tambahMahasiswaForm');
+Route::post('/kegiatan/{id_kegiatan}/tambah-mahasiswa', [KegiatanController::class, 'tambahMahasiswaStore'])
+    ->name('kegiatan.storeMahasiswa');
+Route::delete('/kegiatan/{id_kegiatan}/mahasiswa/{nim}', [KegiatanController::class, 'hapusMahasiswa'])
+    ->name('kegiatan.hapusMahasiswa');
 
 // ========================== DETAIL ORGANISASI MAHASISWA ==========================
-Route::get('/detail-organisasi', [DetailOrganisasiMahasiswaController::class, 'index'])->name('detail_organisasi_mahasiswa.index');
-Route::get('/detail-organisasi-mahasiswa/create/{id_organisasi}', [DetailOrganisasiMahasiswaController::class, 'create'])->name('detail_organisasi_mahasiswa.create');
-Route::post('/detail-organisasi-mahasiswa/store', [DetailOrganisasiMahasiswaController::class, 'store'])->name('detail_organisasi_mahasiswa.store');
-Route::get('/detail-organisasi-mahasiswa/{id}/edit', [DetailOrganisasiMahasiswaController::class, 'edit'])->name('detail_organisasi_mahasiswa.edit');
-Route::put('/detail-organisasi-mahasiswa/{id}', [DetailOrganisasiMahasiswaController::class, 'update'])->name('detail_organisasi_mahasiswa.update');
-Route::delete('/detail-organisasi-mahasiswa/{id}', [DetailOrganisasiMahasiswaController::class, 'destroy'])->name('detail_organisasi_mahasiswa.destroy');
+Route::get('/detail-organisasi', [DetailOrganisasiMahasiswaController::class, 'index'])
+    ->name('detail_organisasi_mahasiswa.index');
+Route::get('/detail-organisasi-mahasiswa/create/{id_organisasi}', [DetailOrganisasiMahasiswaController::class, 'create'])
+    ->name('detail_organisasi_mahasiswa.create');
+Route::post('/detail-organisasi-mahasiswa/store', [DetailOrganisasiMahasiswaController::class, 'store'])
+    ->name('detail_organisasi_mahasiswa.store');
+Route::get('/detail-organisasi-mahasiswa/{id}/edit', [DetailOrganisasiMahasiswaController::class, 'edit'])
+    ->name('detail_organisasi_mahasiswa.edit');
+Route::put('/detail-organisasi-mahasiswa/{id}', [DetailOrganisasiMahasiswaController::class, 'update'])
+    ->name('detail_organisasi_mahasiswa.update');
+Route::delete('/detail-organisasi-mahasiswa/{id}', [DetailOrganisasiMahasiswaController::class, 'destroy'])
+    ->name('detail_organisasi_mahasiswa.destroy');
 
 // ========================== POIN MAHASISWA ==========================
 Route::get('/poin/export', [PoinMahasiswaController::class, 'export'])->name('poin.export');
@@ -175,24 +198,14 @@ Route::prefix('org-self')->name('organisasi.self.')->group(function () {
 
 // ========================== KEGIATAN SELF ==========================
 Route::prefix('kegiatan-self')->name('kegiatan-self.')->group(function () {
-
-    // List semua kegiatan
-    Route::get('/', [KegiatanSelfController::class, 'index'])->name('index');
-
-    // Buat kegiatan baru
     Route::get('/create', [KegiatanSelfController::class, 'create'])->name('create');
     Route::post('/store', [KegiatanSelfController::class, 'store'])->name('store');
-
-    // Tambah mahasiswa ke kegiatan (spesifik, letakkan sebelum route {id}/show agar tidak konflik)
     Route::get('/{id}/add-mahasiswa', [KegiatanSelfController::class, 'addMahasiswa'])->name('addMahasiswa');
     Route::post('/{id}/store-mahasiswa', [KegiatanSelfController::class, 'storeMahasiswa'])->name('storeMahasiswa');
-
-    // Detail, edit, update, hapus kegiatan (lebih umum)
-    Route::get('/{id}/show', [KegiatanSelfController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [KegiatanSelfController::class, 'edit'])->name('edit');
     Route::post('/{id}/update', [KegiatanSelfController::class, 'update'])->name('update');
-    Route::delete('/{id}', [KegiatanSelfController::class, 'destroy'])->name('destroy');
-
-    // Hapus mahasiswa dari kegiatan
     Route::delete('/{id}/mahasiswa/{nim}', [KegiatanSelfController::class, 'destroyMahasiswa'])->name('destroyMahasiswa');
+    Route::delete('/{id}', [KegiatanSelfController::class, 'destroy'])->name('destroy');
+    Route::get('/{id}', [KegiatanSelfController::class, 'show'])->name('show');
+    Route::get('/', [KegiatanSelfController::class, 'index'])->name('index');
 });

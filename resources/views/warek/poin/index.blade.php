@@ -1,26 +1,49 @@
-@extends('layouts.warek') <!-- Layout khusus WR III -->
+@extends('layouts.dashboard_warek_utama')
+
+@section('title', 'Cari Poin Mahasiswa')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Poin Mahasiswa (Versi WR III)</h1>
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Cari Poin Mahasiswa</h1>
 
-    <table class="min-w-full bg-white rounded shadow">
-        <thead class="bg-blue-600 text-white">
-            <tr>
-                <th class="px-4 py-2">NIM</th>
-                <th class="px-4 py-2">Nama</th>
-                <th class="px-4 py-2">Total Poin</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($poinMahasiswa as $poin)
-                <tr class="hover:bg-blue-50">
-                    <td class="px-4 py-2">{{ $poin->nim }}</td>
-                    <td class="px-4 py-2">{{ $poin->nama }}</td>
-                    <td class="px-4 py-2">{{ $poin->poin }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    {{-- Form search --}}
+    <form method="GET" action="{{ route('warek.poin') }}" class="mb-4 flex items-center space-x-2">
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari NIM atau Nama"
+               class="px-4 py-2 border rounded-lg w-full dark:bg-gray-700 dark:text-gray-200">
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Cari</button>
+    </form>
+
+    @if(request('q'))
+        @if($poinMahasiswa->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+                            <th class="px-4 py-2 text-left">NIM</th>
+                            <th class="px-4 py-2 text-left">Nama</th>
+                            <th class="px-4 py-2 text-left">Poin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($poinMahasiswa as $poin)
+                        <tr class="border-b dark:border-gray-700">
+                            <td class="px-4 py-2">{{ $poin->nim }}</td>
+                            <td class="px-4 py-2">{{ $poin->nama }}</td>
+                            <td class="px-4 py-2">{{ $poin->poin }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <div class="mt-4">
+                    {{ $poinMahasiswa->appends(['q' => request('q')])->links() }}
+                </div>
+            </div>
+        @else
+            <p class="text-gray-500 dark:text-gray-400">Data tidak ditemukan untuk "{{ request('q') }}".</p>
+        @endif
+    @else
+        <p class="text-gray-500 dark:text-gray-400">Masukkan NIM atau Nama untuk mencari poin mahasiswa.</p>
+    @endif
 </div>
 @endsection

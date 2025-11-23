@@ -1,75 +1,64 @@
-<!DOCTYPE html>
-<html lang="id" x-data="{ open: false, darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }">
+@extends('layouts.dashboard_organisasi')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard Organisasi | SKPI UNAI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1e3a8a',
-                    },
-                },
-            },
-        };
-    </script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-</head>
+@section('content')
 
-<body class="bg-white text-black dark:bg-gray-900 dark:text-white transition-all min-h-screen flex">
-    <!-- Sidebar -->
-    <aside :class="open ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed z-40 inset-y-0 left-0 w-64 bg-primary text-white transform lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out shadow-xl">
-        <div class="flex flex-col h-full p-6 space-y-6">
-            <div class="text-center mb-6">
-                <img src="{{ asset('images/Logo-Unai.png') }}" alt="Logo UNAI"
-                    class="mx-auto w-20 h-auto mb-2 drop-shadow-xl" />
-                <h1 class="text-xl font-bold tracking-wide">🏢 Organisasi</h1>
-            </div>
-            <nav class="space-y-2 flex flex-col">
-                <a href="{{ route('organisasi.self.index') }}"
-                    class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.self.index') ? 'bg-blue-800' : '' }}">
-                    <span class="material-icons">groups</span>
-                    <span class="text-sm font-semibold">Organisasi</span>
-                </a>
-                <a href="{{ route('kegiatan-self.index') }}"
-                    class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('kegiatan.index') ? 'bg-blue-800' : '' }}">
-                    <span class="material-icons">event</span>
-                    <span class="text-sm font-semibold">Kegiatan</span>
-                </a>
-            </nav>
-            <div class="mt-auto text-xs text-blue-200 text-center">
-                &copy; {{ now()->year }} Universitas Advent Indonesia
+<div class="space-y-6">
+
+    {{-- Cards --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-2xl shadow-lg bg-gradient-to-br from-blue-600 to-blue-500 
+                    text-white transform hover:scale-[1.03] transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold opacity-90">Total Kegiatan</h2>
+                    <p class="text-5xl font-extrabold mt-3 drop-shadow-md">{{ $totalKegiatan }}</p>
+                </div>
+                <div class="bg-white/20 p-3 rounded-xl backdrop-blur-md">
+                    <span class="material-icons text-white text-4xl">event</span>
+                </div>
             </div>
         </div>
-    </aside>
 
-    <!-- Overlay for mobile -->
-    <div class="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden" x-show="open" @click="open = false"
-        x-transition.opacity></div>
-
-    <!-- Main content -->
-    <div class="flex-1 flex flex-col min-h-screen ml-0 lg:ml-64">
-        <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center lg:hidden">
-            <button @click="open = !open" class="text-blue-700 dark:text-white focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-            <span class="font-bold text-lg">Dashboard Organisasi</span>
-        </header>
-
-        <main class="p-6 flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-inner overflow-auto">
-            @yield('content')
-        </main>
+        <div class="p-6 rounded-2xl shadow-lg bg-gradient-to-br from-green-600 to-green-500 
+                    text-white transform hover:scale-[1.03] transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold opacity-90">Total Organisasi</h2>
+                    <p class="text-5xl font-extrabold mt-3 drop-shadow-md">{{ $totalOrganisasi }}</p>
+                </div>
+                <div class="bg-white/20 p-3 rounded-xl backdrop-blur-md">
+                    <span class="material-icons text-white text-4xl">groups</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="https://unpkg.com/alpinejs" defer></script>
-</body>
+    {{-- Kegiatan Terbaru --}}
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">📅 Kegiatan Terbaru</h2>
 
-</html>
+        @if($latestKegiatan->isEmpty())
+            <p class="text-gray-500 dark:text-gray-400 italic">Belum ada kegiatan yang dibuat.</p>
+        @else
+            <div class="space-y-4">
+                @foreach($latestKegiatan as $item)
+                    <div class="p-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 
+                                dark:hover:bg-gray-600 transition flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                                {{ $item->nama_kegiatan }}
+                            </h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                {{ \Carbon\Carbon::parse($item->tanggal_kegiatan)->format('d M Y') }}
+                            </p>
+                        </div>
+                        <span class="material-icons text-blue-500 text-3xl">event_note</span>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
+</div>
+
+@endsection

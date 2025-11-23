@@ -44,12 +44,13 @@ class DetailOrganisasiMahasiswaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_organisasi'       => 'required|exists:organisasi,id_organisasi',
-            'nim'                 => 'required|exists:mahasiswas,nim',
-            'jabatan'             => 'required|string|max:100',
-            'jabatan_custom'      => 'nullable|string|max:100',
-            'status_keanggotaan'  => 'required|in:aktif,nonaktif',
-        ]);
+    'id_organisasi'       => 'required|exists:organisasis,id_organisasi',
+    'nim'                 => 'required|exists:mahasiswas,nim',
+    'jabatan'             => 'required|string|max:100',
+    'jabatan_custom'      => 'nullable|string|max:100',
+    'status_keanggotaan'  => 'required|in:aktif,nonaktif',
+]);
+
 
         // Validasi tambahan: jika jabatan = "lainnya", wajib isi custom
         if (strtolower($validated['jabatan']) === 'lainnya' && empty($validated['jabatan_custom'])) {

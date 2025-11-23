@@ -6,20 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Organisasi extends Model
 {
-    protected $table = 'organisasi';
-
-    // Jika primary key kamu bukan 'id', tapi 'id_organisasi'
+    protected $table = 'organisasis';
+    
     protected $primaryKey = 'id_organisasi';
-
-    // Karena tipe primary key string, bukan integer auto increment
     public $incrementing = false;
-
-    // Tipe data primary key string
     protected $keyType = 'string';
 
-    // Kolom yang boleh diisi mass assignment
     protected $fillable = [
         'id_organisasi',
         'nama_organisasi',
     ];
+
+    // Relasi ke anggota
+    public function anggota()
+    {
+        return $this->hasMany(\App\Models\DetailOrganisasiMahasiswa::class, 'id_organisasi', 'id_organisasi');
+    }
 }

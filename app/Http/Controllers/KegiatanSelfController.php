@@ -36,10 +36,9 @@ class KegiatanSelfController extends Controller
             'nama_kegiatan' => 'required|string|max:255',
             'tanggal_kegiatan' => 'required|date',
             'jenis_kegiatan' => 'nullable|string|max:255',
-            'deskripsi' => 'nullable|string',
         ]);
 
-        Kegiatan::create($request->only('id_kegiatan', 'nama_kegiatan', 'tanggal_kegiatan', 'jenis_kegiatan', 'deskripsi'));
+        Kegiatan::create($request->only('id_kegiatan', 'nama_kegiatan', 'tanggal_kegiatan', 'jenis_kegiatan'));
 
         return redirect()->route('kegiatan-self.index')->with('success', 'Kegiatan berhasil ditambahkan.');
     }
@@ -64,10 +63,9 @@ class KegiatanSelfController extends Controller
             'nama_kegiatan' => 'required|string|max:255',
             'tanggal_kegiatan' => 'required|date',
             'jenis_kegiatan' => 'nullable|string|max:255',
-            'deskripsi' => 'nullable|string',
         ]);
 
-        $kegiatan->update($request->only('nama_kegiatan', 'tanggal_kegiatan', 'jenis_kegiatan', 'deskripsi'));
+        $kegiatan->update($request->only('nama_kegiatan', 'tanggal_kegiatan', 'jenis_kegiatan'));
 
         return redirect()->route('kegiatan-self.index')->with('success', 'Kegiatan berhasil diperbarui.');
     }
