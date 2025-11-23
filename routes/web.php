@@ -125,6 +125,9 @@ Route::get('/warek/dataorganisasi', [WarekOrganisasiController::class, 'index'])
     ->name('warek.dataorganisasi.index');
 Route::get('/warek/dataorganisasi/show/{id_organisasi}', [WarekOrganisasiController::class, 'show'])
     ->name('warek.dataorganisasi.show');
+    Route::get('/detail-organisasi-mahasiswa/create/{id_organisasi}', [DetailOrganisasiMahasiswaController::class, 'create'])
+    ->name('detail_organisasi_mahasiswa.create');
+
 
 // ========================== SKPI ==========================
 Route::prefix('skpi')->group(function () {
