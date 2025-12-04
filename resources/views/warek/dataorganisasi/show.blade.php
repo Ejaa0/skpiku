@@ -13,14 +13,18 @@
 
     <div class="mb-4 flex justify-between items-center">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">👥 Daftar Anggota Mahasiswa</h2>
-        <a href="{{ route('detail_organisasi_mahasiswa.create', $organisasi->id_organisasi) }}"
-           class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-lg transition">
-           ➕ Tambah Anggota
-        </a>
+
+        {{-- TOMBOL TAMBAH ANGGOTA — SUDAH DIPERBAIKI --}}
+        <a href="{{ route('warek.dataorganisasi.anggota.create', $organisasi->id_organisasi) }}"
+   class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-lg transition">
+   ➕ Tambah Anggota
+</a>
+
+
     </div>
 
     @php
-        $anggota = $organisasi->anggota ?? collect(); // pastikan tidak null
+        $anggota = $organisasi->anggota ?? collect();
     @endphp
 
     @if($anggota->count() > 0)
@@ -35,6 +39,7 @@
                         <th class="px-4 py-2 text-left text-sm font-medium text-gray-600 dark:text-gray-200">Aksi</th>
                     </tr>
                 </thead>
+
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($anggota as $item)
                         <tr>
@@ -42,23 +47,32 @@
                             <td class="px-4 py-2">{{ $item->nama }}</td>
                             <td class="px-4 py-2">{{ $item->jabatan }}</td>
                             <td class="px-4 py-2">{{ $item->status_keanggotaan }}</td>
+
                             <td class="px-4 py-2 space-x-2">
                                 <a href="{{ route('detail_organisasi_mahasiswa.edit', $item->id) }}"
                                    class="text-blue-500 hover:underline">Edit</a>
-                                <form action="{{ route('detail_organisasi_mahasiswa.destroy', $item->id) }}" method="POST" class="inline">
+
+                                <form action="{{ route('detail_organisasi_mahasiswa.destroy', $item->id) }}"
+                                      method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" onclick="return confirm('Yakin ingin menghapus anggota ini?')"
-                                            class="text-red-500 hover:underline">Hapus</button>
+                                    <button type="submit"
+                                            onclick="return confirm('Yakin ingin menghapus anggota ini?')"
+                                            class="text-red-500 hover:underline">
+                                        Hapus
+                                    </button>
                                 </form>
                             </td>
+
                         </tr>
                     @endforeach
                 </tbody>
+
             </table>
         </div>
     @else
         <p class="text-gray-700 dark:text-gray-300">Belum ada anggota terdaftar.</p>
     @endif
+
 </div>
 @endsection

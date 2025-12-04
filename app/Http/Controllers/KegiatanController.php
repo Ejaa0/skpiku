@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class KegiatanController extends Controller
 {
+    // Tampilkan daftar kegiatan
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -24,11 +25,13 @@ class KegiatanController extends Controller
         return view('kegiatan.index', compact('kegiatan', 'search'));
     }
 
+    // Form tambah kegiatan
     public function create()
     {
         return view('kegiatan.create');
     }
 
+    // Simpan kegiatan baru
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -43,6 +46,7 @@ class KegiatanController extends Controller
         return redirect()->route('kegiatan.index')->with('success', 'Kegiatan berhasil ditambahkan.');
     }
 
+    // Tampilkan detail kegiatan beserta daftar mahasiswa
     public function show($id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
@@ -56,12 +60,14 @@ class KegiatanController extends Controller
         return view('kegiatan.show', compact('kegiatan', 'data'));
     }
 
+    // Form edit kegiatan
     public function edit($id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
         return view('kegiatan.edit', compact('kegiatan'));
     }
 
+    // Update kegiatan
     public function update(Request $request, $id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
@@ -78,6 +84,7 @@ class KegiatanController extends Controller
         return redirect()->route('kegiatan.index')->with('success', 'Kegiatan berhasil diperbarui.');
     }
 
+    // Hapus kegiatan
     public function destroy($id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
@@ -87,9 +94,9 @@ class KegiatanController extends Controller
     }
 
     // Form tambah mahasiswa ke kegiatan
-    public function tambahMahasiswaForm($id_kegiatan, Request $request)
+    public function tambahMahasiswaForm($id, Request $request)
     {
-        $kegiatan = Kegiatan::where('id_kegiatan', $id_kegiatan)->firstOrFail();
+        $kegiatan = Kegiatan::findOrFail($id);
         $keyword = $request->input('cari');
 
         $mahasiswa = Mahasiswa::when($keyword, function ($query) use ($keyword) {
@@ -101,13 +108,13 @@ class KegiatanController extends Controller
     }
 
     // Simpan mahasiswa ke kegiatan
-    public function tambahMahasiswaStore(Request $request, $id_kegiatan)
+    public function tambahMahasiswaStore(Request $request, $id)
     {
         $request->validate([
             'nim' => 'required|exists:mahasiswas,nim',
         ]);
 
-        $kegiatan = Kegiatan::where('id_kegiatan', $id_kegiatan)->firstOrFail();
+        $kegiatan = Kegiatan::findOrFail($id);
 
         $exists = DB::table('detail_kegiatan_mahasiswa')
             ->where('kegiatan_id_ref', $kegiatan->id)
