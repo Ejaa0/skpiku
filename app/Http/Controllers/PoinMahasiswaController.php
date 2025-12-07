@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PoinMahasiswa;
 use App\Models\Mahasiswa;
+use App\Models\DetailKegiatanMahasiswa;
+
 use Illuminate\Support\Facades\DB;
 
 class PoinMahasiswaController extends Controller
@@ -76,42 +78,38 @@ class PoinMahasiswaController extends Controller
      * Menampilkan detail poin mahasiswa.
      */
     public function show($nim)
-    {
-        // Ambil data mahasiswa
-        $mahasiswa = Mahasiswa::findOrFail($nim);
+{
+    $mahasiswa = Mahasiswa::findOrFail($nim);
 
-        // Ambil semua kegiatan mahasiswa
-        $kegiatans = DB::table('detail_kegiatan_mahasiswa')
-            ->where('mahasiswa_nim', $nim)
-            ->get()
-            ->map(function ($item) {
-                $item->nama_kegiatan = $item->nama_kegiatan ?? 'Kegiatan';
-                $item->poin_kegiatan = 100; // default poin
-                return $item;
-            });
+    // Ambil kegiatan mahasiswa beserta nama dari tabel kegiatan
+    $kegiatans = DetailKegiatanMahasiswa::with('kegiatan')
+        ->where('mahasiswa_nim', $nim)
+        ->get()
+        ->map(function($item) {
+            $item->nama_kegiatan = $item->kegiatan->nama_kegiatan ?? 'Kegiatan';
+            $item->poin_kegiatan = 100;
+            return $item;
+        });
 
-        // Ambil semua organisasi mahasiswa
-        $organisasis = DB::table('detail_organisasi_mahasiswa')
-            ->where('nim', $nim)
-            ->get()
-            ->map(function ($item) {
-                $item->nama_organisasi = $item->nama_organisasi ?? 'Organisasi';
-                $item->poin_organisasi = 250; // default poin
-                return $item;
-            });
+    $organisasis = DB::table('detail_organisasi_mahasiswa')
+        ->where('nim', $nim)
+        ->get()
+        ->map(function ($item) {
+            $item->nama_organisasi = $item->nama_organisasi ?? 'Organisasi';
+            $item->poin_organisasi = 250;
+            return $item;
+        });
 
-        // Hitung total poin
-        $totalPoin = $kegiatans->sum('poin_kegiatan') + $organisasis->sum('poin_organisasi');
+    $totalPoin = $kegiatans->sum('poin_kegiatan') + $organisasis->sum('poin_organisasi');
 
-        // Tambahkan atribut poin ke mahasiswa
-        $mahasiswa->poin = $totalPoin;
+    $mahasiswa->poin = $totalPoin;
 
-        return view('poin.show', [
-            'poin' => $mahasiswa,
-            'kegiatans' => $kegiatans,
-            'organisasis' => $organisasis,
-        ]);
-    }
+    return view('poin.show', [
+        'poin' => $mahasiswa,
+        'kegiatans' => $kegiatans,
+        'organisasis' => $organisasis,
+    ]);
+}
 
     /**
      * Simpan atau update poin mahasiswa berdasarkan nim.
