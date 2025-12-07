@@ -43,9 +43,9 @@
         <a href="{{ route('mahasiswa.data') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition">
             🎓 <span class="ml-2">Data Mahasiswa</span>
         </a>
-        <a href="{{ route('kegiatan.index') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition">
-            📅 <span class="ml-2">Data Kegiatan</span>
-        </a>
+        <a href="{{ route('warek.datakegiatan.index') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition">
+    📅 <span class="ml-2">Data Kegiatan</span>
+</a>
         <a href="{{ route('warek.poin') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition">
             ⭐ <span class="ml-2">Poin Mahasiswa</span>
         </a>

@@ -6,27 +6,31 @@
 <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
     <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">📄 Detail Organisasi</h1>
 
+    {{-- INFORMASI ORGANISASI --}}
     <div class="mb-6">
-        <p class="text-gray-700 dark:text-gray-300"><strong>🆔 ID Organisasi:</strong> {{ $organisasi->id_organisasi }}</p>
-        <p class="text-gray-700 dark:text-gray-300"><strong>🏢 Nama Organisasi:</strong> {{ $organisasi->nama_organisasi }}</p>
+        <p class="text-gray-700 dark:text-gray-300">
+            <strong>🆔 ID Organisasi:</strong> {{ $organisasi->id_organisasi }}
+        </p>
+        <p class="text-gray-700 dark:text-gray-300">
+            <strong>🏢 Nama Organisasi:</strong> {{ $organisasi->nama_organisasi }}
+        </p>
     </div>
 
+    {{-- HEADER ANGGOTA + TOMBOL TAMBAH --}}
     <div class="mb-4 flex justify-between items-center">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">👥 Daftar Anggota Mahasiswa</h2>
 
-        {{-- TOMBOL TAMBAH ANGGOTA — SUDAH DIPERBAIKI --}}
         <a href="{{ route('warek.dataorganisasi.anggota.create', $organisasi->id_organisasi) }}"
-   class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-lg transition">
-   ➕ Tambah Anggota
-</a>
-
-
+           class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-lg transition">
+            ➕ Tambah Anggota
+        </a>
     </div>
 
     @php
         $anggota = $organisasi->anggota ?? collect();
     @endphp
 
+    {{-- TABEL ANGGOTA --}}
     @if($anggota->count() > 0)
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -48,22 +52,29 @@
                             <td class="px-4 py-2">{{ $item->jabatan }}</td>
                             <td class="px-4 py-2">{{ $item->status_keanggotaan }}</td>
 
-                            <td class="px-4 py-2 space-x-2">
-                                <a href="{{ route('detail_organisasi_mahasiswa.edit', $item->id) }}"
-                                   class="text-blue-500 hover:underline">Edit</a>
+                            <td class="px-4 py-2 space-x-3 flex">
 
-                                <form action="{{ route('detail_organisasi_mahasiswa.destroy', $item->id) }}"
-                                      method="POST" class="inline">
+                                {{-- EDIT ANGGOTA --}}
+                                <a href="{{ route('warek.dataorganisasi.anggota.edit', $item->id) }}"
+                                   class="text-blue-500 hover:underline">
+                                    Edit
+                                </a>
+
+                                {{-- HAPUS ANGGOTA --}}
+                                <form action="{{ route('warek.dataorganisasi.anggota.destroy', $item->id) }}"
+                                      method="POST"
+                                      class="inline"
+                                      onsubmit="return confirm('Yakin ingin menghapus anggota ini?')">
+
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit"
-                                            onclick="return confirm('Yakin ingin menghapus anggota ini?')"
-                                            class="text-red-500 hover:underline">
+
+                                    <button type="submit" class="text-red-500 hover:underline">
                                         Hapus
                                     </button>
                                 </form>
-                            </td>
 
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
