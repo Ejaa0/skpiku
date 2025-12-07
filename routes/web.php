@@ -26,7 +26,7 @@ use App\Http\Controllers\WarekPoinController;
 use App\Http\Controllers\WarekOrganisasiController;
 use App\Http\Controllers\WarekTambahAnggotaController;
 use App\Http\Controllers\WarekKegiatanController;
-
+use App\Http\Controllers\WarekTambahAnggotaKegiatanController;
 
 // ========================== HALAMAN UTAMA ==========================
 Route::get('/', fn() => redirect()->route('login'));
@@ -203,6 +203,23 @@ Route::put('/warek/datakegiatan/{id}', [WarekKegiatanController::class, 'update'
 // DELETE KEGIATAN
 Route::delete('/warek/datakegiatan/{id}', [WarekKegiatanController::class, 'destroy'])
     ->name('warek.datakegiatan.destroy');
+
+    
+
+Route::prefix('warek/datakegiatan')->name('warek.tambahanggota.kegiatan.')->group(function() {
+    Route::get('{id}/show', [WarekTambahAnggotaKegiatanController::class, 'show'])
+        ->name('show');
+
+    Route::get('{id}/tambah-mahasiswa', [WarekTambahAnggotaKegiatanController::class, 'create'])
+        ->name('create');
+
+    Route::post('{id}/tambah-mahasiswa', [WarekTambahAnggotaKegiatanController::class, 'store'])
+        ->name('store');
+
+    Route::delete('{id}/hapus-mahasiswa/{nim}', [WarekTambahAnggotaKegiatanController::class, 'destroy'])
+        ->name('destroy');
+});
+
 
 
 // ============================================================================

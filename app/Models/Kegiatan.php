@@ -12,7 +12,7 @@ class Kegiatan extends Model
         'id_kegiatan', 'nama_kegiatan', 'tanggal_kegiatan', 'jenis_kegiatan', 'deskripsi'
     ];
 
-    // Relasi ke tabel pivot detail_kegiatan_mahasiswa
+    // Relasi ke pivot detail_kegiatan_mahasiswa (opsional)
     public function detailMahasiswa()
     {
         return $this->hasMany(DetailKegiatanMahasiswa::class, 'kegiatan_id_ref', 'id');
@@ -21,13 +21,13 @@ class Kegiatan extends Model
     // Relasi langsung ke mahasiswa melalui pivot
     public function mahasiswa()
     {
-        return $this->hasManyThrough(
-            Mahasiswa::class,
-            DetailKegiatanMahasiswa::class,
-            'kegiatan_id_ref', // FK pivot ke kegiatan
-            'nim',             // PK mahasiswa
-            'id',              // PK kegiatan
-            'mahasiswa_nim'    // FK pivot ke mahasiswa
+        return $this->belongsToMany(
+            Mahasiswa::class,            // Model tujuan
+            'detail_kegiatan_mahasiswa', // Nama tabel pivot
+            'kegiatan_id_ref',           // FK di pivot ke kegiatan
+            'mahasiswa_nim',             // FK di pivot ke mahasiswa
+            'id',                        // PK kegiatan
+            'nim'                        // PK mahasiswa
         );
     }
 }
