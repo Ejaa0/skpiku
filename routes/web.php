@@ -88,6 +88,13 @@ Route::post('/logout', fn() => session()->flush() ?: redirect()->route('login'))
 
 Route::post('/warek/logout', fn() => session()->flush() ?: redirect()->route('login'))->name('logout.warek');
 
+// LOGOUT MAHASISWA
+Route::get('/logout/mahasiswa', function () {
+    session()->forget('mahasiswa');
+    return redirect('/login');
+})->name('mahasiswa.logout');
+
+
 
 // ========================== DASHBOARD SESUAI ROLE ==========================
 Route::middleware(['web'])->group(function () {
@@ -108,19 +115,21 @@ Route::middleware(['web'])->group(function () {
     })->name('warek.dashboard');
 
     // MAHASISWA
-    Route::get('/mahasiswa/dashboard', function() {
-        if (!session('is_logged_in') || session('user_role') !== 'mahasiswa') {
-            return redirect()->route('login');
-        }
+   Route::get('/mahasiswa/dashboard', function () {
 
-        return view('mahasiswa.dashboard', [
-            'mahasiswa' => [
-                'nim'   => '1234567890',
-                'email' => session('user_email'),
-                'nama'  => session('user_name'),
-            ]
-        ]);
-    })->name('mahasiswa.dashboard');
+    if (!session('is_logged_in') || session('user_role') !== 'mahasiswa') {
+        return redirect('/login/mahasiswa');
+    }
+
+    return view('tampilan_mahasiswa.index', [
+        'mahasiswa' => [
+            'nim'   => session('user_nim'),
+            'nama'  => session('user_name'),
+            'email' => session('user_email'),
+        ]
+    ]);
+})->name('mahasiswa.dashboard');
+
 
     // ORGANISASI LOGIN
     Route::get('/organisasi/dashboard', [OrganisasiDashboardController::class, 'index'])
