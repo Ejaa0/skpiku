@@ -134,6 +134,10 @@ Route::middleware(['web'])->group(function () {
     // ORGANISASI LOGIN
     Route::get('/organisasi/dashboard', [OrganisasiDashboardController::class, 'index'])
         ->name('organisasi.dashboard');
+
+        Route::get('/warek/poin/{nim}', [WarekPoinController::class, 'show'])
+    ->name('warek.poin.detail');
+
 });
 
 
