@@ -1,4 +1,4 @@
-@extends('layouts.dashboard_warek_utama') <!-- sesuaikan layout -->
+@extends('layouts.dashboard_warek_utama')
 
 @section('title', 'Detail Kegiatan')
 
@@ -13,7 +13,7 @@
         <p class="mb-2">📅 <strong>Tanggal Kegiatan:</strong> {{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('d F Y') }}</p>
 
         <!-- Tombol tambah mahasiswa -->
-        <a href="{{ route('warek.tambahanggota.kegiatan.create', $kegiatan->id) }}" 
+        <a href="{{ route('warek.datakegiatan.tambahanggota.create', $kegiatan->id) }}" 
            class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
            + Tambah Mahasiswa
         </a>
@@ -39,10 +39,14 @@
                             <td class="px-4 py-2 border-b">{{ $mhs->nim }}</td>
                             <td class="px-4 py-2 border-b">{{ $mhs->nama }}</td>
                             <td class="px-4 py-2 border-b">
-                                <form action="{{ route('warek.tambahanggota.kegiatan.destroy', [$kegiatan->id, $mhs->nim]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus mahasiswa ini dari kegiatan?')">
+                                <form action="{{ route('warek.datakegiatan.tambahanggota.destroy', [$kegiatan->id, $mhs->nim]) }}" 
+                                      method="POST" 
+                                      onsubmit="return confirm('Yakin ingin menghapus mahasiswa ini dari kegiatan?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">🗑️ Hapus</button>
+                                    <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                                        🗑️ Hapus
+                                    </button>
                                 </form>
                             </td>
                         </tr>

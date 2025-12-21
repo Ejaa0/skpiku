@@ -32,17 +32,7 @@
                                 View
                             </a>
 
-                            <form action="{{ route('poin.destroy', $item->nim) }}" 
-                                  method="POST" 
-                                  class="inline"
-                                  onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">
-                                    Hapus
-                                </button>
-                            </form>
+                            
 
                             {{-- Tampilkan tombol Buat SKPI jika poin >= 1000 --}}
                             @if(($item->total_poin ?? 0) >= 1000)

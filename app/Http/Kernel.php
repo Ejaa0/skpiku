@@ -45,5 +45,6 @@ class Kernel extends HttpKernel
         'admin.auth' => \App\Http\Middleware\AdminAuth::class,
         'organisasi.auth' => \App\Http\Middleware\OrganisasiAuth::class,
         'warek.auth' => \App\Http\Middleware\WarekAuth::class, // middleware WR III
+        'mahasiswa.auth' => \App\Http\Middleware\MahasiswaAuth::class, // tambah ini
     ];
 }

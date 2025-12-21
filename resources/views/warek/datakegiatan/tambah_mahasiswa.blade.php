@@ -8,7 +8,7 @@
     <h1 class="text-2xl font-bold mb-4">🔍 Cari Mahasiswa untuk Kegiatan: {{ $kegiatan->nama_kegiatan }}</h1>
 
     <!-- Form Search -->
-    <form action="{{ route('warek.tambahanggota.kegiatan.create', $kegiatan->id) }}" method="GET" class="mb-4">
+    <form action="{{ route('warek.datakegiatan.tambahanggota.create', $kegiatan->id) }}" method="GET" class="mb-4">
         <input type="text" name="search" placeholder="Cari berdasarkan NIM atau Nama"
                value="{{ request('search') }}"
                class="w-full p-2 rounded border border-gray-300">
@@ -61,7 +61,7 @@
                             @if($kegiatan->mahasiswa->contains('nim', $m->nim))
                                 <span class="text-green-600 font-semibold">✔ Sudah ditambahkan</span>
                             @else
-                                <form action="{{ route('warek.tambahanggota.kegiatan.store', $kegiatan->id) }}" method="POST" class="inline">
+                                <form action="{{ route('warek.datakegiatan.tambahanggota.store', $kegiatan->id) }}" method="POST" class="inline">
                                     @csrf
                                     <input type="hidden" name="nim" value="{{ $m->nim }}">
                                     <button type="submit" 
@@ -82,7 +82,7 @@
         </table>
     </div>
 
-    <a href="{{ route('warek.tambahanggota.kegiatan.show', $kegiatan->id) }}"
+    <a href="{{ route('warek.datakegiatan.show', $kegiatan->id) }}"
        class="inline-block mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
        ← Kembali ke Detail Kegiatan
     </a>

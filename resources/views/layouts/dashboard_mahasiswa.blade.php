@@ -30,10 +30,11 @@
                Organisasi
             </a>
 
-            <a href="/mahasiswa/poin"
-               class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200">
-               Poin SKPI
-            </a>
+            <a href="{{ route('mahasiswa.klaim-poin') }}"
+   class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200">
+   Poin SKPI
+</a>
+
 
           <a href="{{ route('mahasiswa.logout') }}"
    class="block px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600 text-white mt-10">

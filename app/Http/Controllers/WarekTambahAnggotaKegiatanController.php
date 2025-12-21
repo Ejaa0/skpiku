@@ -33,23 +33,20 @@ class WarekTambahAnggotaKegiatanController extends Controller
     // ============================
     public function store(Request $request, $id_kegiatan)
     {
-        // Validasi nim harus ada di tabel mahasiswas
         $request->validate([
             'nim' => 'required|exists:mahasiswas,nim',
         ]);
 
         $kegiatan = Kegiatan::findOrFail($id_kegiatan);
 
-        // Gunakan transaction untuk keamanan
         DB::transaction(function () use ($kegiatan, $request) {
-            // Cek apakah mahasiswa sudah ada di kegiatan
             if (!$kegiatan->mahasiswa()->where('mahasiswa_nim', $request->nim)->exists()) {
                 $kegiatan->mahasiswa()->attach($request->nim);
             }
         });
 
         return redirect()
-            ->route('warek.tambahanggota.kegiatan.show', $id_kegiatan)
+            ->route('warek.datakegiatan.tambahanggota.show', $id_kegiatan)
             ->with('success', 'Mahasiswa berhasil ditambahkan ke kegiatan.');
     }
 
@@ -65,7 +62,7 @@ class WarekTambahAnggotaKegiatanController extends Controller
         });
 
         return redirect()
-            ->route('warek.tambahanggota.kegiatan.show', $id_kegiatan)
+            ->route('warek.datakegiatan.tambahanggota.show', $id_kegiatan)
             ->with('success', 'Mahasiswa berhasil dihapus dari kegiatan.');
     }
 }
