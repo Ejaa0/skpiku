@@ -219,8 +219,8 @@ Route::prefix('org-self')->name('organisasi.self.')->group(function () {
     Route::get('/', [OrganisasiSelfController::class, 'index'])->name('index');
     Route::get('/create', [OrganisasiSelfController::class, 'create'])->name('create');
     Route::post('/store', [OrganisasiSelfController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [OrganisasiSelfController::class, 'edit'])->name('edit');
-    Route::post('/update/{id}', [OrganisasiSelfController::class, 'update'])->name('update');
+      Route::get('/edit-anggota/{id}/{nim}', [OrganisasiSelfController::class, 'editAnggota'])->name('edit_anggota');
+    Route::put('/update-anggota/{id}/{nim}', [OrganisasiSelfController::class, 'updateAnggota'])->name('update_anggota');
     Route::get('/show/{id}', [OrganisasiSelfController::class, 'show'])->name('show');
     Route::delete('/destroy/{id}', [OrganisasiSelfController::class, 'destroy'])->name('destroy');
 
