@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MahasiswaController extends Controller
 {
@@ -75,8 +76,20 @@ class MahasiswaController extends Controller
 
     public function destroy(Mahasiswa $mahasiswa)
     {
-        $mahasiswa->delete();
+        DB::transaction(function () use ($mahasiswa) {
+            // Hapus semua poin terkait
+            $mahasiswa->poin()->delete();
 
-        return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil dihapus.');
+            // Hapus semua detail kegiatan terkait
+            $mahasiswa->detailKegiatan()->delete();
+
+            // Hapus semua detail organisasi terkait
+            $mahasiswa->detailOrganisasi()->delete();
+
+            // Hapus mahasiswa
+            $mahasiswa->delete();
+        });
+
+        return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa dan poin, kegiatan, organisasi terkait berhasil dihapus.');
     }
 }

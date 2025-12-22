@@ -10,13 +10,9 @@ class Mahasiswa extends Model
     use HasFactory;
 
     protected $table = 'mahasiswas';
-
     protected $primaryKey = 'nim';
     public $incrementing = false;
     protected $keyType = 'string';
-
-    // Jika tidak ada kolom created_at & updated_at
-    // public $timestamps = false;
 
     protected $fillable = [
         'nim',
@@ -35,23 +31,34 @@ class Mahasiswa extends Model
         return 'nim';
     }
 
+    // Relasi ke poin mahasiswa
+    public function poin()
+    {
+        return $this->hasMany(PoinMahasiswa::class, 'nim', 'nim');
+    }
+
     // Relasi ke pivot/detail kegiatan
     public function detailKegiatan()
     {
         return $this->hasMany(DetailKegiatanMahasiswa::class, 'mahasiswa_nim', 'nim');
     }
 
-    // Relasi langsung ke kegiatan lewat pivot
+    // Relasi ke kegiatan lewat pivot
     public function kegiatan()
-{
-    return $this->belongsToMany(
-        Kegiatan::class,             // Model tujuan
-        'detail_kegiatan_mahasiswa', // Tabel pivot
-        'mahasiswa_nim',             // FK pivot ke mahasiswa
-        'kegiatan_id_ref',           // FK pivot ke kegiatan
-        'nim',                       // PK Mahasiswa
-        'id_kegiatan'                // PK Kegiatan
-    );
-}
+    {
+        return $this->belongsToMany(
+            Kegiatan::class,             // Model tujuan
+            'detail_kegiatan_mahasiswa', // Tabel pivot
+            'mahasiswa_nim',             // FK pivot ke mahasiswa
+            'kegiatan_id_ref',           // FK pivot ke kegiatan
+            'nim',                       // PK Mahasiswa
+            'id_kegiatan'                // PK Kegiatan
+        );
+    }
 
+    // Relasi ke detail organisasi mahasiswa
+    public function detailOrganisasi()
+    {
+        return $this->hasMany(DetailOrganisasiMahasiswa::class, 'nim', 'nim');
+    }
 }
