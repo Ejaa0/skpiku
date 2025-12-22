@@ -31,6 +31,7 @@ use App\Http\Controllers\DashboardMahasiswaController;
 use App\Http\Controllers\MahasiswaKegiatanController;
 use App\Http\Controllers\MahasiswaOrganisasiController;
 use App\Http\Controllers\MahasiswaKlaimPoinController;
+use App\Http\Controllers\DashboardAdminController;
 
 // ========================== HALAMAN UTAMA ==========================
 Route::get('/', fn() => redirect()->route('login'));
@@ -243,3 +244,9 @@ Route::prefix('kegiatan-self')->name('kegiatan-self.')->group(function () {
     Route::post('/{id}/store-mahasiswa', [KegiatanSelfController::class, 'storeMahasiswa'])->name('storeMahasiswa');
     Route::delete('/{id}/mahasiswa/{nim}', [KegiatanSelfController::class, 'destroyMahasiswa'])->name('destroyMahasiswa');
 });
+
+// ========================== API DASHBOARD ADMIN ==========================
+
+
+Route::get('/api/admin/dashboard/statistik', [DashboardAdminController::class, 'statistik'])
+    ->name('admin.dashboard.statistik');

@@ -43,12 +43,7 @@
         </div>
 
         <!-- Deskripsi -->
-        <div>
-            <label class="text-gray-800 font-semibold">Deskripsi</label>
-            <textarea name="deskripsi" rows="4" 
-                      class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('deskripsi', $kegiatan->deskripsi) }}</textarea>
-            @error('deskripsi') <span class="text-red-500">{{ $message }}</span> @enderror
-        </div>
+        
 
         <div class="flex space-x-4">
             <button type="submit" class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 text-white">Update</button>

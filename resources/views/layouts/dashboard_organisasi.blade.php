@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{ open: false, darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }">
+<html lang="id"
+    x-data="{ open: false, darkMode: localStorage.getItem('darkMode') === 'true' }"
+    :class="{ 'dark': darkMode }">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -16,42 +19,47 @@
             },
         };
     </script>
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </head>
-<body class="bg-white text-black dark:bg-gray-900 dark:text-white transition-all min-h-screen flex">
 
-    <!-- Sidebar -->
-    <aside :class="open ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed z-40 inset-y-0 left-0 w-64 bg-primary text-white transform lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out shadow-xl">
+<body class="bg-gray-100 dark:bg-gray-900 text-black dark:text-white min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-primary text-white transform
+               -translate-x-full lg:translate-x-0 transition-transform duration-300"
+        :class="{ 'translate-x-0': open }">
+
         <div class="flex flex-col h-full p-6 space-y-6">
             <!-- Logo -->
-            <div class="text-center mb-6">
-                <img src="{{ asset('images/Logo-Unai.png') }}" alt="Logo UNAI"
-                    class="mx-auto w-20 h-auto mb-2 drop-shadow-xl" />
-                <h1 class="text-xl font-bold tracking-wide">🏢 Organisasi</h1>
+            <div class="text-center">
+                <img src="{{ asset('images/Logo-Unai.png') }}"
+                     class="mx-auto w-20 mb-2" />
+                <h1 class="text-lg font-bold">🏢 Organisasi</h1>
             </div>
 
-            <!-- Navigation -->
-            <nav class="space-y-2 flex flex-col">
-                <!-- Dashboard -->
+            <!-- Menu -->
+            <nav class="space-y-2">
                 <a href="{{ route('organisasi.dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.dashboard') ? 'bg-blue-800' : '' }}">
+                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700
+                   {{ Request::routeIs('organisasi.dashboard') ? 'bg-blue-800' : '' }}">
                     <span class="material-icons">dashboard</span>
-                    <span class="text-sm font-semibold">Dashboard</span>
+                    Dashboard
                 </a>
 
-                <!-- Organisasi -->
                 <a href="{{ route('organisasi.self.index') }}"
-                    class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('organisasi.self.*') ? 'bg-blue-800' : '' }}">
+                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700
+                   {{ Request::routeIs('organisasi.self.*') ? 'bg-blue-800' : '' }}">
                     <span class="material-icons">groups</span>
-                    <span class="text-sm font-semibold">Organisasi</span>
+                    Organisasi
                 </a>
 
-                <!-- Kegiatan -->
                 <a href="{{ route('kegiatan-self.index') }}"
-                    class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700 {{ Request::routeIs('kegiatan-self.*') ? 'bg-blue-800' : '' }}">
+                   class="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-700
+                   {{ Request::routeIs('kegiatan-self.*') ? 'bg-blue-800' : '' }}">
                     <span class="material-icons">event</span>
-                    <span class="text-sm font-semibold">Kegiatan</span>
+                    Kegiatan
                 </a>
             </nav>
 
@@ -59,40 +67,38 @@
             <div class="mt-auto">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit"
-                        class="w-full flex items-center justify-center gap-3 px-4 py-2 rounded-md hover:bg-red-600 bg-red-500 text-white font-semibold transition">
-                        <span class="material-icons">logout</span>
-                        Logout
+                    <button class="w-full flex justify-center items-center gap-2 py-2 bg-red-500 rounded-md hover:bg-red-600">
+                        <span class="material-icons">logout</span> Logout
                     </button>
                 </form>
             </div>
 
-            <!-- Footer -->
-            <div class="text-xs text-blue-200 text-center">
-                &copy; {{ now()->year }} Universitas Advent Indonesia
-            </div>
+            <p class="text-xs text-center text-blue-200">
+                © {{ now()->year }} Universitas Advent Indonesia
+            </p>
         </div>
     </aside>
 
-    <!-- Overlay for mobile -->
-    <div class="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden" x-show="open" @click="open = false"
-        x-transition.opacity></div>
+    <!-- OVERLAY MOBILE -->
+    <div x-show="open" @click="open = false"
+         class="fixed inset-0 bg-black/40 z-30 lg:hidden"></div>
 
-    <!-- Main content -->
-    <div class="flex-1 flex flex-col min-h-screen ml-0 lg:ml-64">
-        <!-- Mobile Header -->
-        <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center lg:hidden">
-            <button @click="open = !open" class="text-blue-700 dark:text-white focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+    <!-- CONTENT WRAPPER -->
+    <div class="lg:pl-64 min-h-screen flex flex-col">
+
+        <!-- HEADER MOBILE -->
+        <header class="lg:hidden bg-white dark:bg-gray-800 p-4 shadow flex items-center justify-between">
+            <button @click="open = true">
+                <span class="material-icons text-2xl">menu</span>
             </button>
-            <span class="font-bold text-lg">@yield('title', 'Dashboard Organisasi')</span>
+            <span class="font-bold">@yield('title', 'Dashboard')</span>
         </header>
 
-        <!-- Content -->
-        <main class="p-6 flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-inner overflow-auto">
-            @yield('content')
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-4 md:p-6">
+            <div class="max-w-7xl mx-auto">
+                @yield('content')
+            </div>
         </main>
     </div>
 
