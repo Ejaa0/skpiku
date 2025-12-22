@@ -133,6 +133,11 @@ Route::get('/mahasiswa/dashboard', [DashboardMahasiswaController::class, 'index'
     ->name('mahasiswa.klaim-poin');
 
 
+    Route::get('/mahasiswa/kriteria-poin', [MahasiswaController::class, 'kriteriaPoin'])
+    ->name('mahasiswa.kriteria-poin');
+
+
+
     // DETAIL POIN MAHASISWA WAREK
     Route::get('/warek/poin/{nim}', [WarekPoinController::class, 'show'])->name('warek.poin.detail');
 });
@@ -171,7 +176,7 @@ Route::prefix('warek/datakegiatan')->name('warek.datakegiatan.')->group(function
     Route::get('{id}/show', [WarekTambahAnggotaKegiatanController::class, 'show'])->name('tambahanggota.show');
     Route::delete('{id}/hapus-mahasiswa/{nim}', [WarekTambahAnggotaKegiatanController::class, 'destroy'])->name('tambahanggota.destroy');
 });
-
+    
 // ========================== SISTEM SKPI ==========================
 Route::prefix('skpi')->group(function () {
     Route::get('/form', [SKPIController::class, 'form'])->name('skpi.form');

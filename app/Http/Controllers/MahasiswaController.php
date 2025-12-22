@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\PenentuanPoin;
+
 
 class MahasiswaController extends Controller
 {
@@ -92,4 +94,13 @@ class MahasiswaController extends Controller
 
         return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa dan poin, kegiatan, organisasi terkait berhasil dihapus.');
     }
+
+   public function kriteriaPoin()
+{
+    // Ambil semua data penentuan poin, paginasi 10
+    $poin = PenentuanPoin::paginate(10);
+
+    return view('tampilan_mahasiswa.kriteria_poin', compact('poin'));
+}
+
 }

@@ -57,6 +57,7 @@ tailwind.config = {
         <a href="{{ route('skpi.index') }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition">
             📄 <span class="ml-2">SKPI</span>
         </a>
+
     </nav>
 
     <!-- Logout -->

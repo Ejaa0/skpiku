@@ -64,6 +64,14 @@
                     <span class="font-medium">Poin SKPI</span>
                 </a>
 
+                <!-- Tambahan: Kriteria Poin -->
+                <a href="{{ route('mahasiswa.kriteria-poin') }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl
+                          text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                    <span class="text-lg">📝</span>
+                    <span class="font-medium">Kriteria Poin</span>
+                </a>
+
                 <hr class="my-4 border-gray-200">
 
                 <!-- Logout Button -->
