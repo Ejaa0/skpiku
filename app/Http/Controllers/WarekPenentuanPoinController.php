@@ -3,37 +3,68 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\PenentuanPoin; // pastikan modelnya ada
+use App\Models\PenentuanPoin;
 
 class WarekPenentuanPoinController extends Controller
 {
     public function index()
     {
-        // Ambil semua data penentuan poin
-        $penentuanPoin = PenentuanPoin::orderBy('id', 'desc')->get();
-
-        // Kirim ke view
+        $penentuanPoin = PenentuanPoin::orderBy('id', 'asc')->get();
         return view('warek.penentuan_poin.index', compact('penentuanPoin'));
     }
+
     public function create()
     {
-        // Tampilan form tambah poin (bisa versi sederhana dulu)
         return view('warek.penentuan_poin.create');
     }
+
     public function store(Request $request)
-{
-    // validasi sederhana
-    $request->validate([
-        'nama_poin' => 'required|string|max:255',
-        'nilai' => 'required|numeric',
-    ]);
+    {
+        $request->validate([
+            'keterangan' => 'required|string|max:255',
+            'poin'       => 'required|integer|min:0',
+        ]);
 
-    // simpan ke database
-    \App\Models\PenentuanPoin::create([
-        'nama_poin' => $request->nama_poin,
-        'nilai' => $request->nilai,
-    ]);
+        PenentuanPoin::create([
+            'keterangan' => $request->keterangan,
+            'poin'       => $request->poin,
+        ]);
 
-    return redirect()->route('warek.penentuan-poin.index')->with('success', 'Poin berhasil ditambahkan.');
-}
+        return redirect()
+            ->route('warek.penentuanpoin.index')
+            ->with('success', 'Penentuan poin berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $poin = PenentuanPoin::findOrFail($id);
+        return view('warek.penentuan_poin.edit', compact('poin'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'keterangan' => 'required|string|max:255',
+            'poin'       => 'required|integer|min:0',
+        ]);
+
+        $poin = PenentuanPoin::findOrFail($id);
+        $poin->update([
+            'keterangan' => $request->keterangan,
+            'poin'       => $request->poin,
+        ]);
+
+        return redirect()
+            ->route('warek.penentuanpoin.index')
+            ->with('success', 'Penentuan poin berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        PenentuanPoin::findOrFail($id)->delete();
+
+        return redirect()
+            ->route('warek.penentuanpoin.index')
+            ->with('success', 'Penentuan poin berhasil dihapus.');
+    }
 }

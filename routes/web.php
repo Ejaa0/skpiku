@@ -32,6 +32,7 @@ use App\Http\Controllers\MahasiswaKegiatanController;
 use App\Http\Controllers\MahasiswaOrganisasiController;
 use App\Http\Controllers\MahasiswaKlaimPoinController;
 use App\Http\Controllers\DashboardAdminController;
+use App\Http\Controllers\WarekPenentuanPoinController;
 
 // ========================== HALAMAN UTAMA ==========================
 Route::get('/', fn() => redirect()->route('login'));
@@ -144,6 +145,11 @@ Route::get('/mahasiswa/dashboard', [DashboardMahasiswaController::class, 'index'
 
 // ========================== POIN MAHASISWA WR III ==========================
 Route::get('/warek/poin', [WarekPoinController::class, 'index'])->name('warek.poin');
+
+Route::prefix('warek')->name('warek.')->group(function () {
+    Route::resource('penentuanpoin', WarekPenentuanPoinController::class);
+});
+
 
 // ========================== WAREK - DATA ORGANISASI ==========================
 Route::prefix('warek/dataorganisasi')->name('warek.dataorganisasi.')->group(function() {
