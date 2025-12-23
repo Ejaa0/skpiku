@@ -8,6 +8,9 @@ use App\Models\DetailOrganisasiMahasiswa;
 
 class WarekOrganisasiController extends Controller
 {
+    // =======================
+    // ORGANISASI
+    // =======================
     public function index(Request $request)
     {
         $query = Organisasi::query();
@@ -25,13 +28,13 @@ class WarekOrganisasiController extends Controller
         return view('warek.dataorganisasi.show', compact('organisasi', 'anggota'));
     }
 
-    public function edit($id_organisasi)
+    public function editOrganisasi($id_organisasi)
     {
         $organisasi = Organisasi::findOrFail($id_organisasi);
-        return view('warek.dataorganisasi.edit', compact('organisasi'));
+        return view('warek.dataorganisasi.edit_organisasi', compact('organisasi'));
     }
 
-    public function update(Request $request, $id_organisasi)
+    public function updateOrganisasi(Request $request, $id_organisasi)
     {
         $request->validate(['nama_organisasi' => 'required|string|max:255']);
         $organisasi = Organisasi::findOrFail($id_organisasi);
@@ -41,9 +44,42 @@ class WarekOrganisasiController extends Controller
             ->with('success', 'Data organisasi berhasil diperbarui!');
     }
 
-    public function destroy($id_organisasi)
+    // =======================
+    // ANGGOTA / DETAIL MAHASISWA
+    // =======================
+    public function editAnggota($id_detail)
+    {
+        $detail = DetailOrganisasiMahasiswa::findOrFail($id_detail);
+        return view('warek.dataorganisasi.edit_anggota', compact('detail'));
+    }
+
+    public function updateAnggota(Request $request, $id_detail)
+    {
+        $request->validate([
+            'nim' => 'required|string|max:20',
+            'nama' => 'required|string|max:255',
+        ]);
+
+        $detail = DetailOrganisasiMahasiswa::findOrFail($id_detail);
+        $detail->update([
+            'nim' => $request->nim,
+            'nama' => $request->nama,
+        ]);
+
+        return redirect()->route('warek.dataorganisasi.show', $detail->id_organisasi)
+            ->with('success', 'Data anggota berhasil diperbarui!');
+    }
+
+    public function destroyOrganisasi($id_organisasi)
     {
         Organisasi::findOrFail($id_organisasi)->delete();
         return redirect()->back()->with('success', 'Data organisasi berhasil dihapus!');
+    }
+
+    public function destroyAnggota($id_detail)
+    {
+        $detail = DetailOrganisasiMahasiswa::findOrFail($id_detail);
+        $detail->delete();
+        return redirect()->back()->with('success', 'Data anggota berhasil dihapus!');
     }
 }

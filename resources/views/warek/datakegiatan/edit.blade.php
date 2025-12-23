@@ -13,7 +13,7 @@
             <label for="jenis_kegiatan" class="block mb-1 font-semibold">Jenis Kegiatan</label>
             <select name="jenis_kegiatan" id="jenis_kegiatan" class="w-full p-2 rounded border border-gray-300 bg-white">
                 <option value="Reguler" {{ $kegiatan->jenis_kegiatan == 'Reguler' ? 'selected' : '' }}>Reguler</option>
-                <option value="Non-Reguler" {{ $kegiatan->jenis_kegiatan == 'Non-Reguler' ? 'selected' : '' }}>Non-Reguler</option>
+                <option value="Major" {{ $kegiatan->jenis_kegiatan == 'Major' ? 'selected' : '' }}>Major</option>
             </select>
             @error('jenis_kegiatan')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

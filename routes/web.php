@@ -154,19 +154,27 @@ Route::prefix('warek')->name('warek.')->group(function () {
 // ========================== WAREK - DATA ORGANISASI ==========================
 Route::prefix('warek/dataorganisasi')->name('warek.dataorganisasi.')->group(function() {
 
+    // LIST ORGANISASI
     Route::get('/', [WarekOrganisasiController::class, 'index'])->name('index');
-    Route::get('/show/{id_organisasi}', [WarekOrganisasiController::class, 'show'])->name('show');
-    Route::get('/{id_organisasi}/edit', [WarekOrganisasiController::class, 'edit'])->name('edit');
-    Route::put('/{id_organisasi}', [WarekOrganisasiController::class, 'update'])->name('update');
-    Route::delete('/{id_organisasi}', [WarekOrganisasiController::class, 'destroy'])->name('destroy');
 
-    // ANGGOTA
+    // DETAIL ORGANISASI
+    Route::get('/show/{id_organisasi}', [WarekOrganisasiController::class, 'show'])->name('show');
+
+    // EDIT & UPDATE ORGANISASI
+    Route::get('/{id_organisasi}/edit', [WarekOrganisasiController::class, 'editOrganisasi'])->name('edit');
+    Route::put('/{id_organisasi}', [WarekOrganisasiController::class, 'updateOrganisasi'])->name('update');
+
+    // DELETE ORGANISASI
+    Route::delete('/{id_organisasi}', [WarekOrganisasiController::class, 'destroyOrganisasi'])->name('destroy');
+
+    // ANGGOTA ORGANISASI
     Route::get('/{id_organisasi}/anggota/tambah', [WarekTambahAnggotaController::class, 'create'])->name('anggota.create');
     Route::post('/{id_organisasi}/anggota/tambah', [WarekTambahAnggotaController::class, 'store'])->name('anggota.store');
     Route::get('/anggota/{id}/edit', [WarekTambahAnggotaController::class, 'edit'])->name('anggota.edit');
     Route::put('/anggota/{id}', [WarekTambahAnggotaController::class, 'update'])->name('anggota.update');
     Route::delete('/anggota/{id}', [WarekTambahAnggotaController::class, 'destroy'])->name('anggota.destroy');
 });
+
 
 // ========================== WAREK - DATA KEGIATAN ==========================
 Route::prefix('warek/datakegiatan')->name('warek.datakegiatan.')->group(function() {
