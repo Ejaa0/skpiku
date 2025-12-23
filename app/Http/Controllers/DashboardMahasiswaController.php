@@ -32,13 +32,13 @@ class DashboardMahasiswaController extends Controller
             ->where('nim', $nim)
             ->count();
 
-        // Total poin (150 per kegiatan, 250 per organisasi)
-        $totalPoin = ($totalKegiatan * 150) + ($totalOrganisasi * 250);
+        // Total poin (100 per kegiatan, 250 per organisasi)
+        $totalPoin = ($totalKegiatan * 100) + ($totalOrganisasi * 250);
 
         // Riwayat kegiatan terbaru (5 kegiatan)
         $riwayatKegiatan = DB::table('detail_kegiatan_mahasiswa as dkm')
             ->join('kegiatans as k', 'dkm.kegiatan_id_ref', '=', 'k.id')
-            ->select('k.tanggal_kegiatan', 'k.nama_kegiatan', DB::raw('150 as poin'))
+            ->select('k.tanggal_kegiatan', 'k.nama_kegiatan', DB::raw('100 as poin'))
             ->where('dkm.mahasiswa_nim', $nim)
             ->orderBy('k.tanggal_kegiatan', 'desc')
             ->limit(5)

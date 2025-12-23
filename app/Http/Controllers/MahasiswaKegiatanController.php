@@ -29,12 +29,12 @@ class MahasiswaKegiatanController extends Controller
             ->orderBy('k.tanggal_kegiatan', 'desc')
             ->get()
             ->map(function($item) {
-                $item->poin = 150; // Setiap kegiatan 150 poin
+                $item->poin = 100; // Setiap kegiatan 150 poin
                 return $item;
             });
 
         // Hitung total poin
-        $totalPoin = $kegiatans->count() * 150;
+        $totalPoin = $kegiatans->count() * 100;
 
         return view('tampilan_mahasiswa.kegiatan.index', compact(
             'kegiatans',

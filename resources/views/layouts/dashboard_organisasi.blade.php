@@ -25,6 +25,11 @@
     </script>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <!-- X-CLOAK STYLE -->
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 text-black dark:text-white min-h-screen">
@@ -122,6 +127,7 @@
     <div
         x-show="logoutOpen"
         x-transition
+        x-cloak
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
 
         <div

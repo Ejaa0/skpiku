@@ -3,15 +3,15 @@
 @section('title', 'Tambah Anggota Organisasi')
 
 @section('content')
-<div class="p-6">
+<div class="p-6 max-w-6xl mx-auto">
     <h2 class="text-2xl font-bold text-green-600 mb-6">
         ➕ Tambah Anggota: {{ $organisasi->nama_organisasi }}
     </h2>
 
     {{-- Tampilkan error validasi --}}
     @if ($errors->any())
-        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-            <ul class="list-disc pl-5">
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            <ul class="list-disc pl-5 space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -19,30 +19,29 @@
         </div>
     @endif
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow-md rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-green-600 text-white">
                 <tr>
-                    <th class="py-3 px-4">NIM</th>
-                    <th class="py-3 px-4">Nama</th>
-                    <th class="py-3 px-4">Jabatan</th>
-                    <th class="py-3 px-4">Status Keanggotaan</th>
-                    <th class="py-3 px-4">Aksi</th>
+                    <th class="py-3 px-4 text-left">NIM</th>
+                    <th class="py-3 px-4 text-left">Nama</th>
+                    <th class="py-3 px-4 text-left">Jabatan</th>
+                    <th class="py-3 px-4 text-left">Status Keanggotaan</th>
+                    <th class="py-3 px-4 text-center">Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse ($mahasiswa as $m)
-                <tr class="border-b hover:bg-gray-50">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                     <td class="py-2 px-4">{{ $m->nim }}</td>
                     <td class="py-2 px-4">{{ $m->nama }}</td>
-                    <td class="py-2 px-4" colspan="2">
-                        <form action="{{ route('organisasi.self.store_anggota', $organisasi->id_organisasi) }}" method="POST" class="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-2">
+                    <td class="py-2 px-4">
+                        <form action="{{ route('organisasi.self.store_anggota', $organisasi->id_organisasi) }}" method="POST" class="space-y-2 md:space-y-0 md:flex md:items-center md:space-x-2">
                             @csrf
                             <input type="hidden" name="mahasiswa_nim" value="{{ $m->nim }}">
 
-                            {{-- Jabatan --}}
-                            <div class="relative w-full md:w-auto">
-                                <select name="jabatan" class="border border-gray-300 rounded px-2 py-1 jabatan-select w-full">
+                            <div class="w-full md:w-auto relative">
+                                <select name="jabatan" class="border border-gray-300 rounded px-3 py-2 jabatan-select w-full dark:bg-gray-700 dark:text-gray-200">
                                     <option value="Ketua">Ketua</option>
                                     <option value="Wakil">Wakil</option>
                                     <option value="Sekretaris">Sekretaris</option>
@@ -56,20 +55,19 @@
                                     <option value="Divisi Kerohanian">Divisi Kerohanian</option>
                                     <option value="lainnya">Lainnya...</option>
                                 </select>
-                                <input type="text" name="jabatan_lainnya" placeholder="Isi jabatan..." class="border border-gray-300 rounded px-2 py-1 mt-1 hidden jabatan-lainnya-input w-full">
+                                <input type="text" name="jabatan_lainnya" placeholder="Isi jabatan..." class="border border-gray-300 rounded px-2 py-1 mt-1 hidden jabatan-lainnya-input w-full dark:bg-gray-700 dark:text-gray-200">
                             </div>
 
-                            {{-- Status --}}
-                            <div class="relative w-full md:w-auto">
-                                <select name="status_keanggotaan" class="border border-gray-300 rounded px-2 py-1 status-select w-full">
+                            <div class="w-full md:w-auto relative">
+                                <select name="status_keanggotaan" class="border border-gray-300 rounded px-3 py-2 status-select w-full dark:bg-gray-700 dark:text-gray-200">
                                     <option value="aktif">Aktif</option>
                                     <option value="nonaktif">Tidak Aktif</option>
                                     <option value="lainnya">Lainnya...</option>
                                 </select>
-                                <input type="text" name="status_lainnya" placeholder="Isi status..." class="border border-gray-300 rounded px-2 py-1 mt-1 hidden status-lainnya-input w-full">
+                                <input type="text" name="status_lainnya" placeholder="Isi status..." class="border border-gray-300 rounded px-2 py-1 mt-1 hidden status-lainnya-input w-full dark:bg-gray-700 dark:text-gray-200">
                             </div>
 
-                            <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200">
+                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
                                 Tambah
                             </button>
                         </form>
@@ -77,72 +75,59 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center py-4 text-gray-500">Semua mahasiswa sudah menjadi anggota.</td>
+                    <td colspan="5" class="text-center py-4 text-gray-500 dark:text-gray-300">Semua mahasiswa sudah menjadi anggota.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <a href="{{ route('organisasi.self.show', $organisasi->id_organisasi) }}"
-       class="mt-6 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200">
-       ← Kembali ke Detail Organisasi
+    <a href="{{ route('organisasi.self.show', $organisasi->id_organisasi) }}" class="mt-6 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+        ← Kembali ke Detail Organisasi
     </a>
 </div>
 
-{{-- Script untuk memunculkan input ketika "Lainnya" dipilih dan mengirim nilainya --}}
+{{-- Script untuk memunculkan input "Lainnya" --}}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Tampilkan input saat "Lainnya" dipilih
     document.querySelectorAll('.jabatan-select').forEach(select => {
         select.addEventListener('change', () => {
             const input = select.nextElementSibling;
-            if (select.value === 'lainnya') {
-                input.classList.remove('hidden');
-            } else {
-                input.classList.add('hidden');
-                input.value = '';
-            }
+            input.classList.toggle('hidden', select.value !== 'lainnya');
+            if(select.value !== 'lainnya') input.value = '';
         });
     });
 
     document.querySelectorAll('.status-select').forEach(select => {
         select.addEventListener('change', () => {
             const input = select.nextElementSibling;
-            if (select.value === 'lainnya') {
-                input.classList.remove('hidden');
-            } else {
-                input.classList.add('hidden');
-                input.value = '';
-            }
+            input.classList.toggle('hidden', select.value !== 'lainnya');
+            if(select.value !== 'lainnya') input.value = '';
         });
     });
 
-    // Saat submit, ganti name select ke input jika "Lainnya"
     document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', e => {
             const jabatanSelect = form.querySelector('.jabatan-select');
             const jabatanInput = form.querySelector('.jabatan-lainnya-input');
-
-            if (jabatanSelect.value === 'lainnya') {
-                if (!jabatanInput.value.trim()) {
-                    e.preventDefault();
-                    alert('Isi jabatan terlebih dahulu!');
-                    return;
-                }
+            if(jabatanSelect.value === 'lainnya' && !jabatanInput.value.trim()) {
+                e.preventDefault();
+                alert('Isi jabatan terlebih dahulu!');
+                return;
+            }
+            if(jabatanSelect.value === 'lainnya') {
                 jabatanInput.name = 'jabatan';
                 jabatanSelect.removeAttribute('name');
             }
 
             const statusSelect = form.querySelector('.status-select');
             const statusInput = form.querySelector('.status-lainnya-input');
-
-            if (statusSelect.value === 'lainnya') {
-                if (!statusInput.value.trim()) {
-                    e.preventDefault();
-                    alert('Isi status terlebih dahulu!');
-                    return;
-                }
+            if(statusSelect.value === 'lainnya' && !statusInput.value.trim()) {
+                e.preventDefault();
+                alert('Isi status terlebih dahulu!');
+                return;
+            }
+            if(statusSelect.value === 'lainnya') {
                 statusInput.name = 'status_keanggotaan';
                 statusSelect.removeAttribute('name');
             }
