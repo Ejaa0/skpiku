@@ -1,35 +1,50 @@
 @extends('layouts.dashboard_mahasiswa')
 
 @section('content')
-<div class="text-gray-900 dark:text-gray-100">
-    <h1 class="text-3xl font-bold mb-6">Kriteria Poin Mahasiswa</h1>
+<div class="text-gray-800">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">
+        Kriteria Poin Mahasiswa
+    </h1>
 
-    <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-md mb-6">
-        <p class="text-gray-700 dark:text-gray-200">
-            Halaman ini menampilkan kriteria poin mahasiswa berdasarkan keikutsertaan mereka
+    <div class="bg-blue-50 p-6 rounded-2xl shadow-sm mb-6 border border-blue-100">
+        <p class="text-gray-700">
+            Halaman ini menampilkan kriteria poin mahasiswa berdasarkan keikutsertaan
             dalam kegiatan dan organisasi.
         </p>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-            <thead class="bg-gray-200 dark:bg-gray-800">
+    <div class="overflow-x-auto bg-white rounded-2xl shadow-md border border-gray-200">
+        <table class="min-w-full">
+            <thead class="bg-blue-100">
                 <tr>
-                    <th class="px-4 py-2 text-left border-b border-gray-300 dark:border-gray-600">No</th>
-                    <th class="px-4 py-2 text-left border-b border-gray-300 dark:border-gray-600">Keterangan</th>
-                    <th class="px-4 py-2 text-left border-b border-gray-300 dark:border-gray-600">Poin</th>
+                    <th class="px-5 py-3 text-left text-sm font-semibold text-blue-700 border-b">
+                        No
+                    </th>
+                    <th class="px-5 py-3 text-left text-sm font-semibold text-blue-700 border-b">
+                        Keterangan
+                    </th>
+                    <th class="px-5 py-3 text-left text-sm font-semibold text-blue-700 border-b">
+                        Poin
+                    </th>
                 </tr>
             </thead>
-            <tbody class="bg-white dark:bg-gray-700">
+
+            <tbody>
                 @forelse($poin as $item)
-                    <tr class="border-b border-gray-300 dark:border-gray-600">
-                        <td class="px-4 py-2">{{ $loop->iteration }}</td>
-                        <td class="px-4 py-2">{{ $item->keterangan }}</td>
-                        <td class="px-4 py-2">{{ $item->poin }}</td>
+                    <tr class="hover:bg-blue-50 transition">
+                        <td class="px-5 py-3 border-b text-sm">
+                            {{ $loop->iteration }}
+                        </td>
+                        <td class="px-5 py-3 border-b text-sm">
+                            {{ $item->keterangan }}
+                        </td>
+                        <td class="px-5 py-3 border-b text-sm font-semibold text-green-600">
+                            {{ $item->poin }}
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="px-4 py-4 text-center text-gray-500 dark:text-gray-300">
+                        <td colspan="3" class="px-5 py-6 text-center text-gray-500">
                             Belum ada data kriteria poin.
                         </td>
                     </tr>
@@ -38,7 +53,7 @@
         </table>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-6">
         {{ $poin->links() }}
     </div>
 </div>
