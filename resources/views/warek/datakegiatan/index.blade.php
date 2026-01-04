@@ -28,17 +28,61 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal_kegiatan)->format('d-m-Y') }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $item->deskripsi }}</td>
                 <td class="px-6 py-4 whitespace-nowrap space-x-2">
-                    <a href="{{ route('warek.datakegiatan.show', $item->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Lihat</a>
-                    <a href="{{ route('warek.datakegiatan.edit', $item->id) }}" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Edit</a>
-                    <form action="{{ route('warek.datakegiatan.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kegiatan ini?');">
+
+                    {{-- Lihat --}}
+                    <a href="{{ route('warek.datakegiatan.show', $item->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Lihat
+                    </a>
+
+                    {{-- Edit --}}
+                    <a href="{{ route('warek.datakegiatan.edit', $item->id) }}" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                        Edit
+                    </a>
+
+                    {{-- Hapus Modern --}}
+                    <form action="{{ route('warek.datakegiatan.destroy', $item->id) }}" method="POST" class="inline-block delete-form">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Hapus</button>
+                        <button type="button" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 delete-btn">
+                            Hapus
+                        </button>
                     </form>
+
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.delete-form');
+
+            Swal.fire({
+                title: 'Yakin ingin menghapus kegiatan ini?',
+                text: "Data kegiatan akan hilang permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
 @endsection

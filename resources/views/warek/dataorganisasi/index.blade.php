@@ -33,7 +33,6 @@
                 <tr class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
                     <th class="px-4 py-2 text-left">ID</th>
                     <th class="px-4 py-2 text-left">Nama Organisasi</th>
-                    
                     <th class="px-4 py-2 text-left">Aksi</th>
                 </tr>
             </thead>
@@ -43,8 +42,6 @@
                     <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         <td class="px-4 py-2">{{ $org->id_organisasi }}</td>
                         <td class="px-4 py-2">{{ $org->nama_organisasi }}</td>
-                        
-
                         <td class="px-4 py-2 flex items-center space-x-2">
 
                             {{-- Lihat --}}
@@ -59,14 +56,13 @@
                                 Edit
                             </a>
 
-                            {{-- Hapus --}}
+                            {{-- Hapus Modern --}}
                             <form action="{{ route('warek.dataorganisasi.destroy', $org->id_organisasi) }}" 
-                                  method="POST"
-                                  onsubmit="return confirm('Apakah yakin ingin menghapus organisasi ini?');">
+                                  method="POST" class="delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                                <button type="button"
+                                        class="delete-btn px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
                                     Hapus
                                 </button>
                             </form>
@@ -90,4 +86,35 @@
     </div>
 
 </div>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.delete-form');
+
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data organisasi akan hilang permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
 @endsection
