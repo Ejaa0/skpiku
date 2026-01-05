@@ -2,11 +2,11 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto mt-10 px-6">
-    <div class="bg-white p-6 rounded-lg shadow-2xl">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-2xl">
         <h2 class="text-4xl font-extrabold text-blue-600 mb-6 border-b pb-2">Daftar Kegiatan</h2>
 
         @if(session('success'))
-            <div class="bg-green-100 text-green-800 border border-green-300 px-4 py-3 rounded mb-4">
+            <div class="bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-100 border border-green-300 dark:border-green-600 px-4 py-3 rounded mb-4">
                 {{ session('success') }}
             </div>
         @endif
@@ -18,7 +18,7 @@
                 name="search"
                 value="{{ request('search') }}"
                 placeholder="Cari berdasarkan jenis atau nama kegiatan..."
-                class="border border-gray-300 rounded px-3 py-2 w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded px-3 py-2 w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
                 type="submit"
@@ -42,7 +42,7 @@
                         <th class="px-4 py-3 border-b text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="text-sm text-gray-800 bg-white">
+                <tbody class="text-sm text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700">
                     @forelse($kegiatan as $item)
                         <tr>
                             <td class="border-b px-4 py-3 text-center">{{ $loop->iteration }}</td>
@@ -54,25 +54,33 @@
                             </td>
                             <td class="border-b px-4 py-3 text-center">
                                 <div class="flex justify-center space-x-4">
+
                                     <a href="{{ route('kegiatan.show', $item->id) }}" class="text-green-600 hover:text-green-800 flex items-center space-x-1" title="Show">
                                         <span>👁️</span><span>Show</span>
                                     </a>
+
                                     <a href="{{ route('kegiatan.edit', $item->id) }}" class="text-blue-600 hover:text-blue-800 flex items-center space-x-1" title="Edit">
                                         <span>✏️</span><span>Edit</span>
                                     </a>
-                                    <form action="{{ route('kegiatan.destroy', $item->id) }}" method="POST" class="inline flex items-center space-x-1" onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?')">
+
+                                    {{-- Hapus Modern --}}
+                                    <form action="{{ route('kegiatan.destroy', $item->id) }}" method="POST" class="inline delete-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800 flex items-center space-x-1" title="Delete">
+                                        <button type="button" 
+                                                class="text-red-600 hover:text-red-800 flex items-center space-x-1 delete-btn"
+                                                data-nama="{{ $item->nama_kegiatan }}"
+                                                title="Delete">
                                             <span>🗑️</span><span>Delete</span>
                                         </button>
                                     </form>
+
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr class="text-center">
-                            <td colspan="6" class="text-gray-500 py-6">Belum ada kegiatan yang tercatat.</td>
+                            <td colspan="6" class="text-gray-500 dark:text-gray-400 py-6">Belum ada kegiatan yang tercatat.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -80,4 +88,36 @@
         </div>
     </div>
 </div>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.delete-form');
+            const namaKegiatan = this.getAttribute('data-nama');
+
+            Swal.fire({
+                title: 'Yakin ingin menghapus kegiatan ini?',
+                text: `Kegiatan "${namaKegiatan}" akan dihapus secara permanen!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
 @endsection
