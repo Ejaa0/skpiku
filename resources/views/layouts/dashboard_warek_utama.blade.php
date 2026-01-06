@@ -107,10 +107,7 @@ tailwind.config = {
             🧮 Penentuan Poin
         </a>
 
-        <a href="{{ route('skpi.index') }}"
-           class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700">
-            📄 SKPI
-        </a>
+        
     </nav>
 
     <div class="pt-4 border-t dark:border-gray-700">

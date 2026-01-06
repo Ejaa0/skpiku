@@ -33,7 +33,8 @@ use App\Http\Controllers\MahasiswaOrganisasiController;
 use App\Http\Controllers\MahasiswaKlaimPoinController;
 use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\WarekPenentuanPoinController;
-
+use App\Http\Controllers\TemanController;
+use App\Http\Controllers\LeaderboardController;
 // ========================== HALAMAN UTAMA ==========================
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -93,10 +94,10 @@ Route::post('/forgot-password', function(Request $request){
 // ========================== LOGOUT ==========================
 Route::post('/logout', fn() => session()->flush() ?: redirect()->route('login'))->name('logout');
 Route::post('/warek/logout', fn() => session()->flush() ?: redirect()->route('login'))->name('logout.warek');
-Route::get('/logout/mahasiswa', function () {
-    session()->forget('mahasiswa');
-    return redirect('/login');
-})->name('mahasiswa.logout');
+
+
+Route::post('/logout/mahasiswa', fn() => session()->flush() ?: redirect()->route('login'))->name('mahasiswa.logout');
+
 
 // ========================== DASHBOARD SESUAI ROLE ==========================
 Route::middleware(['web'])->group(function () {
@@ -278,3 +279,24 @@ Route::prefix('kegiatan-self')->name('kegiatan-self.')->group(function () {
 
 Route::get('/api/admin/dashboard/statistik', [DashboardAdminController::class, 'statistik'])
     ->name('admin.dashboard.statistik');
+
+
+// ========================== MAHASISWA - TEMAN ==========================
+// ========================== MAHASISWA - TEMAN & LEADERBOARD ==========================
+Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['web'])->group(function () {
+
+    // Daftar teman
+    Route::get('/teman', [TemanController::class, 'index'])->name('teman.index');
+
+    // Tambah teman
+    Route::post('/tambah-teman', [TemanController::class, 'store'])->name('teman.store');
+
+    // Hapus teman
+    Route::delete('/teman/{id}', [TemanController::class, 'destroy'])->name('teman.destroy');
+
+    // Respond teman
+    Route::post('/teman/respond/{id}/{action}', [TemanController::class, 'respond'])->name('teman.respond');
+
+    // Leaderboard
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+});
