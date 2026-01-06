@@ -192,13 +192,22 @@ Route::prefix('warek/datakegiatan')->name('warek.datakegiatan.')->group(function
 });
     
 // ========================== SISTEM SKPI ==========================
-Route::prefix('skpi')->group(function () {
-    Route::get('/form', [SKPIController::class, 'form'])->name('skpi.form');
-    Route::post('/generate', [SKPIController::class, 'generate'])->name('skpi.generate');
-    Route::post('/generate-diploma', [SKPIController::class, 'generateDiploma'])->name('skpi.generateDiploma');
-    Route::get('/{skpi}/export-pdf', [SKPIController::class, 'exportPdf'])->name('skpi.exportPdf');
+Route::prefix('skpi')->middleware(['web'])->group(function () {
+
+    // Form SKPI
+    Route::get('/', [SKPIController::class, 'index'])
+        ->name('skpi.form');
+
+    // Generate PDF Sarjana
+    Route::post('/generate', [SKPIController::class, 'generate'])
+        ->name('skpi.generate');
+
+    // Generate PDF Diploma
+    Route::post('/generate-diploma', [SKPIController::class, 'generateDiploma'])
+        ->name('skpi.generateDiploma');
 });
-Route::resource('skpi', SKPIController::class);
+
+
 
 // ========================== MAHASISWA CRUD ==========================
 Route::get('/mahasiswa/data', [MahasiswaController::class, 'dataMahasiswa'])->name('mahasiswa.data');

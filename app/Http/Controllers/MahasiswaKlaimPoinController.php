@@ -18,17 +18,38 @@ class MahasiswaKlaimPoinController extends Controller
         $email = session('user_email');
         $nim   = substr($email, 0, 7);
 
-        // 📌 Ambil organisasi yang diikuti
+        // ================= ORGANISASI =================
         $organisasi = DB::table('detail_organisasi_mahasiswa')
             ->where('nim', $nim)
             ->get();
 
-        // 📌 Hitung total poin (250 per organisasi)
-        $totalPoin = $organisasi->count() * 250;
+        $poinOrganisasi = $organisasi->count() * 250;
+
+        // ================= KEGIATAN (JOIN) =================
+        $kegiatan = DB::table('detail_kegiatan_mahasiswa')
+            ->join(
+                'kegiatans',
+                'detail_kegiatan_mahasiswa.kegiatan_id_ref',
+                '=',
+                'kegiatans.id'
+            )
+            ->where('detail_kegiatan_mahasiswa.mahasiswa_nim', $nim)
+            ->select(
+                'kegiatans.nama_kegiatan'
+            )
+            ->get();
+
+        $poinKegiatan = $kegiatan->count() * 100;
+
+        // ================= TOTAL =================
+        $totalPoin = $poinOrganisasi + $poinKegiatan;
 
         return view('tampilan_mahasiswa.klaim_poin.index', compact(
             'nim',
             'organisasi',
+            'kegiatan',
+            'poinOrganisasi',
+            'poinKegiatan',
             'totalPoin'
         ));
     }
