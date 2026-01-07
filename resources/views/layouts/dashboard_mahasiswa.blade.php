@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" x-data="friendApp()">
+<html lang="id" x-data="friendApp()" x-init="init()">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,7 +60,6 @@
             <button @click="openSidebar=true" class="lg:hidden bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition">☰</button>
             <h2 class="font-bold text-gray-800 text-lg sm:text-xl">Dashboard Mahasiswa</h2>
         </div>
-        <button @click="openFriend=!openFriend" class="lg:hidden bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition">👥 Teman</button>
     </header>
 
     <main class="p-4 sm:p-6 flex-1 overflow-auto w-full">
@@ -69,8 +68,15 @@
 </div>
 
 <!-- ================= SIDEBAR KANAN TEMAN ================= -->
-<aside :class="openFriend ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'"
-       class="fixed right-0 top-0 h-full w-72 bg-white border-l transform transition-transform shadow-lg z-40 flex flex-col">
+<aside x-show="openFriend"
+       @click.outside="openFriend=false"
+       x-transition:enter="transition transform duration-300"
+       x-transition:enter-start="translate-x-full"
+       x-transition:enter-end="translate-x-0"
+       x-transition:leave="transition transform duration-300"
+       x-transition:leave-start="translate-x-0"
+       x-transition:leave-end="translate-x-full"
+       class="fixed right-0 top-0 h-full w-72 bg-white border-l shadow-lg z-40 flex flex-col">
 
     <!-- HEADER -->
     <div class="flex justify-between items-center px-4 py-3 border-b">
@@ -80,7 +86,6 @@
 
     <!-- BODY -->
     <div class="flex-1 overflow-y-auto p-4 space-y-4">
-
         <!-- Tombol Tambah Teman -->
         <button @click="document.getElementById('tambahTemanModal').classList.remove('hidden')"
                 class="w-full px-3 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
@@ -116,9 +121,14 @@
             </template>
             <p x-show="notifikasi.length === 0" class="text-xs text-gray-400">Tidak ada permintaan</p>
         </div>
-
     </div>
 </aside>
+
+<!-- ================= FLOATING TEMAN BUTTON ================= -->
+<button @click="openFriend=!openFriend"
+        class="fixed bottom-6 right-6 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition">
+    👥
+</button>
 
 <!-- ================= MODAL TAMBAH TEMAN ================= -->
 <div id="tambahTemanModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -146,31 +156,26 @@ function friendApp() {
         nimTujuan: '',
 
         init() {
-            this.loadTeman(); // Fetch teman dari backend setiap load halaman
+            this.loadTeman();
         },
 
-        // Load teman dari server
         loadTeman() {
             axios.get('/mahasiswa/teman/list')
                 .then(res => this.temanList = res.data)
                 .catch(e => console.log('Gagal load teman', e));
         },
 
-        // Terima/Tolak permintaan teman
         respond(id, action) {
             axios.post(`/mahasiswa/teman/respond/${id}/${action}`, {}, {
                 headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
             })
             .then(res => {
                 this.notifikasi = this.notifikasi.filter(n => n.id !== id);
-                if(action === 'accepted') {
-                    this.loadTeman();
-                }
+                if(action === 'accepted') this.loadTeman();
             })
             .catch(e => Swal.fire('Error','Gagal memproses permintaan','error'));
         },
 
-        // Tambah teman
         addFriend() {
             if(!this.nimTujuan) return Swal.fire('Peringatan','Masukkan NIM teman','warning');
             axios.post('/mahasiswa/teman/store', {nim_tujuan: this.nimTujuan}, {
@@ -180,15 +185,11 @@ function friendApp() {
                 Swal.fire('Sukses','Permintaan teman dikirim','success');
                 document.getElementById('tambahTemanModal').classList.add('hidden');
                 this.nimTujuan = '';
-                this.loadTeman(); // Refresh teman setelah menambah
+                this.loadTeman();
             })
-            .catch(e => {
-                console.log(e.response);
-                Swal.fire('Error','Gagal mengirim permintaan','error');
-            });
+            .catch(e => Swal.fire('Error','Gagal mengirim permintaan','error'));
         },
 
-        // Hapus teman
         hapusTeman(nim) {
             Swal.fire({
                 title: 'Hapus teman ini?',
@@ -201,7 +202,7 @@ function friendApp() {
                         headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
                     })
                     .then(r => {
-                        this.loadTeman(); // Refresh teman setelah hapus
+                        this.loadTeman();
                         Swal.fire('Terhapus','Teman berhasil dihapus','success');
                     })
                     .catch(e => Swal.fire('Error','Gagal menghapus teman','error'));
@@ -211,7 +212,7 @@ function friendApp() {
     }
 }
 
-// ================= LOGOUT =================
+// LOGOUT
 document.getElementById('logoutButton').addEventListener('click',function(){
     Swal.fire({
         title:'Logout?',

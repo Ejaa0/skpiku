@@ -11,8 +11,6 @@
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">No</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">NIM</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Nama</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Poin Kegiatan</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Poin Organisasi</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Total Poin</th>
                 </tr>
             </thead>
@@ -22,13 +20,11 @@
                     <td class="px-6 py-4 text-gray-800">{{ $index + 1 }}</td>
                     <td class="px-6 py-4 text-gray-800">{{ $mhs['nim'] }}</td>
                     <td class="px-6 py-4 text-gray-800">{{ $mhs['nama'] }}</td>
-                    <td class="px-6 py-4 text-gray-800">{{ $mhs['poin_kegiatan'] }}</td>
-                    <td class="px-6 py-4 text-gray-800">{{ $mhs['poin_organisasi'] }}</td>
                     <td class="px-6 py-4 font-bold text-gray-900">{{ $mhs['total_poin'] }}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
+                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
                 </tr>
                 @endforelse
             </tbody>
