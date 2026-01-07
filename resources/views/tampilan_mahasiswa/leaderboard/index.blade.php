@@ -1,28 +1,38 @@
-@extends('layouts.dashboard_mahasiswa') <!-- pastikan layout ada -->
-
-@section('title', 'Leaderboard Mahasiswa')
+@extends('layouts.dashboard_mahasiswa')
 
 @section('content')
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Leaderboard Mahasiswa</h1>
+<div class="p-6 bg-white rounded-lg shadow">
+    <h2 class="text-xl font-bold mb-4 text-gray-800">Leaderboard Mahasiswa</h2>
 
-    <table class="min-w-full bg-white border border-gray-200">
-        <thead>
-            <tr>
-                <th class="px-4 py-2 border-b">Rank</th>
-                <th class="px-4 py-2 border-b">Nama</th>
-                <th class="px-4 py-2 border-b">Poin</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($mahasiswa as $index => $m)
-            <tr class="{{ $index % 2 == 0 ? 'bg-gray-100' : '' }}">
-                <td class="px-4 py-2 border-b">{{ $index + 1 }}</td>
-                <td class="px-4 py-2 border-b">{{ $m->name }}</td>
-                <td class="px-4 py-2 border-b">{{ $m->poin }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">No</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">NIM</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Nama</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Poin Kegiatan</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Poin Organisasi</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Total Poin</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @forelse($mahasiswa as $index => $mhs)
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 text-gray-800">{{ $index + 1 }}</td>
+                    <td class="px-6 py-4 text-gray-800">{{ $mhs['nim'] }}</td>
+                    <td class="px-6 py-4 text-gray-800">{{ $mhs['nama'] }}</td>
+                    <td class="px-6 py-4 text-gray-800">{{ $mhs['poin_kegiatan'] }}</td>
+                    <td class="px-6 py-4 text-gray-800">{{ $mhs['poin_organisasi'] }}</td>
+                    <td class="px-6 py-4 font-bold text-gray-900">{{ $mhs['total_poin'] }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection

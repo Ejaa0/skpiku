@@ -281,22 +281,34 @@ Route::get('/api/admin/dashboard/statistik', [DashboardAdminController::class, '
     ->name('admin.dashboard.statistik');
 
 
-// ========================== MAHASISWA - TEMAN ==========================
 // ========================== MAHASISWA - TEMAN & LEADERBOARD ==========================
 Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['web'])->group(function () {
 
-    // Daftar teman
+    // Dashboard sudah ada
+    Route::get('/dashboard', [DashboardMahasiswaController::class, 'index'])->name('dashboard');
+
+    // Kegiatan
+    Route::get('/kegiatan', [MahasiswaKegiatanController::class, 'index'])->name('kegiatan');
+
+    // Organisasi
+    Route::get('/organisasi', [MahasiswaOrganisasiController::class, 'index'])->name('organisasi');
+
+    // Klaim poin
+    Route::get('/klaim-poin', [MahasiswaKlaimPoinController::class, 'index'])->name('klaim-poin');
+
+    // Teman
     Route::get('/teman', [TemanController::class, 'index'])->name('teman.index');
-
-    // Tambah teman
-    Route::post('/tambah-teman', [TemanController::class, 'store'])->name('teman.store');
-
-    // Hapus teman
-    Route::delete('/teman/{id}', [TemanController::class, 'destroy'])->name('teman.destroy');
-
-    // Respond teman
+    Route::get('/teman/list', [TemanController::class, 'listOnline'])->name('teman.list');
+    Route::post('/teman/store', [TemanController::class, 'store'])->name('teman.store');
     Route::post('/teman/respond/{id}/{action}', [TemanController::class, 'respond'])->name('teman.respond');
+Route::delete('/teman/{id}', [TemanController::class, 'destroy'])
+    ->name('teman.destroy');
+    
 
-    // Leaderboard
-    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+
+
 });
+
+
+Route::get('/mahasiswa-leaderboard', [LeaderboardController::class, 'index'])
+    ->name('mahasiswa.leaderboard');

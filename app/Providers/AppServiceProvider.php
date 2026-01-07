@@ -15,20 +15,36 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // View composer untuk notifikasi teman
+        /**
+         * ===============================
+         * NOTIFIKASI & TEMAN ONLINE
+         * ===============================
+         */
         View::composer('*', function ($view) {
-            $nim = session('user_nim'); // pastikan sama dengan session login
+            $nim = session('user_nim');
 
-            $notifikasi = collect();
-            if ($nim) {
-                $notifikasi = DB::table('teman_requests')
-                    ->where('penerima_nim', $nim)
-                    ->where('status', 'pending')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+            // Jika user belum login, beri default kosong
+            if (!$nim) {
+                $view->with('notifikasi', collect());
+                $view->with('temanOnline', collect());
+                return;
             }
 
-            $view->with('notifikasi', $notifikasi);
+            // Ambil permintaan teman pending
+            $notifikasi = DB::table('teman_requests')
+                ->where('penerima_nim', $nim)
+                ->where('status', 'pending')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            // Ambil teman yang sudah diterima
+            $temanOnline = DB::table('temans')
+                ->join('mahasiswas', 'mahasiswas.nim', '=', 'temans.teman_nim')
+                ->where('temans.mahasiswa_nim', $nim)
+                ->select('mahasiswas.nim', 'mahasiswas.nama', 'mahasiswas.online')
+                ->get();
+
+            $view->with(compact('notifikasi', 'temanOnline'));
         });
     }
 }
