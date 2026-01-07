@@ -103,4 +103,5 @@ class MahasiswaController extends Controller
     return view('tampilan_mahasiswa.kriteria_poin', compact('poin'));
 }
 
+
 }

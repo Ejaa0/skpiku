@@ -45,27 +45,14 @@ class LeaderboardController extends Controller
                 ->count();
             $poinOrganisasi = $jumlahOrganisasi * 250;
 
-            // -------------------------
-            // Poin teman: 10 per teman
-            // -------------------------
-            $jumlahTeman = DB::table('temans')
-                ->where(function($q) use ($mhs) {
-                    $q->where('mahasiswa_nim', $mhs->nim)
-                      ->orWhere('teman_nim', $mhs->nim);
-                })
-                ->count();
-            $poinTeman = $jumlahTeman * 10;
-
-            $totalPoin = $poinKegiatan + $poinOrganisasi + $poinTeman;
+            $totalPoin = $poinKegiatan + $poinOrganisasi;
 
             return [
                 'nim' => $mhs->nim,
                 'nama' => $mhs->nama,
                 'poin_kegiatan' => $poinKegiatan,
                 'poin_organisasi' => $poinOrganisasi,
-                'poin_teman' => $poinTeman,
-                'total_poin' => $totalPoin,
-                'jumlah_teman' => $jumlahTeman
+                'total_poin' => $totalPoin
             ];
         })
         ->sortByDesc('total_poin') // urutkan dari poin tertinggi

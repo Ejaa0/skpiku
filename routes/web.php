@@ -208,8 +208,6 @@ Route::prefix('skpi')->middleware(['web'])->group(function () {
         ->name('skpi.generateDiploma');
 });
 
-
-
 // ========================== MAHASISWA CRUD ==========================
 Route::get('/mahasiswa/data', [MahasiswaController::class, 'dataMahasiswa'])->name('mahasiswa.data');
 Route::resource('mahasiswa', MahasiswaController::class);
@@ -239,7 +237,7 @@ Route::get('/poin/latest/all', [PoinMahasiswaController::class, 'getAllLatestPoi
 Route::resource('poin', PoinMahasiswaController::class);
 
 // ========================== PROFILE & PENENTUAN POIN ==========================
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+
 Route::get('/penentuan-poin', [PenentuanPoinController::class, 'index'])->name('penentuan-poin.index');
 Route::resource('penentuan_poin', PenentuanPoinController::class);
 
@@ -284,6 +282,8 @@ Route::get('/api/admin/dashboard/statistik', [DashboardAdminController::class, '
 // ========================== MAHASISWA - TEMAN & LEADERBOARD ==========================
 Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['web'])->group(function () {
 
+    Route::get('/profil', [ProfileController::class, 'index'])->name('profil');
+
     // Dashboard sudah ada
     Route::get('/dashboard', [DashboardMahasiswaController::class, 'index'])->name('dashboard');
 
@@ -301,14 +301,14 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['web'])->group(funct
     Route::get('/teman/list', [TemanController::class, 'listOnline'])->name('teman.list');
     Route::post('/teman/store', [TemanController::class, 'store'])->name('teman.store');
     Route::post('/teman/respond/{id}/{action}', [TemanController::class, 'respond'])->name('teman.respond');
-Route::delete('/teman/{id}', [TemanController::class, 'destroy'])
+    Route::delete('/teman/{id}', [TemanController::class, 'destroy'])
     ->name('teman.destroy');
-    
-
-
 
 });
 
-
-Route::get('/mahasiswa-leaderboard', [LeaderboardController::class, 'index'])
+   Route::get('/mahasiswa-leaderboard', [LeaderboardController::class, 'index'])
     ->name('mahasiswa.leaderboard');
+ 
+    Route::get('/mahasiswa-profil', [ProfileController::class, 'index'])->name('mahasiswa.profil');
+
+

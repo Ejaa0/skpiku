@@ -60,6 +60,29 @@
             <button @click="openSidebar=true" class="lg:hidden bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition">☰</button>
             <h2 class="font-bold text-gray-800 text-lg sm:text-xl">Dashboard Mahasiswa</h2>
         </div>
+
+        <!-- Profil Mahasiswa -->
+        <div class="relative" x-data="{ openProfile:false }">
+            <button @click="openProfile = !openProfile" class="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200 transition">
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <!-- Dropdown Profil -->
+            <div x-show="openProfile" @click.outside="openProfile=false"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 translate-y-2"
+                 class="absolute right-0 mt-2 w-48 bg-white border rounded-xl shadow-lg py-2 z-50">
+                
+                <a href="{{ route('mahasiswa.profil') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profil Saya</a>
+                <button id="logoutButtonDropdown" class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50">Logout</button>
+            </div>
+        </div>
     </header>
 
     <main class="p-4 sm:p-6 flex-1 overflow-auto w-full">
@@ -212,8 +235,22 @@ function friendApp() {
     }
 }
 
-// LOGOUT
-document.getElementById('logoutButton').addEventListener('click',function(){
+// LOGOUT HEADER
+document.getElementById('logoutButton')?.addEventListener('click',function(){
+    Swal.fire({
+        title:'Logout?',
+        icon:'warning',
+        showCancelButton:true,
+        confirmButtonText:'Ya'
+    }).then(res=>{
+        if(res.isConfirmed){
+            document.getElementById('logoutForm').submit();
+        }
+    });
+});
+
+// LOGOUT DROPDOWN
+document.getElementById('logoutButtonDropdown')?.addEventListener('click', function(){
     Swal.fire({
         title:'Logout?',
         icon:'warning',
